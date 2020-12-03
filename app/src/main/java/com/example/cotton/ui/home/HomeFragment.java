@@ -16,11 +16,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cotton.LoginActivity;
 import com.example.cotton.R;
+import com.example.cotton.firebaseFunction;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeFragment extends Fragment {
 
     Button btnLogout;
+    firebaseFunction firebaseFunction;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -34,7 +37,16 @@ public class HomeFragment extends Fragment {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
+
         });
+
+
+        firebaseFunction firebaseTest = new firebaseFunction();
+        // firebaseTest.insertBookInfo("1","2","3","4");
+
+        firebaseTest.serchBook("4");
+        firebaseTest.profileGet();
+
         return root;
     }
 }

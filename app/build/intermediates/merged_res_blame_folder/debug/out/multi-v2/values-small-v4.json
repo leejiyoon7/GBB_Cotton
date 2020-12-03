@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\My Source Code\\Cotton\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-small-v4\\values-small-v4.xml",
+            "outputFile": "C:\\Users\\willk\\AndroidStudioProjects\\GBB_Cotton\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-small-v4\\values-small-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\leeji\\.gradle\\caches\\transforms-2\\files-2.1\\a662a09f936ef9769e962d90fad0478e\\material-1.2.1\\res\\values-small-v4\\values-small-v4.xml",
+                    "source": "C:\\Users\\willk\\.gradle\\caches\\transforms-2\\files-2.1\\a662a09f936ef9769e962d90fad0478e\\material-1.2.1\\res\\values-small-v4\\values-small-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

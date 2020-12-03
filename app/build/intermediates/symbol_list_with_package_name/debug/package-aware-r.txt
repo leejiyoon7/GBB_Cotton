@@ -1833,6 +1833,7 @@ id browser_actions_menu_items
 id browser_actions_menu_view
 id btn_google
 id btn_holder
+id btn_logout
 id buttonPanel
 id button_continue
 id button_create

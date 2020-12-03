@@ -10,14 +10,14 @@
         android:id="@+id/emailEditText"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="267dp"
+        android:layout_marginTop="100dp"
         android:background="@android:color/transparent"
         android:ems="10"
         android:hint="이메일"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/passwordEditText"

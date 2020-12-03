@@ -2194,7 +2194,6 @@ id useLogo
 id view_offset_helper
 id visible
 id visible_removing_fragment_view_tag
-id walletEditText
 id welcome_back_email_link_body
 id welcome_back_idp_button
 id welcome_back_idp_prompt

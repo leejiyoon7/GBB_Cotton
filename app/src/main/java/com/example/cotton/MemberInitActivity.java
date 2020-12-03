@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,6 +28,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MemberInitActivity extends AppCompatActivity {
 
@@ -34,6 +41,7 @@ public class MemberInitActivity extends AppCompatActivity {
     private static final String TAG_TEXT = "text";
     Uri selectedImageUri;
     ImageView profileImg;
+    String walletAdress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +52,7 @@ public class MemberInitActivity extends AppCompatActivity {
         findViewById(R.id.profileImg).setOnClickListener(onClickListener);
         profileImg = findViewById(R.id.profileImg);
 
+
     }
 
     //회원정보 입력 버튼 온클릭
@@ -52,12 +61,38 @@ public class MemberInitActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.checkButton:
-                    localUpoad();
-                    startToast("저장중입니다.");
+                    //파베에서 유저정보 가져옴
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                    ApiService call = RetrofitClient.getApiService();
+                    HashMap<String, String> headerMap = new HashMap<String, String>();
+                    headerMap.put("Content-Type", "application/json");
+                    headerMap.put("Authorization", "Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"); //Dapp API키값
+
+                    HashMap<String, String> bodyMap = new HashMap<String, String>();
+                    bodyMap.put("walletType", "LUNIVERSE"); //지갑타입:루니버스
+                    bodyMap.put("userKey", user.getUid()); //userKey를 파베 사용자의 UID를 가져와서 사용
+
+                    call.listRepos(bodyMap,headerMap).enqueue(new Callback<RetrofitV0>() {
+                        @Override
+                        public void onResponse(Call<RetrofitV0> call, Response<RetrofitV0> response) {
+                            Log.d("성공 : ", "result : " + response.body().getResult());
+                            Log.d("성공 : ", "address : " + response.body().getData().getAddress());
+                            walletAdress = response.body().getData().getAddress();
+                            localUpoad();
+                            startToast("저장중입니다.");
+                        }
+
+                        @Override
+                        public void onFailure(Call<RetrofitV0> call, Throwable t) {
+                            Log.d("실패 : ", t.toString());
+                        }
+                    });
                     break;
                 case R.id.profileImg:
                     showGallery();
                     break;
+                default:
             }
         }
     };
@@ -128,15 +163,14 @@ public class MemberInitActivity extends AppCompatActivity {
 
         String name = ((EditText)findViewById(R.id.nameEditText)).getText().toString();
         String phoneNumber = ((EditText)findViewById(R.id.phoneNumberEditText)).getText().toString();
-        String wallet = ((EditText)findViewById(R.id.walletEditText)).getText().toString();
         int ticket = 0;
 
-        if(name.length()>0 && phoneNumber.length() > 9 && wallet.length() > 0) {
+        if(name.length()>0 && phoneNumber.length() > 9) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             // Access a Cloud Firestore instance from your Activity
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            MemberInfo memberInfo = new MemberInfo(name, phoneNumber, wallet, ticket, profileLink);
+            MemberInfo memberInfo = new MemberInfo(name, phoneNumber, walletAdress, ticket, profileLink);
             db.collection("users").document(user.getUid()).set(memberInfo)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override

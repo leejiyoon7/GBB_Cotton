@@ -12,12 +12,12 @@
         "source": "C:\\My Source Code\\Cotton\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher.png"
     },
     {
-        "merged": "C:\\My Source Code\\Cotton\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_login.xml.flat",
-        "source": "C:\\My Source Code\\Cotton\\app\\src\\main\\res\\layout\\activity_login.xml"
-    },
-    {
         "merged": "C:\\My Source Code\\Cotton\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_cotton.png.flat",
         "source": "C:\\My Source Code\\Cotton\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_cotton.png"
+    },
+    {
+        "merged": "C:\\My Source Code\\Cotton\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_login.xml.flat",
+        "source": "C:\\My Source Code\\Cotton\\app\\src\\main\\res\\layout\\activity_login.xml"
     },
     {
         "merged": "C:\\My Source Code\\Cotton\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_cotton.png.flat",
@@ -64,16 +64,16 @@
         "source": "C:\\My Source Code\\Cotton\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_cotton_round.png"
     },
     {
-        "merged": "C:\\My Source Code\\Cotton\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_launcher_background.xml.flat",
-        "source": "C:\\My Source Code\\Cotton\\app\\src\\main\\res\\drawable\\ic_launcher_background.xml"
+        "merged": "C:\\My Source Code\\Cotton\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_cotton_round.xml.flat",
+        "source": "C:\\My Source Code\\Cotton\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_cotton_round.xml"
     },
     {
         "merged": "C:\\My Source Code\\Cotton\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v24_ic_launcher_foreground.xml.flat",
         "source": "C:\\My Source Code\\Cotton\\app\\src\\main\\res\\drawable-v24\\ic_launcher_foreground.xml"
     },
     {
-        "merged": "C:\\My Source Code\\Cotton\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_cotton_round.xml.flat",
-        "source": "C:\\My Source Code\\Cotton\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_cotton_round.xml"
+        "merged": "C:\\My Source Code\\Cotton\\app\\build\\intermediates\\res\\merged\\debug\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\My Source Code\\Cotton\\app\\src\\main\\res\\drawable\\ic_launcher_background.xml"
     },
     {
         "merged": "C:\\My Source Code\\Cotton\\app\\build\\intermediates\\res\\merged\\debug\\layout_fragment_home.xml.flat",

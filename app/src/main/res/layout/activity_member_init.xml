@@ -49,23 +49,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
 
-    <EditText
-        android:id="@+id/walletEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
-        android:background="@android:color/transparent"
-        android:ems="10"
-        android:hint="지갑 주소"
-        android:inputType="textPostalAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText" />
-
     <Button
         android:id="@+id/checkButton"
         android:layout_width="match_parent"
@@ -77,6 +60,6 @@
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/walletEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

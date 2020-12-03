@@ -67,8 +67,7 @@ public class MemberInitActivity extends AppCompatActivity {
                     ApiService call = RetrofitClient.getApiService();
                     HashMap<String, String> headerMap = new HashMap<String, String>();
                     headerMap.put("Content-Type", "application/json");
-                  //  headerMap.put("Authorization", "2qLX2LCCiXUYga6q35hPau1X8WaJAKxRMCPUoAyGhmM33voTDWWM1vHJe571kNjP"); //Dapp API키값
-                    headerMap.put("Authorization", "Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv");
+                    headerMap.put("Authorization", "Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"); //Dapp API키값
 
                     HashMap<String, String> bodyMap = new HashMap<String, String>();
                     bodyMap.put("walletType", "LUNIVERSE"); //지갑타입:루니버스

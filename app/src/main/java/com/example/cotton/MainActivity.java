@@ -64,10 +64,6 @@ public class MainActivity extends AppCompatActivity {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        firebaseFunction firebaseTest = new firebaseFunction();
-       // firebaseTest.insertBookInfo("1","2","3","4");
-
-        firebaseTest.serchBook("4");
 
         //만약 로그인이 되어있지 않다면
         if (user == null) {

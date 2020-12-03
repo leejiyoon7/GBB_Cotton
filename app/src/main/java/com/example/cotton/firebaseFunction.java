@@ -1,5 +1,6 @@
 package com.example.cotton;
 
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -10,9 +11,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class firebaseFunction {
 
@@ -36,6 +42,7 @@ public class firebaseFunction {
                     }
                 });
     }
+
     public void serchBook(String word){
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -58,8 +65,28 @@ public class firebaseFunction {
     }
 
     public void profileGet() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final ArrayList<Map<String, Object>> diaryM = new ArrayList<Map<String, Object>>();
+        DocumentReference docRef = db.collection("users").document(user.getUid());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        diaryM.add(document.getData());
+                        MemberInfo memberInfo = new MemberInfo((String)diaryM.get(0).get("name"), (String)diaryM.get(0).get("phoneNumber"), (String)diaryM.get(0).get("wallet"),4,(String)diaryM.get(0).get("profileLink"));
+                        Log.d("ffffffffffffffffffffff",memberInfo.getName());
 
-
+                    } else {
+                        Log.d("fuck", "No such document");
+                    }
+                } else {
+                    Log.d("shit", "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
 

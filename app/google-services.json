@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "647290560511",
+    "firebase_url": "https://gbb-project-9ae21.firebaseio.com",
+    "project_id": "gbb-project-9ae21",
+    "storage_bucket": "gbb-project-9ae21.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647290560511:android:f71d7daa33526a50cc11ca",
+        "android_client_info": {
+          "package_name": "com.example.cotton"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647290560511-6m0qjp29r7se0tskm7842c9ud501ijtj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cotton",
+            "certificate_hash": "fd8b91e88c7690d0ba04b058a80703b907838177"
+          }
+        },
+        {
+          "client_id": "647290560511-om31q7c20b81d8kbdtke37c4uddok6ru.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cotton",
+            "certificate_hash": "60bfd4d6b31017d344495961a4e33d6137441086"
+          }
+        },
+        {
+          "client_id": "647290560511-id27euqss4oep78t35tsakfsfqcp0h33.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTq50yrDsd9If5A3m2Vfn2WpbfW7Nnwl4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647290560511-id27euqss4oep78t35tsakfsfqcp0h33.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

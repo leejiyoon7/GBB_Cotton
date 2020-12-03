@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\willk\\AndroidStudioProjects\\GBB_Cotton\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sw360dp-v13\\values-sw360dp-v13.xml",
+            "outputFile": "C:\\Users\\wjddd\\Desktop\\cottontest\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sw360dp-v13\\values-sw360dp-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\willk\\.gradle\\caches\\transforms-2\\files-2.1\\8e2bd62067ff4a2fbb6e8b1c37196da5\\jetified-firebase-ui-auth-6.4.0\\res\\values-sw360dp-v13\\values-sw360dp-v13.xml",
+                    "source": "C:\\Users\\wjddd\\.gradle\\caches\\transforms-2\\files-2.1\\8e2bd62067ff4a2fbb6e8b1c37196da5\\jetified-firebase-ui-auth-6.4.0\\res\\values-sw360dp-v13\\values-sw360dp-v13.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8",
                         "startColumns": "4,4,4,4,4,4,4",

@@ -1,9 +1,14 @@
+com/example/cotton/RetrofitV0.java
+ com.example.cotton.RetrofitV0
 com/example/cotton/ui/dashboard/DashboardFragment.java
  com.example.cotton.ui.dashboard.DashboardFragment
  com.example.cotton.ui.dashboard.DashboardFragment$1
+com/example/cotton/Data.java
+ com.example.cotton.Data
 com/example/cotton/MemberInitActivity.java
  com.example.cotton.MemberInitActivity
  com.example.cotton.MemberInitActivity$1
+ com.example.cotton.MemberInitActivity$1$1
  com.example.cotton.MemberInitActivity$2
  com.example.cotton.MemberInitActivity$3
  com.example.cotton.MemberInitActivity$4
@@ -15,6 +20,8 @@ com/example/cotton/ui/dashboard/DashboardViewModel.java
 com/example/cotton/MainActivity.java
  com.example.cotton.MainActivity
  com.example.cotton.MainActivity$1
+com/example/cotton/RetrofitClient.java
+ com.example.cotton.RetrofitClient
 com/example/cotton/SignUpActivity.java
  com.example.cotton.SignUpActivity
  com.example.cotton.SignUpActivity$1

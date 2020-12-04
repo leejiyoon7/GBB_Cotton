@@ -114,7 +114,6 @@ public class MemberInitActivity extends AppCompatActivity {
 
         return cursor.getString(index);
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -123,11 +122,10 @@ public class MemberInitActivity extends AppCompatActivity {
             profileImg.setImageURI(selectedImageUri);
         }
     }
-
     private void localUpoad() {
-
         FirebaseStorage storage = FirebaseStorage.getInstance();
-
+        String name = ((EditText)findViewById(R.id.nameEditText)).getText().toString();
+        String phoneNumber = ((EditText)findViewById(R.id.phoneNumberEditText)).getText().toString();
         // Create a storage reference from our app
         StorageReference storageRef = storage.getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -142,7 +140,6 @@ public class MemberInitActivity extends AppCompatActivity {
                 if (!task.isSuccessful()) {
                     throw task.getException();
                 }
-
                 // Continue with the task to get the download URL
                 return riversRef.getDownloadUrl();
             }
@@ -152,45 +149,14 @@ public class MemberInitActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
                     profileLink = downloadUri.toString();
-                    profileUpdate();
+                    firebaseFunction.profileUpdate(name, phoneNumber, walletAdress, 0, profileLink);
+                    finish();
                 }
             }
         });
     }
 
-    //회원정보 db등록 함수
-    private void profileUpdate() {
 
-        String name = ((EditText)findViewById(R.id.nameEditText)).getText().toString();
-        String phoneNumber = ((EditText)findViewById(R.id.phoneNumberEditText)).getText().toString();
-        int ticket = 0;
-
-        if(name.length()>0 && phoneNumber.length() > 9) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            // Access a Cloud Firestore instance from your Activity
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-            MemberInfo memberInfo = new MemberInfo(name, phoneNumber, walletAdress, ticket, profileLink);
-            db.collection("users").document(user.getUid()).set(memberInfo)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void avoid) {
-                            startToast("회원정보 등록을 성공했습니다.");
-                            finish();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            startToast("회원정보 등록에 실패했습니다.");
-                        }
-                    });
-
-        }else{
-            startToast("회원정보를 입력해주세요.");
-        }
-
-    }
 
     private void startToast(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();

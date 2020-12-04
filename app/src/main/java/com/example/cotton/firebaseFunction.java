@@ -1,12 +1,20 @@
 package com.example.cotton;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.loader.content.CursorLoader;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 public class firebaseFunction {
     File localFile;
@@ -35,13 +45,13 @@ public class firebaseFunction {
     List<MemberInfo> memberTest = new ArrayList<>();
     MemberInfo memberInfo;
     //책에 관한 정보 저장
-    public void insertBookInfo(String pictureLink, String major, String bookName, String bookWriter) {
+    public static void insertBookInfo(String pictureLink, String major, String bookName, String bookWriter, String walletInfo,String userName) {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter);
+        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter, walletInfo, userName);
 
-        db.collection("bookSave/").document(bookName).set(booksave)
+        db.collection("bookSave/").document(bookName + "_" + userName).set(booksave) // 책 저장하기
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void avoid) {
@@ -75,9 +85,10 @@ public class firebaseFunction {
                         }
                     }
                 });
+
     }
 
-    public void profileGet(List<MemberInfo> memberInfoList) { //회원정보 받아오기
+    public void profileGet(List<MemberInfo> memberInfoList, Function<List<MemberInfo>, Void> complete) { //회원정보 받아오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final ArrayList<Map<String, Object>> diaryM = new ArrayList<Map<String, Object>>();
@@ -93,6 +104,7 @@ public class firebaseFunction {
                         memberInfo = new MemberInfo((String) diaryM.get(0).get("name"), (String) diaryM.get(0).get("phoneNumber"), (String) diaryM.get(0).get("wallet"), 4, (String) diaryM.get(0).get("profileLink")); // 모든 정보를 다시 memberinfo에 저장
                         memberInfoList.add(0, memberInfo);  //리스트형식 첫번째 칸에 memberinfo 저장
                         Log.d("ffffffffffffffffffffff", memberInfoList.get(0).getName());
+                        complete.apply(memberInfoList);
                     } else {
 
                     }
@@ -101,6 +113,70 @@ public class firebaseFunction {
                 }
             }
         });
+
+
     }
+
+    public void bookListGet(List<bookSaveForm> bookSaveFormList, Function<List<bookSaveForm>, Void> complete) { //모든 책 정보 받아오기
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
+        final List<bookSaveForm> bookSaveList = new ArrayList<>();
+        db.collection("bookSave")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                bookSaveInit.add(document.getData());
+                            }
+                            for (int i=0;i<bookSaveInit.size();i++) {
+                                bookSaveForm bookSaveFormProto = new bookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),(String)bookSaveInit.get(i).get("major"),(String)bookSaveInit.get(i).get("bookName"),(String)bookSaveInit.get(i).get("bookWriter"),(String)bookSaveInit.get(i).get("walletInfo"),(String)bookSaveInit.get(i).get("userName"));
+                                bookSaveList.add(bookSaveFormProto);
+                            }
+                            complete.apply(bookSaveList);
+                        } else {
+
+                        }
+                    }
+                });
+
+    }
+
+
+
+
+    public static void profileUpdate(String name, String phoneNumber, String walletAdress, int ticket, String profileLink) {
+        // 프로필 올리기
+        ticket = 0;
+        if(name.length()>0 && phoneNumber.length() > 9) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            // Access a Cloud Firestore instance from your Activity
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            MemberInfo memberInfo = new MemberInfo(name, phoneNumber, walletAdress, ticket, profileLink);
+            db.collection("users").document(user.getUid()).set(memberInfo)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void avoid) {
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+
+        }else{
+
+        }
+
+    }
+
+
+
 
 }

@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
+import com.example.cotton.bookSaveForm;
 import com.example.cotton.firebaseFunction;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -28,6 +29,7 @@ public class HomeFragment extends Fragment {
 
     Button btnLogout;
     List<MemberInfo> memberInfos = new ArrayList<>();
+    List<bookSaveForm> bookSaveFormList= new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,12 +46,28 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        firebaseFunction firebaseTest = new firebaseFunction();
-        // firebaseTest.insertBookInfo("1","2","3","4");
 
+
+        firebaseFunction firebaseTest = new firebaseFunction();
+        //임의의 값 넣는거
+        firebaseTest.insertBookInfo("124","전공","책이름123","책저자","지갑정보","사람이름123");
+        //여기서는 단어하나로 검색가능
         firebaseTest.serchBook("4");
-        firebaseTest.profileGet(memberInfos);
-        Log.d("home에서 확인"," ");
+
+
+        firebaseTest.profileGet(memberInfos, (resultList) -> {  // 맴버 정보 가져오기 / get(0).get 으로 모든정보가져올수있음
+                                                                // 해당 정보 이용시 여기 안에다 코딩해야함
+            Log.d("home에서 확인",resultList.get(0).getName());
+            return null;
+        });
+
+
+        firebaseTest.bookListGet(bookSaveFormList, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
+            Log.d("home에서 확인",resultList.get(0).getBookName());
+            Log.d("home에서 확인",resultList.get(1).getBookName());
+            return null;
+        });
+
 
         return root;
     }

@@ -51,19 +51,19 @@ public class HistoryFragment extends Fragment {
 //        test_btn=root.findViewById(R.id.test_btn);
 //        bookImg=root.findViewById(R.id.bookImg);
 
-        bookImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showGallery();
-            }
-        });
-
-        test_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                localUpoad("책이름","전공","저자"); //이렇게 변수 3개넣고 사진넣으면 책 저장됨
-            }
-        });
+//        bookImg.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showGallery();
+//            }
+//        });
+//
+//        test_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                localUpoad("책이름","전공","저자"); //이렇게 변수 3개넣고 사진넣으면 책 저장됨
+//            }
+//        });
 
 
         return root;

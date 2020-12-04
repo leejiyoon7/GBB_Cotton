@@ -72,7 +72,7 @@
                     android:layout_marginBottom="12dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
-                    app:cardCornerRadius="20dp"
+                    app:cardCornerRadius="15dp"
                     app:cardPreventCornerOverlap="false"
                     app:cardUseCompatPadding="true">
 
@@ -216,7 +216,7 @@
                     android:layout_marginBottom="12dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
-                    app:cardCornerRadius="20dp"
+                    app:cardCornerRadius="15dp"
                     app:cardPreventCornerOverlap="false"
                     app:cardUseCompatPadding="true">
 
@@ -279,7 +279,7 @@
                     android:layout_marginBottom="12dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
-                    app:cardCornerRadius="20dp"
+                    app:cardCornerRadius="15dp"
                     app:cardPreventCornerOverlap="false"
                     app:cardUseCompatPadding="true">
 
@@ -318,6 +318,20 @@
             </LinearLayout>
             <!-- End of : Rent Book-->
 
+            <android.widget.Button
+                android:id="@+id/home_register_book_btn"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+
+                android:text="+ 도서등록"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:background="@drawable/round_btn_height_64"/>
 
         </LinearLayout>
 

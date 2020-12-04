@@ -35,39 +35,53 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        btnLogout=root.findViewById(R.id.btn_logout);
-        //로그아웃 버튼 구현
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent=new Intent(getActivity(), LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
-        });
+// <<<<<<< firebase_function
+//         btnLogout=root.findViewById(R.id.btn_logout);
+//         //로그아웃 버튼 구현
+//         btnLogout.setOnClickListener(new View.OnClickListener() {
+//             @Override
+//             public void onClick(View view) {
+//                 FirebaseAuth.getInstance().signOut();
+//                 Intent intent=new Intent(getActivity(), LoginActivity.class);
+//                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                 startActivity(intent);
+//             }
+//         });
 
 
-        firebaseFunction firebaseTest = new firebaseFunction();
-        //임의의 값 넣는거
-        firebaseTest.insertBookInfo("124","전공","책이름123","책저자","지갑정보","사람이름123");
-        //여기서는 단어하나로 검색가능
-        firebaseTest.serchBook("4");
+//         firebaseFunction firebaseTest = new firebaseFunction();
+//         //임의의 값 넣는거
+//         firebaseTest.insertBookInfo("124","전공","책이름123","책저자","지갑정보","사람이름123");
+//         //여기서는 단어하나로 검색가능
+//         firebaseTest.serchBook("4");
 
 
-        firebaseTest.profileGet(memberInfos, (resultList) -> {  // 맴버 정보 가져오기 / get(0).get 으로 모든정보가져올수있음
-                                                                // 해당 정보 이용시 여기 안에다 코딩해야함
-            Log.d("home에서 확인",resultList.get(0).getName());
-            return null;
-        });
+//         firebaseTest.profileGet(memberInfos, (resultList) -> {  // 맴버 정보 가져오기 / get(0).get 으로 모든정보가져올수있음
+//                                                                 // 해당 정보 이용시 여기 안에다 코딩해야함
+//             Log.d("home에서 확인",resultList.get(0).getName());
+//             return null;
+//         });
 
 
-        firebaseTest.bookListGet(bookSaveFormList, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
-            Log.d("home에서 확인",resultList.get(0).getBookName());
-            Log.d("home에서 확인",resultList.get(1).getBookName());
-            return null;
-        });
+//         firebaseTest.bookListGet(bookSaveFormList, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
+//             Log.d("home에서 확인",resultList.get(0).getBookName());
+//             Log.d("home에서 확인",resultList.get(1).getBookName());
+//             return null;
+//         });
 
+
+
+//        btnLogout=root.findViewById(R.id.btn_logout);
+//        //로그아웃 버튼 구현
+//        btnLogout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                FirebaseAuth.getInstance().signOut();
+//                Intent intent=new Intent(getActivity(), LoginActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(intent);
+//            }
+//        });
 
         return root;
     }

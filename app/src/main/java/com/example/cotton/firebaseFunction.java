@@ -1,6 +1,8 @@
 package com.example.cotton;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,13 +18,24 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class firebaseFunction {
-
-    public void insertBookInfo(String pictureLink, String major, String bookName, String bookWriter){
+    File localFile;
+    List<MemberInfo> memberInfoList = new ArrayList<>();
+    List<MemberInfo> memberTest = new ArrayList<>();
+    MemberInfo memberInfo;
+    //책에 관한 정보 저장
+    public void insertBookInfo(String pictureLink, String major, String bookName, String bookWriter) {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -32,7 +45,7 @@ public class firebaseFunction {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void avoid) {
-                       Log.d("testing", "성공");
+                        Log.d("testing", "성공");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -43,7 +56,7 @@ public class firebaseFunction {
                 });
     }
 
-    public void serchBook(String word){
+    public void serchBook(String word) { //책 검색 , 하나밖에 검색안됨 / 저자별
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -64,10 +77,11 @@ public class firebaseFunction {
                 });
     }
 
-    public void profileGet() {
+    public void profileGet(List<MemberInfo> memberInfoList) { //회원정보 받아오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final ArrayList<Map<String, Object>> diaryM = new ArrayList<Map<String, Object>>();
+
         DocumentReference docRef = db.collection("users").document(user.getUid());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -75,19 +89,18 @@ public class firebaseFunction {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        diaryM.add(document.getData());
-                        MemberInfo memberInfo = new MemberInfo((String)diaryM.get(0).get("name"), (String)diaryM.get(0).get("phoneNumber"), (String)diaryM.get(0).get("wallet"),4,(String)diaryM.get(0).get("profileLink"));
-                        Log.d("ffffffffffffffffffffff",memberInfo.getName());
-
+                        diaryM.add(document.getData());     //arraylist에 모든정보를 받아와서 저장
+                        memberInfo = new MemberInfo((String) diaryM.get(0).get("name"), (String) diaryM.get(0).get("phoneNumber"), (String) diaryM.get(0).get("wallet"), 4, (String) diaryM.get(0).get("profileLink")); // 모든 정보를 다시 memberinfo에 저장
+                        memberInfoList.add(0, memberInfo);  //리스트형식 첫번째 칸에 memberinfo 저장
+                        Log.d("ffffffffffffffffffffff", memberInfoList.get(0).getName());
                     } else {
-                        Log.d("fuck", "No such document");
+
                     }
                 } else {
-                    Log.d("shit", "get failed with ", task.getException());
+
                 }
             }
         });
     }
-
 
 }

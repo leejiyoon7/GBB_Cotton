@@ -99,7 +99,7 @@ public class MemberInitActivity extends AppCompatActivity {
 
     private void showGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
-        intent. setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        intent. setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, 200);
     }
 

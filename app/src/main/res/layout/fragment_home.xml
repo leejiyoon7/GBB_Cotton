@@ -40,12 +40,20 @@
                     android:textSize="35sp"
                     android:textStyle="bold" />
 
-                <ImageButton
-                    android:id="@+id/home_profile_image_button"
+                <androidx.cardview.widget.CardView
                     android:layout_width="48dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="24dp"
-                    android:src="@drawable/ic_cotton_background" />
+                    app:cardCornerRadius="25dp">
+
+                    <ImageButton
+                        android:id="@+id/home_profile_image_button"
+                        android:layout_width="48dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="24dp"
+                        android:src="@drawable/ic_cotton_background" />
+                </androidx.cardview.widget.CardView>
+
             </LinearLayout>
 
             <LinearLayout

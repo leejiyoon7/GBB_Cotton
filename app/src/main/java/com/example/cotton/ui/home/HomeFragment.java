@@ -1,12 +1,16 @@
 package com.example.cotton.ui.home;
 
 import android.content.Intent;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,12 +18,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.bookSaveForm;
-import com.example.cotton.firebaseFunction;
+import com.example.cotton.ui.food.FoodListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -27,15 +33,45 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    Button btnLogout;
+/*    Button btnLogout;
     List<MemberInfo> memberInfos = new ArrayList<>();
-    List<bookSaveForm> bookSaveFormList= new ArrayList<>();
+    List<bookSaveForm> bookSaveFormList= new ArrayList<>();*/
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    ImageButton home_profile_image_button;//프로필 이미지
+    TextView home_my_point_user_name_text_view;//사용자명
+    ImageButton home_my_point_plus_btn;//플러스 버튼
+    TextView home_my_point_amount_text_view;//현재 보유 포인트 양
+    TextView home_my_point_food_ticket_text_view;//보유 식권
 
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-// <<<<<<< firebase_function
+    RecyclerView home_my_rented_book_recycler_view;//대여 도서 목록 RecyclerView
+    MyRentedBookListAdapter myRentedBookListAdapter;//대여 도서 목록 adapter
+
+    RecyclerView home_my_registered_book_recycler_view;//나의 등록 도서 목록 RecyclerView
+    MyRegisteredBookListAdapter myRegisteredBookListAdapter;//나의 등록 도서 목록 adapter
+
+
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //인플레이션
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        home_profile_image_button=view.findViewById(R.id.home_profile_image_button);
+        home_my_point_user_name_text_view=view.findViewById(R.id.home_my_point_user_name_text_view);
+        home_my_point_plus_btn=view.findViewById(R.id.home_my_point_plus_btn);
+        home_my_point_amount_text_view=view.findViewById(R.id.home_my_point_amount_text_view);
+        home_my_point_food_ticket_text_view=view.findViewById(R.id.home_my_point_food_ticket_text_view);
+
+        // 리사이클러뷰에 LinearLayoutManager 객체 지정.
+        home_my_rented_book_recycler_view=view.findViewById(R.id.home_my_rented_book_recycler_view);
+        home_my_registered_book_recycler_view=view.findViewById(R.id.home_my_registered_book_recycler_view);
+
+        //대여 도서 목록 RecyclerView 설정 method
+        showMyRentedBookListFunc();
+
+        //나의 도서 목록 RecyclerView 설정 method
+        showMyRegisteredBookFunc();
+
+
+        //         firebase_function
 //         btnLogout=root.findViewById(R.id.btn_logout);
 //         //로그아웃 버튼 구현
 //         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +119,43 @@ public class HomeFragment extends Fragment {
 //            }
 //        });
 
-        return root;
+
+
+        return view;
+    }
+
+    //대여 도서 목록 RecyclerView 설정
+    public void showMyRentedBookListFunc(){
+        //adapter 생성
+        myRentedBookListAdapter = new MyRentedBookListAdapter() ;
+        
+        home_my_rented_book_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //adapter 달기
+        home_my_rented_book_recycler_view.setAdapter(myRentedBookListAdapter);
+
+        // 리사이클러뷰에 표시할 데이터 리스트 생성(예시로 3개), 추후 firebase에서 data 받아와 동적으로 생성되게 짤 예정
+        myRentedBookListAdapter.addItem("C언어 콘서트","김동주","도서대여");
+        myRentedBookListAdapter.addItem("Java 콘서트","김민석","연체");
+        myRentedBookListAdapter.addItem("C++ 콘서트","이정일","반납대기");
+        myRentedBookListAdapter.addItem("C# 콘서트","심민수","반납대기");
+        myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
+    }
+
+    //나의 도서 목록 RecyclerView 설정
+    public void showMyRegisteredBookFunc(){
+        //adapter 생성
+        myRegisteredBookListAdapter = new MyRegisteredBookListAdapter() ;
+
+        home_my_registered_book_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //adapter 달기
+        home_my_registered_book_recycler_view.setAdapter(myRegisteredBookListAdapter);
+
+        // 리사이클러뷰에 표시할 데이터 리스트 생성(예시로 3개), 추후 firebase에서 data 받아와 동적으로 생성되게 짤 예정
+        myRegisteredBookListAdapter.addItem("알기 쉽게 해설한 데이터구조","김동주");
+        myRegisteredBookListAdapter.addItem("케라스 창시자에게 배우는 딥러닝","김민석");
+        myRegisteredBookListAdapter.addItem("JAVA Programming","이정일");
+        myRegisteredBookListAdapter.addItem("컴퓨터 아키텍쳐","심민수");
+
+        myRegisteredBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
     }
 }

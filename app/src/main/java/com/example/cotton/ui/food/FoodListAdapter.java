@@ -8,7 +8,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.cotton.R;
 
@@ -47,7 +46,7 @@ public class FoodListAdapter extends BaseAdapter {
         }
 
         //화면에 표시될 View(Layout이 inflate된)으로부터 위젯에 대한 참조 획득
-        productIcon=convertView.findViewById(R.id.iv_productIcon);
+        productIcon=convertView.findViewById(R.id.iv_search);
         productType=convertView.findViewById(R.id.tv_productType);
         price=convertView.findViewById(R.id.tv_price);
         btn_buy=convertView.findViewById(R.id.btn_buy);

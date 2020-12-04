@@ -48,8 +48,8 @@ public class HistoryFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_history, container, false);
 
-        test_btn=root.findViewById(R.id.test_btn);
-        bookImg=root.findViewById(R.id.bookImg);
+//        test_btn=root.findViewById(R.id.test_btn);
+//        bookImg=root.findViewById(R.id.bookImg);
 
         bookImg.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -10,10 +10,12 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.loader.content.CursorLoader;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,6 +46,7 @@ public class firebaseFunction {
     List<MemberInfo> memberInfoList = new ArrayList<>();
     List<MemberInfo> memberTest = new ArrayList<>();
     MemberInfo memberInfo;
+
     //책에 관한 정보 저장
     public static void insertBookInfo(String pictureLink, String major, String bookName, String bookWriter, String walletInfo,String userName) {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -176,7 +179,28 @@ public class firebaseFunction {
 
     }
 
+    // 파이어베이스에서 저장된 프로필 이미지 가져오기.
+/*
+    public void profileImageDownload()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        storageRef.child("users/" + user.getUid() +"/" + "Profile Image").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                //이미지를 불러오는데 성공
+                //Glide를 사용
+                Glide.with(getContext())
+                        .load(uri)
+                        .into(home_profile_image_button); //이미지 버튼 아이디가 들어간다.
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
-
-
+            }
+        })
+    }
+*/
 }

@@ -3,6 +3,7 @@ package com.example.cotton.ui.home;
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +22,20 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.bookSaveForm;
 import com.example.cotton.ui.food.FoodListAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +78,27 @@ public class HomeFragment extends Fragment {
 
         //나의 도서 목록 RecyclerView 설정 method
         showMyRegisteredBookFunc();
+
+        // firebase_function_ProfileImageDownload + firebaseFunction으로 집어넣기
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        storageRef.child("users/" + user.getUid() +"/" + "Profile Image").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                //이미지를 불러오는데 성공
+                //Glide를 사용
+                Glide.with(getContext())
+                        .load(uri)
+                        .into(home_profile_image_button); //이미지 버튼 아이디가 들어간다.
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
 
 
         //         firebase_function

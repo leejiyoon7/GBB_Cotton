@@ -6,26 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <TextView
-        android:id="@+id/text_home"
-        android:text="This is home fragment"
+    <ScrollView
+        android:id="@+id/home_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteY="280dp">
 
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="logout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:id="@+id/home_wrap_linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/home_header_linear_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/home_cotton_title_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="24dp"
+                    android:layout_weight="1"
+
+                    android:text="COTTON"
+                    android:letterSpacing="0.3"
+                    android:textAlignment="viewStart"
+                    android:textColor="#5e5e5e"
+                    android:textSize="35sp"
+                    android:textStyle="bold"/>
+
+                <ImageButton
+                    android:id="@+id/home_profile_image_button"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="24dp"
+                    android:src="@drawable/ic_cotton_background" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+<!--    <Button-->
+<!--        android:id="@+id/btn_logout"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="logout"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

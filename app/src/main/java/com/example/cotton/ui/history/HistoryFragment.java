@@ -99,7 +99,7 @@ public class HistoryFragment extends Fragment {
     }
 
 
-    private void localUpoad(String bookName, String major, String bookWriter) {         //업로드
+    private void localUpload(String bookName, String major, String bookWriter) {         //업로드
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
         // Create a storage reference from our app

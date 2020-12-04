@@ -32,10 +32,10 @@ public class FoodFragment extends Fragment {
         ticketList.setAdapter(adapter);
 
         //listview에 add
-        adapter.addItem(R.drawable.ic_food,"식권 x1","600GBB");
-        adapter.addItem(R.drawable.ic_food,"식권 x2","1200GBB");
-        adapter.addItem(R.drawable.ic_food,"식권 x5","3000GBB");
-        adapter.addItem(R.drawable.ic_food,"식권 x10","6000GBB");
+        adapter.addItem(R.drawable.ic_food,"식권 x 1","600GBB");
+        adapter.addItem(R.drawable.ic_food,"식권 x 2","1200GBB");
+        adapter.addItem(R.drawable.ic_food,"식권 x 5","3000GBB");
+        adapter.addItem(R.drawable.ic_food,"식권 x 10","6000GBB");
 
         adapter.notifyDataSetChanged();//adapter의 변경을 알림
         return view;

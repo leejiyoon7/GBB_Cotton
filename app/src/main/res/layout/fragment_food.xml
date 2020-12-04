@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.food.FoodFragment">
+    tools:context=".ui.food.FoodFragment"
+    android:background="#F4F5F9">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,10 +28,10 @@
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:gravity="center"
             android:text="2000GBB"
-            android:textSize="30dp" />
+            android:textSize="36sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,13 +42,18 @@
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:text="상품구매"
-                android:textSize="40dp" />
+                android:textSize="30sp" />
 
             <ListView
                 android:id="@+id/food_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="10dp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

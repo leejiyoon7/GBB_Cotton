@@ -32,6 +32,7 @@
             android:id="@+id/tv_productType"
             android:layout_width="45dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
             android:layout_weight="8"
             android:textSize="18sp" />
 
@@ -39,7 +40,9 @@
             android:id="@+id/tv_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="25dp"
             android:layout_weight="8"
+            android:textAlignment="viewEnd"
             android:textSize="18sp" />
 
         <Button

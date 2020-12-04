@@ -27,7 +27,7 @@
         <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
-            android:layout_height="77dp"
+            android:layout_height="60dp"
             android:gravity="center"
             android:text="2000GBB"
             android:textSize="36sp" />

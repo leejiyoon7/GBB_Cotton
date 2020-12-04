@@ -46,13 +46,13 @@
             android:textAlignment="viewEnd"
             android:textSize="18sp" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/btn_buy"
             android:layout_width="55dp"
             android:layout_height="35dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:background="@drawable/button_round"
+            android:background="@drawable/round_btn_height_64"
             android:text="구매"
             android:textSize="12sp" />
 

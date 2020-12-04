@@ -90,6 +90,8 @@ public class HomeFragment extends Fragment {
                 //Glide를 사용
                 Glide.with(getContext())
                         .load(uri)
+                        .circleCrop()
+                        .override(130)
                         .into(home_profile_image_button); //이미지 버튼 아이디가 들어간다.
             }
         }).addOnFailureListener(new OnFailureListener() {

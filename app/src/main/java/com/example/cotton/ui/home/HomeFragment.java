@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cotton.LoginActivity;
 import com.example.cotton.R;
+import com.example.cotton.firebaseFunction;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeFragment extends Fragment {
@@ -36,6 +37,12 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        firebaseFunction firebaseTest = new firebaseFunction();
+        // firebaseTest.insertBookInfo("1","2","3","4");
+
+        firebaseTest.serchBook("4");
+        firebaseTest.profileGet();
+
         return root;
     }
 }

@@ -255,6 +255,69 @@
             </LinearLayout>
             <!-- End of : Rent Book-->
 
+            <LinearLayout
+                android:id="@+id/home_wrap_my_registered_book_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/home_my_registered_book_title_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="24dp"
+
+                    android:text="나의 도서 목록"
+                    android:textSize="20dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/home_my_registered_book_card_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardPreventCornerOverlap="false"
+                    app:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:id="@+id/home_my_registered_book_card_view_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/home_my_registered_book_recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="12dp" />
+
+                        <Button
+                            android:id="@+id/home_my_registered_book_card_view_more_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+
+                            android:text="+ 더보기"
+                            android:textColor="#5e5e5e"
+                            android:textSize="12sp"
+
+                            android:minHeight="0dp"
+                            android:background="@color/fui_transparent"
+
+                            android:visibility="visible"/>
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+            <!-- End of : Rent Book-->
+
 
         </LinearLayout>
 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/cell_my_registered_book_title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+
+        android:text="내가 대여한 도서 제목"
+        android:textSize="12sp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/cell_my_registered_book_writer_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@id/cell_my_registered_book_title_text_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+
+        android:layout_marginTop="8dp"
+
+
+        android:text="도서 작성자"
+        android:textSize="10sp"
+        android:textColor="#999999"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

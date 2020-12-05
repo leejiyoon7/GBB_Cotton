@@ -1,6 +1,6 @@
 package com.example.cotton;
 
-public class Data {
+public class DataCreateWallet {
 
     private String address;
 
@@ -11,5 +11,6 @@ public class Data {
     public void setAddress(String address) {
         this.address = address;
     }
+
 }
 

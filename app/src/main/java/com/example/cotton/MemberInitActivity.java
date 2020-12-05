@@ -17,18 +17,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -77,8 +73,8 @@ public class MemberInitActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<RetrofitV0> call, Response<RetrofitV0> response) {
                             Log.d("성공 : ", "result : " + response.body().getResult());
-                            Log.d("성공 : ", "address : " + response.body().getData().getAddress());
-                            walletAdress = response.body().getData().getAddress();
+                            Log.d("성공 : ", "address : " + response.body().getDataCreateWallet().getAddress());
+                            walletAdress = response.body().getDataCreateWallet().getAddress();
                             localUpoad();
                             startToast("저장중입니다.");
                         }

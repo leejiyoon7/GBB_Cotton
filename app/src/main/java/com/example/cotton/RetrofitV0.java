@@ -3,7 +3,7 @@ package com.example.cotton;
 public class RetrofitV0 {
 
     private String result;
-    private Data data;
+    private DataCreateWallet dataCreateWallet;
 
     public String getResult() {
         return result;
@@ -13,11 +13,11 @@ public class RetrofitV0 {
         this.result = result;
     }
 
-    public Data getData() {
-        return data;
+    public DataCreateWallet getDataCreateWallet() {
+        return dataCreateWallet;
     }
 
-    public void setData(Data data) {
-        this.data = data;
+    public void setDataCreateWallet(DataCreateWallet dataCreateWallet) {
+        this.dataCreateWallet = dataCreateWallet;
     }
 }

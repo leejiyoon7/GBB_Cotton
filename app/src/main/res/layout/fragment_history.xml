@@ -4,84 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.history.HistoryFragment"
-    >
+    tools:context=".ui.history.HistoryFragment">
+
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
-<!-- <<<<<<< firebase_function
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/bookImg"
-        android:layout_width="145dp"
-        android:layout_height="145dp"
-        android:layout_marginTop="140dp"
-        android:background="#2DFFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_gallery" />
-
-    <Button
-        android:id="@+id/test_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></Button>
-======= -->
-
-
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/history_cotton_textView"
+            android:id="@+id/history_header_cotton_title_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_marginTop="16dp"
+
+            android:letterSpacing="0.15"
             android:text="COTTON"
-            android:textSize="20dp" />
+            android:textAlignment="center"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
-        <LinearLayout
+        <SearchView
+            android:id="@+id/history_search_editText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:background="@drawable/layout_round"
-            android:orientation="horizontal">
+            android:layout_height="40dp"
 
-            <ImageView
-                android:id="@+id/iv_productIcon"
-                android:layout_width="4dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="4"
-                android:paddingEnd="10dp"
-                app:srcCompat="@drawable/ic_search" />
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="14dp"
 
-            <EditText
-                android:id="@+id/history_search_editText"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_marginEnd="20dp"
-                android:layout_weight="4"
-                android:background="@android:color/transparent"
-                android:ems="10"
-                android:hint="검색어를 입력하세요."
-                android:inputType="textPersonName" />
-        </LinearLayout>
+            android:background="@drawable/round_corner_15_gray"
+            android:iconifiedByDefault="false"
+            android:queryBackground="@color/fui_transparent"
+            android:queryHint="겁색어를 입력하세요."></SearchView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -110,8 +71,8 @@
                     android:id="@+id/history_seg_all_btn"
                     android:layout_width="0dp"
                     android:layout_height="28dp"
-                    android:layout_marginTop="2dp"
                     android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
                     android:layout_weight="1"
                     app:sb_text="전체" />
 
@@ -155,6 +116,7 @@
                 android:id="@+id/transactional_information_listView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
         </LinearLayout>
 
 

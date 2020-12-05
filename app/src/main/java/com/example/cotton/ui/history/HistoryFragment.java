@@ -59,11 +59,11 @@ public class HistoryFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
-        history_search_editText=view.findViewById(R.id.history_search_editText);
+//        history_search_editText=view.findViewById(R.id.history_search_editText);
         segmentedButtonGroup = (SegmentedButtonGroup)view.findViewById(R.id.segmentedButtonGroup);
 
         //editText 부분 검색함에 따라 실시간으로 변화있게 구현 예정
-        historySearchEditTextEvent();
+//        historySearchEditTextEvent();
 
         //segmentButtonGroup 버튼 클릭 이벤트(position)별, 추후 구현 예정
         segmentButtonClickEvent();
@@ -89,25 +89,25 @@ public class HistoryFragment extends Fragment {
         return view;
     }
 
-    //editText 검색 이벤트
-    public void historySearchEditTextEvent(){
-        history_search_editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+//    //editText 검색 이벤트
+//    public void historySearchEditTextEvent(){
+//        history_search_editText.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+//                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+//                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     //segmentButtonGroup 버튼 클릭 이벤트(position)별, 추후 구현 예정
     public void segmentButtonClickEvent(){

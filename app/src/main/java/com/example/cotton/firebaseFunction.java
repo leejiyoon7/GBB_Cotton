@@ -263,7 +263,7 @@ public class firebaseFunction {
         Glide.with(fragment)
                 .load(uri)
                 .circleCrop()
-                .override(130)
+                .override(192)
                 .placeholder(R.drawable.cotton_icon)
                 .into(image_button); //이미지 버튼 아이디가 들어간다.
     }

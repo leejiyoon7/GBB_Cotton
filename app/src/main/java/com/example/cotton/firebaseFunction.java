@@ -185,7 +185,6 @@ public class firebaseFunction {
     }
 
     // 파이어베이스에서 저장된 프로필 이미지 가져오기.
-
     public void profileImageDownload(ImageButton home_profile_image_button, Context fragment)
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -208,7 +207,6 @@ public class firebaseFunction {
 
 
     //파이어베이스에서 저장된 책 이미지 가져오기.
-
     public void bookImageDownload(ImageButton book_image_button, Context fragment, String bookName, String userName)
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

@@ -80,34 +80,10 @@ public class HomeFragment extends Fragment {
         //나의 도서 목록 RecyclerView 설정 method
         showMyRegisteredBookFunc();
 
-        // firebase_function_ProfileImageDownload (수정+ firebaseFunction으로 집어넣기)
-
+        // firebase_function_ProfileImageDownload + FirebaseFunction 파일 안 설명참조
         firebaseFunction firebaseTest = new firebaseFunction();
-
         firebaseTest.profileImageDownload(home_profile_image_button, this.getContext());
 
-
-
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        FirebaseStorage storage = FirebaseStorage.getInstance();
-//        StorageReference storageRef = storage.getReference();
-//        //책이름 -> bookName, lji_test3 -> user.getName() 으로 변경해서 사용
-//        storageRef.child("bookSave/" + "책이름" +"_" + "lji_test3").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(Uri uri) {
-//                //이미지를 불러오는데 성공
-//                //Glide를 사용
-//                Glide.with(getContext())
-//                        .load(uri)
-//                        //.override(사이즈(int))
-//                        .into(home_profile_image_button); //이미지 버튼 아이디가 들어간다.
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//
-//            }
-//        });
 
         //         firebase_function
 //         btnLogout=root.findViewById(R.id.btn_logout);
@@ -124,8 +100,6 @@ public class HomeFragment extends Fragment {
 
 
 //         firebaseFunction firebaseTest = new firebaseFunction();
-//         //임의의 값 넣는거
-//         firebaseTest.insertBookInfo("124","전공","책이름123","책저자","지갑정보","사람이름123");
 //         //여기서는 단어하나로 검색가능
 //         firebaseTest.serchBook("4");
 

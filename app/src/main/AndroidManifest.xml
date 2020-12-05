@@ -20,6 +20,7 @@
         <activity android:name=".PasswordResetActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity" />
+        <activity android:name=".ui.home.register.RegisterBookActivity" />
         <activity
             android:theme="@android:style/Theme.NoTitleBar"
             android:name=".LoadingActivity"

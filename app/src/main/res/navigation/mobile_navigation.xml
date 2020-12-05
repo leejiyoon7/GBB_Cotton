@@ -23,5 +23,5 @@
     <fragment
         android:id="@+id/navigation_food"
         android:name="com.example.cotton.ui.food.FoodFragment"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_food" />
 </navigation>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="major">
+        <item>컴퓨터공학과</item>
+        <item>전자공학과</item>
+        <item>전기공학과</item>
+        <item>AI.소프트웨어학부</item>
+        <item>에너지IT학과</item>
+    </string-array>
+</resources>

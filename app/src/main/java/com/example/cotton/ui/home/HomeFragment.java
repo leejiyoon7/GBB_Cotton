@@ -26,6 +26,7 @@ import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.bookSaveForm;
 import com.example.cotton.ui.food.FoodListAdapter;
+import com.example.cotton.ui.home.register.RegisterBookActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class HomeFragment extends Fragment {
     RecyclerView home_my_registered_book_recycler_view;//나의 등록 도서 목록 RecyclerView
     MyRegisteredBookListAdapter myRegisteredBookListAdapter;//나의 등록 도서 목록 adapter
 
+    Button home_register_book_btn;//도서등록 버튼
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //인플레이션
@@ -70,7 +72,15 @@ public class HomeFragment extends Fragment {
         //나의 도서 목록 RecyclerView 설정 method
         showMyRegisteredBookFunc();
 
+        home_register_book_btn=view.findViewById(R.id.home_register_book_btn);
 
+        home_register_book_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(), RegisterBookActivity.class);
+                startActivity(intent);
+            }
+        });
         //         firebase_function
 //         btnLogout=root.findViewById(R.id.btn_logout);
 //         //로그아웃 버튼 구현

@@ -84,8 +84,8 @@ public class HomeFragment extends Fragment {
 
         // firebase_function_ProfileImageDownload + FirebaseFunction 파일 안 설명참조
         // 프로필 사진 받아오기 (주석 지우면 실행됩니다.)
-        //firebaseFunction firebaseTest = new firebaseFunction();
-        //firebaseTest.profileImageDownload(home_profile_image_button, this.getContext());
+        firebaseFunction firebaseTest = new firebaseFunction();
+        firebaseTest.profileImageDownload(home_profile_image_button, this.getContext());
 
         home_register_book_btn=view.findViewById(R.id.home_register_book_btn);
 

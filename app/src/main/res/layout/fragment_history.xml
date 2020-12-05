@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.history.HistoryFragment"
-    android:background="#F4F5F9">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +17,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="1.0"
+        >
 <!-- <<<<<<< firebase_function
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -57,6 +58,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:background="@drawable/layout_round"
             android:orientation="horizontal">
 
             <ImageView
@@ -64,9 +68,8 @@
                 android:layout_width="4dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="20dp"
                 android:layout_weight="4"
-                android:paddingStart="20dp"
+                android:paddingEnd="10dp"
                 app:srcCompat="@drawable/ic_search" />
 
             <EditText
@@ -84,51 +87,65 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:paddingStart="80dp"
+            android:paddingEnd="80dp">
 
-            <RadioGroup
+            <co.ceryle.segmentedbutton.SegmentedButtonGroup
+                android:id="@+id/segmentedButtonGroup"
                 android:layout_width="match_parent"
-                android:layout_height="37dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
-                android:orientation="horizontal">
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical"
+                android:elevation="2dp"
+                app:sbg_animateSelector="fastOutSlowIn"
+                app:sbg_animateSelectorDuration="700"
+                app:sbg_backgroundColor="@color/white"
+                app:sbg_position="1"
+                app:sbg_radius="2dp"
+                app:sbg_ripple="true"
+                app:sbg_selectorColor="#F4F5F9">
 
-                <RadioButton
-                    android:id="@+id/history_radio_all"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <co.ceryle.segmentedbutton.SegmentedButton
+                    android:id="@+id/history_seg_all_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
-                    android:text="전체" />
+                    app:sb_text="전체" />
 
-                <RadioButton
-                    android:id="@+id/history_radio_income"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <co.ceryle.segmentedbutton.SegmentedButton
+                    android:id="@+id/history_seg_income_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
-                    android:text="수입" />
+                    app:sb_text="수입" />
 
-                <RadioButton
-                    android:id="@+id/history_radio_expense"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <co.ceryle.segmentedbutton.SegmentedButton
+                    android:id="@+id/history_seg_expense_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
-                    android:text="지출" />
-            </RadioGroup>
+                    app:sb_text="지출" />
+            </co.ceryle.segmentedbutton.SegmentedButtonGroup>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:background="#F4F5F9"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/history_transactional_information_textView"
                 android:layout_width="match_parent"
                 android:layout_height="57dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="10dp"
                 android:gravity="center_vertical"
                 android:text="거래내역"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
             <ListView
                 android:id="@+id/transactional_information_listView"

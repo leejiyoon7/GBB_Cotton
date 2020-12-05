@@ -123,7 +123,11 @@ public class firebaseFunction {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         diaryM.add(document.getData());     //arraylist에 모든정보를 받아와서 저장
-                        memberInfo = new MemberInfo((String) diaryM.get(0).get("name"), (String) diaryM.get(0).get("phoneNumber"), (String) diaryM.get(0).get("wallet"), 4, (String) diaryM.get(0).get("profileLink")); // 모든 정보를 다시 memberinfo에 저장
+                        memberInfo = new MemberInfo((String) diaryM.get(0).get("name"),
+                                (String) diaryM.get(0).get("phoneNumber"),
+                                (String) diaryM.get(0).get("wallet"),
+                                4,
+                                (String) diaryM.get(0).get("profileLink")); // 모든 정보를 다시 memberinfo에 저장
                         memberInfoList.add(0, memberInfo);  //리스트형식 첫번째 칸에 memberinfo 저장
                         Log.d("ffffffffffffffffffffff", memberInfoList.get(0).getName());
                         complete.apply(memberInfoList);
@@ -161,7 +165,12 @@ public class firebaseFunction {
                                 bookSaveInit.add(document.getData());
                             }
                             for (int i=0;i<bookSaveInit.size();i++) {
-                                bookSaveForm bookSaveFormProto = new bookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),(String)bookSaveInit.get(i).get("major"),(String)bookSaveInit.get(i).get("bookName"),(String)bookSaveInit.get(i).get("bookWriter"),(String)bookSaveInit.get(i).get("walletInfo"),(String)bookSaveInit.get(i).get("userName"));
+                                bookSaveForm bookSaveFormProto = new bookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),
+                                        (String)bookSaveInit.get(i).get("major"),
+                                        (String)bookSaveInit.get(i).get("bookName"),
+                                        (String)bookSaveInit.get(i).get("bookWriter"),
+                                        (String)bookSaveInit.get(i).get("walletInfo"),
+                                        (String)bookSaveInit.get(i).get("userName"));
                                 bookSaveList.add(bookSaveFormProto);
                             }
                             complete.apply(bookSaveList);

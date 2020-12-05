@@ -100,16 +100,20 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:background="#F4F5F9"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="14dp">
 
             <TextView
                 android:id="@+id/history_transactional_information_textView"
                 android:layout_width="match_parent"
-                android:layout_height="57dp"
-                android:layout_marginStart="10dp"
-                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:paddingLeft="12dp"
+
+                android:letterSpacing="0.05"
                 android:text="거래내역"
-                android:textSize="30sp"
+                android:textAlignment="viewStart"
+                android:textColor="#5e5e5e"
+                android:textSize="35sp"
                 android:textStyle="bold" />
 
             <ListView

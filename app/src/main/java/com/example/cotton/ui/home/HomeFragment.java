@@ -5,6 +5,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,9 +45,9 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-/*    Button btnLogout;
-    List<MemberInfo> memberInfos = new ArrayList<>();
-    List<bookSaveForm> bookSaveFormList= new ArrayList<>();*/
+   // Button btnLogout;
+  //  List<MemberInfo> memberInfos = new ArrayList<>();
+    List<bookSaveForm> bookSaveFormList= new ArrayList<>();
 
     ImageButton home_profile_image_button;//프로필 이미지
     TextView home_my_point_user_name_text_view;//사용자명
@@ -110,7 +111,7 @@ public class HomeFragment extends Fragment {
 //         });
 
 
-//         firebaseFunction firebaseTest = new firebaseFunction();
+//
 //         //여기서는 단어하나로 검색가능
 //         firebaseTest.serchBook("4");
 
@@ -120,13 +121,13 @@ public class HomeFragment extends Fragment {
 //             Log.d("home에서 확인",resultList.get(0).getName());
 //             return null;
 //         });
+        
+        firebaseTest.bookListGet(bookSaveFormList, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
+             Log.d("home에서 확인",resultList.get(0).getBookName());
+             Log.d("home에서 확인",resultList.get(1).getBookName());
 
-
-//         firebaseTest.bookListGet(bookSaveFormList, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
-//             Log.d("home에서 확인",resultList.get(0).getBookName());
-//             Log.d("home에서 확인",resultList.get(1).getBookName());
-//             return null;
-//         });
+             return null;
+         });
 
 
 

@@ -4,13 +4,13 @@ public class MemberInfo {
     private String name;
     private String phoneNumber;
     private String wallet;
-    private int ticket;
+    private long ticket;
     private String profileLink;
 
     public MemberInfo() {
     }
 
-    public MemberInfo(String name, String phoneNumber, String wallet, int ticket, String profileLink) {
+    public MemberInfo(String name, String phoneNumber, String wallet, long ticket, String profileLink) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.wallet = wallet;
@@ -18,11 +18,11 @@ public class MemberInfo {
         this.profileLink = profileLink;
     }
 
-    public int getTicket() {
+    public long getTicket() {
         return ticket;
     }
 
-    public void setTicket(int ticket) {
+    public void setTicket(long ticket) {
         this.ticket = ticket;
     }
 

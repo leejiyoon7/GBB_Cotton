@@ -118,8 +118,8 @@ public class HomeFragment extends Fragment {
 
         // Home화면에 보유티겟 수 출력
         firebaseTest.profileGet(memberInfos, (resultList) -> {
-            Log.d("home에서 확인2",Integer.toString(resultList.get(0).getTicket()));
-            home_my_point_food_ticket_text_view.setText("보유식권: " + (resultList.get(0).getTicket()) + "장");
+            Log.d("home에서 확인2",Long.toString(resultList.get(0).getTicket()));
+            home_my_point_food_ticket_text_view.setText("보유식권: " + Long.toString(resultList.get(0).getTicket()) + "장");
             return null;
         });
 

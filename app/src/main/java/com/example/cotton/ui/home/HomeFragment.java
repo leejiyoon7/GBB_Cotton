@@ -26,9 +26,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.example.cotton.ApiService;
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
+import com.example.cotton.RetrofitClient;
+import com.example.cotton.RetrofitV1;
 import com.example.cotton.bookSaveForm;
 import com.example.cotton.firebaseFunction;
 import com.example.cotton.ui.food.FoodListAdapter;
@@ -41,7 +44,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
@@ -62,6 +70,8 @@ public class HomeFragment extends Fragment {
     MyRegisteredBookListAdapter myRegisteredBookListAdapter;//나의 등록 도서 목록 adapter
 
     Button home_register_book_btn;//도서등록 버튼
+
+    double money;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //인플레이션
@@ -112,6 +122,37 @@ public class HomeFragment extends Fragment {
             home_my_point_food_ticket_text_view.setText("보유식권: " + Long.toString(resultList.get(0).getTicket()) + "장");
             return null;
         });
+
+
+        // Home화면에 지갑잔고 출력
+        firebaseTest.profileGet(memberInfos, (resultList) -> {
+
+            ApiService call = RetrofitClient.getApiService();
+
+            HashMap<String, String> headerMap = new HashMap<String, String>();
+            headerMap.put("Content-Type", "application/json");
+            headerMap.put("Authorization", "Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"); //Dapp API키값
+
+            call.getMoney(resultList.get(0).getWallet(),headerMap).enqueue(new Callback<RetrofitV1>() {
+                @Override
+                public void onResponse(Call<RetrofitV1> call, Response<RetrofitV1> response) {
+                    Log.d("성공 : ", "result : " + response.body().getResult());
+                    Log.d("성공 : ", "address : " + response.body().getDataBalance().getBalance());
+                    money = Double.parseDouble(response.body().getDataBalance().getBalance());
+                    money = (money*0.000000000000000001);
+                    home_my_point_amount_text_view.setText((String.valueOf((int)money)));
+                }
+
+                @Override
+                public void onFailure(Call<RetrofitV1> call, Throwable t) {
+                    Log.d("실패 : ", t.toString());
+                }
+
+            });
+
+            return null;
+        });
+
 
 
 
@@ -199,5 +240,12 @@ public class HomeFragment extends Fragment {
         myRegisteredBookListAdapter.addItem("컴퓨터 아키텍쳐","심민수");
 
         myRegisteredBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
+    }
+
+    public void searchMoney(String wallet){
+
+
+
+
     }
 }

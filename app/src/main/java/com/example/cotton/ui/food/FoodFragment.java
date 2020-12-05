@@ -24,11 +24,19 @@ public class FoodFragment extends Fragment {
         //인플레이션
         View view = inflater.inflate(R.layout.fragment_food, container, false);
 
+        ticketList=view.findViewById(R.id.food_list); //listview 참조
+
+        showFoodListFunc();//food list RecyclerView 설정
+
+        return view;
+    }
+    
+    //food list Listview 설정
+    public void showFoodListFunc(){
+
         //adapter 생성
         adapter=new FoodListAdapter(getContext());
-
-        //listview 참조 및 adapter 달기
-        ticketList=view.findViewById(R.id.food_list);
+        //adapter 달기
         ticketList.setAdapter(adapter);
 
         //listview에 add
@@ -38,7 +46,5 @@ public class FoodFragment extends Fragment {
         adapter.addItem(R.drawable.ic_food,"식권 x 10","6000GBB",6000);
 
         adapter.notifyDataSetChanged();//adapter의 변경을 알림
-
-        return view;
     }
 }

@@ -31,7 +31,7 @@
             android:textStyle="bold" />
 
         <SearchView
-            android:id="@+id/history_search_editText"
+            android:id="@+id/history_search_view"
             android:layout_width="match_parent"
             android:layout_height="40dp"
 
@@ -42,7 +42,7 @@
             android:background="@drawable/round_corner_15_gray"
             android:iconifiedByDefault="false"
             android:queryBackground="@color/fui_transparent"
-            android:queryHint="겁색어를 입력하세요."></SearchView>
+            android:queryHint="검색어를 입력하세요."></SearchView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -100,20 +100,16 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:background="#F4F5F9"
-            android:orientation="vertical"
-            android:paddingTop="14dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/history_transactional_information_textView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-
-                android:letterSpacing="0.05"
+                android:layout_height="57dp"
+                android:layout_marginStart="10dp"
+                android:gravity="center_vertical"
                 android:text="거래내역"
-                android:textAlignment="viewStart"
-                android:textColor="#5e5e5e"
-                android:textSize="35sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <ListView

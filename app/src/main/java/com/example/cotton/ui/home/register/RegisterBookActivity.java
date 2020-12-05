@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,6 +29,7 @@ import java.lang.reflect.Array;
 public class RegisterBookActivity extends Activity {
 
     HomeFragment homeFragment;//이동할 homefragment
+    AppCompatButton register_book_go_to_home_button;//Homefragment 이동 버튼
     ImageButton register_book_image_Button;//도서등록 사진추가 이미지뷰
     Spinner register_book_card_department_spinner;//학과 스피너
     EditText register_book_card_book_title_edit_text;//도서 제목 editText
@@ -44,11 +46,14 @@ public class RegisterBookActivity extends Activity {
         setContentView(R.layout.activity_register_book);
 
         homeFragment=new HomeFragment();
+        register_book_go_to_home_button=findViewById(R.id.register_book_go_to_home_button);
         register_book_image_Button=findViewById(R.id.register_book_image_Button);
         register_book_card_department_spinner=findViewById(R.id.register_book_card_department_spinner);
         register_book_card_book_title_edit_text=(EditText)findViewById(R.id.register_book_card_book_title_edit_text);
         register_book_card_book_writer_edit_text=(EditText)findViewById(R.id.register_book_card_book_writer_edit_text);
         register_book_app_compat_button=findViewById(R.id.register_book_app_compat_button);
+
+        goToHome();//MainActivity 이동 이벤트 method
 
         registerBookImage();//사진 등록 method
 
@@ -57,6 +62,20 @@ public class RegisterBookActivity extends Activity {
         registerBook();//도서 등록 버튼 클릭 이벤트 method
 
     }
+    
+    //MainActivity 이동 이벤트 method
+    public void goToHome(){
+        register_book_go_to_home_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(RegisterBookActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
     //사진 등록 method, 추후 구현 예정
     public void registerBookImage(){
         register_book_image_Button.setOnClickListener(new View.OnClickListener() {

@@ -16,8 +16,10 @@ public class ExchangeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_trading, container, false);
+        View view = inflater.inflate(R.layout.fragment_trading, container, false);
 
-        return root;
+
+
+        return view;
     }
 }

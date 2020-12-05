@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="20dp"
-    android:background="@drawable/layout_round"
+    android:background="@drawable/button_round"
     android:orientation="horizontal">
 
     <LinearLayout

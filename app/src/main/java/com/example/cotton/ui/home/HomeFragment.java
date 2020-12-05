@@ -123,7 +123,6 @@ public class HomeFragment extends Fragment {
             return null;
         });
 
-
         // Home화면에 지갑잔고 출력
         firebaseTest.profileGet(memberInfos, (resultList) -> {
 

@@ -36,7 +36,6 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="2000GBB"
                 android:textSize="36sp" />
         </LinearLayout>
 

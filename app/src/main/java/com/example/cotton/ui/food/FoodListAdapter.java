@@ -1,6 +1,7 @@
 package com.example.cotton.ui.food;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
+import com.example.cotton.MainActivity;
 import com.example.cotton.R;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
 
@@ -23,6 +28,7 @@ public class FoodListAdapter extends BaseAdapter {
     private TextView price;
     private Button btn_buy;
     Context context;
+    FoodFragment foodFragment;
 
     private ArrayList<FoodListItem> foodItemsList=new ArrayList<FoodListItem>();
 
@@ -53,6 +59,8 @@ public class FoodListAdapter extends BaseAdapter {
         productType=convertView.findViewById(R.id.tv_productType);
         price=convertView.findViewById(R.id.tv_price);
         btn_buy=convertView.findViewById(R.id.btn_buy);
+
+        foodFragment=new FoodFragment();
 
         FoodListItem foodListItem=foodItemsList.get(position);
         //아이템 내 각 위젯에 데이터 반영
@@ -107,6 +115,10 @@ public class FoodListAdapter extends BaseAdapter {
                         Toast.makeText(context,"6000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                 }
+                //구매 버튼 누를 시 MainActivity로 이동
+                Intent intent=new Intent(context, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(intent);
             }
         });
     }

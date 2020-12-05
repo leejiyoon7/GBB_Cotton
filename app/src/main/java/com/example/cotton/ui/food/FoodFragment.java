@@ -82,7 +82,6 @@ public class FoodFragment extends Fragment {
 
     public void searchMoney(String wallet){
 
-
         ApiService call = RetrofitClient.getApiService();
 
         HashMap<String, String> headerMap = new HashMap<String, String>();
@@ -105,6 +104,5 @@ public class FoodFragment extends Fragment {
             }
 
         });
-
     }
 }

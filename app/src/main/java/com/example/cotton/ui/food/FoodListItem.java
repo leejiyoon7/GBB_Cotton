@@ -6,6 +6,7 @@ public class FoodListItem {
     private int productIcon;
     private String productType;
     private String price;
+    private int buttonId;
 
     public void setPrice(String price) {
         this.price = price;
@@ -19,6 +20,10 @@ public class FoodListItem {
         this.productType = productType;
     }
 
+    public void setButtonId(int buttonId) {
+        this.buttonId = buttonId;
+    }
+
     public int getProductIcon() {
         return this.productIcon;
     }
@@ -29,5 +34,9 @@ public class FoodListItem {
 
     public String getProductType() {
         return this.productType;
+    }
+
+    public int getButtonId() {
+        return buttonId;
     }
 }

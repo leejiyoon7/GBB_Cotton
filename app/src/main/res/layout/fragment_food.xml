@@ -10,41 +10,54 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/history_cotton_textView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="COTTON"
-            android:textSize="20dp" />
+            android:layout_height="140dp"
+            android:background="@color/white"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:gravity="center"
-            android:text="2000GBB"
-            android:textSize="36sp" />
+            <TextView
+                android:id="@+id/food_cotton_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+
+                android:letterSpacing="0.15"
+                android:text="COTTON"
+                android:textAlignment="center"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/food_wallet_textView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="2000GBB"
+                android:textSize="36sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="14dp">
 
             <TextView
-                android:id="@+id/history_transactional_information_textView"
+                android:id="@+id/food_buy_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:paddingLeft="12dp"
+
+                android:letterSpacing="0.05"
                 android:text="상품구매"
-                android:textSize="30sp" />
+                android:textAlignment="viewStart"
+                android:textColor="#5e5e5e"
+                android:textSize="35sp"
+                android:textStyle="bold" />
 
             <ListView
                 android:id="@+id/food_list"

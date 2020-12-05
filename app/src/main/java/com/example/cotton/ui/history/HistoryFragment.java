@@ -5,19 +5,24 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.loader.content.CursorLoader;
 
 import com.example.cotton.LoginActivity;
+import com.example.cotton.MainActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.firebaseFunction;
@@ -34,9 +39,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.ceryle.segmentedbutton.SegmentedButtonGroup;
+
 import static android.app.Activity.RESULT_OK;
 
 public class HistoryFragment extends Fragment {
+
+    EditText history_search_editText;//거래내역 검색 edittext
+    SegmentedButtonGroup segmentedButtonGroup;//segmentButtonGroup 생성
 
     String pictureLink;
     private static final String TAG_TEXT = "text";
@@ -44,9 +54,19 @@ public class HistoryFragment extends Fragment {
     Button test_btn;
     ImageView bookImg;
     List<MemberInfo> memberInfos = new ArrayList<>();
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_history, container, false);
+        View view = inflater.inflate(R.layout.fragment_history, container, false);
+
+        history_search_editText=view.findViewById(R.id.history_search_editText);
+        segmentedButtonGroup = (SegmentedButtonGroup)view.findViewById(R.id.segmentedButtonGroup);
+
+        //editText 부분 검색함에 따라 실시간으로 변화있게 구현 예정
+        historySearchEditTextEvent();
+
+        //segmentButtonGroup 버튼 클릭 이벤트(position)별, 추후 구현 예정
+        segmentButtonClickEvent();
 
 //        test_btn=root.findViewById(R.id.test_btn);
 //        bookImg=root.findViewById(R.id.bookImg);
@@ -66,7 +86,49 @@ public class HistoryFragment extends Fragment {
 //        });
 
 
-        return root;
+        return view;
+    }
+
+    //editText 검색 이벤트
+    public void historySearchEditTextEvent(){
+        history_search_editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //segmentButtonGroup 버튼 클릭 이벤트(position)별, 추후 구현 예정
+    public void segmentButtonClickEvent(){
+        segmentedButtonGroup.setOnClickedButtonListener(new SegmentedButtonGroup.OnClickedButtonListener() {
+            @Override
+            public void onClickedButton(int position) {
+                switch (position) {
+                    case 0:
+                        Toast.makeText(getActivity(), " 전체 버튼 눌림", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                        Toast.makeText(getActivity(), " 수입 버튼 눌림", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Toast.makeText(getActivity(), " 지출 버튼 눌림", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        });
+
+        segmentedButtonGroup.setPosition(2, 0);
     }
 
     public String getPath(Uri uri){     //사진 경로받기

@@ -98,14 +98,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
                 android:layout_gravity="center_vertical"
-                android:elevation="2dp"
                 app:sbg_animateSelector="fastOutSlowIn"
                 app:sbg_animateSelectorDuration="700"
-                app:sbg_backgroundColor="@color/white"
+                android:background="@drawable/round_corner_15_gray"
                 app:sbg_position="1"
-                app:sbg_radius="2dp"
+                app:sbg_radius="20dp"
                 app:sbg_ripple="true"
-                app:sbg_selectorColor="#F4F5F9">
+                app:sbg_selectorBackgroundDrawable="@drawable/round_btn_height_64"
+                app:sbg_selectorColor="@color/white">
 
                 <co.ceryle.segmentedbutton.SegmentedButton
                     android:id="@+id/history_seg_all_btn"

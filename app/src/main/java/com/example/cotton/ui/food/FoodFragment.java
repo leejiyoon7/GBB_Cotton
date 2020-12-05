@@ -25,19 +25,20 @@ public class FoodFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_food, container, false);
 
         //adapter 생성
-        adapter=new FoodListAdapter();
+        adapter=new FoodListAdapter(getContext());
 
         //listview 참조 및 adapter 달기
         ticketList=view.findViewById(R.id.food_list);
         ticketList.setAdapter(adapter);
 
         //listview에 add
-        adapter.addItem(R.drawable.ic_food,"식권 x 1","600GBB");
-        adapter.addItem(R.drawable.ic_food,"식권 x 2","1200GBB");
-        adapter.addItem(R.drawable.ic_food,"식권 x 5","3000GBB");
-        adapter.addItem(R.drawable.ic_food,"식권 x 10","6000GBB");
+        adapter.addItem(R.drawable.ic_food,"식권 x 1","600GBB",600);
+        adapter.addItem(R.drawable.ic_food,"식권 x 2","1200GBB",1200);
+        adapter.addItem(R.drawable.ic_food,"식권 x 5","3000GBB",3000);
+        adapter.addItem(R.drawable.ic_food,"식권 x 10","6000GBB",6000);
 
         adapter.notifyDataSetChanged();//adapter의 변경을 알림
+
         return view;
     }
 }

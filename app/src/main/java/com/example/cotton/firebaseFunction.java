@@ -263,7 +263,7 @@ public class firebaseFunction {
                 .load(uri)
                 .circleCrop()
                 .override(130)
+                .placeholder(R.drawable.cotton_icon)
                 .into(image_button); //이미지 버튼 아이디가 들어간다.
-
     }
 }

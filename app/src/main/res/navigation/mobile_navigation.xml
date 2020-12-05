@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/navigation_exchange"
-        android:name="com.example.cotton.ui.Exchange.ExchangeFragment"
+        android:name="com.example.cotton.ui.Trading.ExchangeFragment"
         tools:layout="@layout/fragment_trading" />
 
     <fragment

@@ -3,6 +3,7 @@ package com.example.cotton.ui.home;
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,13 +22,22 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.bookSaveForm;
+import com.example.cotton.firebaseFunction;
 import com.example.cotton.ui.food.FoodListAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +82,11 @@ public class HomeFragment extends Fragment {
         //나의 도서 목록 RecyclerView 설정 method
         showMyRegisteredBookFunc();
 
+        // firebase_function_ProfileImageDownload + FirebaseFunction 파일 안 설명참조
+        // 프로필 사진 받아오기 (주석 지우면 실행됩니다.)
+        //firebaseFunction firebaseTest = new firebaseFunction();
+        //firebaseTest.profileImageDownload(home_profile_image_button, this.getContext());
+
         home_register_book_btn=view.findViewById(R.id.home_register_book_btn);
 
         home_register_book_btn.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +111,6 @@ public class HomeFragment extends Fragment {
 
 
 //         firebaseFunction firebaseTest = new firebaseFunction();
-//         //임의의 값 넣는거
-//         firebaseTest.insertBookInfo("124","전공","책이름123","책저자","지갑정보","사람이름123");
 //         //여기서는 단어하나로 검색가능
 //         firebaseTest.serchBook("4");
 

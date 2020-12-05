@@ -46,7 +46,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
    // Button btnLogout;
-  //  List<MemberInfo> memberInfos = new ArrayList<>();
+    List<MemberInfo> memberInfos = new ArrayList<>();
     List<bookSaveForm> bookSaveFormList= new ArrayList<>();
 
     ImageButton home_profile_image_button;//프로필 이미지
@@ -88,6 +88,7 @@ public class HomeFragment extends Fragment {
         firebaseFunction firebaseTest = new firebaseFunction();
         firebaseTest.profileImageDownload(home_profile_image_button, this.getContext());
 
+
         home_register_book_btn=view.findViewById(R.id.home_register_book_btn);
 
         home_register_book_btn.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +98,23 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        //         firebase_function
+
+        // Home화면에 UserName 출력
+        firebaseTest.profileGet(memberInfos, (resultList) -> {
+             Log.d("home에서 확인",resultList.get(0).getName());
+            home_my_point_user_name_text_view.setText(resultList.get(0).getName());
+             return null;
+         });
+
+        // Home화면에 보유티겟 수 출력
+        firebaseTest.profileGet(memberInfos, (resultList) -> {
+            Log.d("home에서 확인2",Integer.toString(resultList.get(0).getTicket()));
+            home_my_point_food_ticket_text_view.setText("보유식권: " + Integer.toString(resultList.get(0).getTicket()) + "장");
+            return null;
+        });
+
+
+
 //         btnLogout=root.findViewById(R.id.btn_logout);
 //         //로그아웃 버튼 구현
 //         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +126,7 @@ public class HomeFragment extends Fragment {
 //                 startActivity(intent);
 //             }
 //         });
+
 
 
 //

@@ -2,7 +2,10 @@ package com.example.cotton.ui.home.register;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,17 +17,33 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.loader.content.CursorLoader;
 
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MainActivity;
+import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
+import com.example.cotton.bookSaveForm;
+import com.example.cotton.firebaseFunction;
 import com.example.cotton.ui.home.HomeFragment;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegisterBookActivity extends Activity {
 
@@ -39,6 +58,10 @@ public class RegisterBookActivity extends Activity {
     ArrayAdapter spinnerAdapter;//스피너 어댑터
 
     String major;//전공 value
+
+    List<MemberInfo> getMemberName= new ArrayList<>();
+    Uri selectedImageUri;
+    String bookImageLink;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +84,8 @@ public class RegisterBookActivity extends Activity {
 
         registerBook();//도서 등록 버튼 클릭 이벤트 method
 
+
+
     }
     
     //MainActivity 이동 이벤트 method
@@ -82,6 +107,7 @@ public class RegisterBookActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(RegisterBookActivity.this,"사진추가 클릭 이벤트 발생",Toast.LENGTH_SHORT).show();
+                showGallery();
             }
         });
     }
@@ -134,6 +160,7 @@ public class RegisterBookActivity extends Activity {
             public void onClick(View view) {
                 if(register_book_card_book_title_edit_text.getText().length()!=0 && register_book_card_book_writer_edit_text.getText().length()!=0){
                     Toast.makeText(RegisterBookActivity.this,"전공: "+major+" 도서 제목: "+register_book_card_book_title_edit_text.getText().toString()+" 도서 저자: "+register_book_card_book_writer_edit_text.getText().toString(),Toast.LENGTH_SHORT).show();
+                    localUpoad();
                     Intent intent=new Intent(RegisterBookActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -144,6 +171,8 @@ public class RegisterBookActivity extends Activity {
                 }
             }
         });
+
+
     }
 
     //안드로이드 백버튼 막기
@@ -152,5 +181,77 @@ public class RegisterBookActivity extends Activity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+
+
+
+    private void showGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent. setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        startActivityForResult(intent, 200);
+    }
+
+    public String getPath(Uri uri){
+        String[]proj = {MediaStore.Images.Media.DATA};
+        CursorLoader cursorLoader = new CursorLoader(this,uri,proj,null,null,null);
+
+        Cursor cursor = cursorLoader.loadInBackground();
+        int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+        cursor.moveToFirst();
+
+        return cursor.getString(index);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 200 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            selectedImageUri = data.getData();
+            register_book_image_Button.setImageURI(selectedImageUri);
+        }
+    }
+    private void localUpoad() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        // Create a storage reference from our app
+        StorageReference storageRef = storage.getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        Uri file = Uri.fromFile(new File(getPath(selectedImageUri)));
+        firebaseFunction firebaseInput = new firebaseFunction();
+        firebaseInput.profileGet(getMemberName, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
+            final StorageReference riversRef = storageRef.child("bookSave/" + register_book_card_book_title_edit_text.getText().toString() + "_" + resultList.get(0).getName());
+            UploadTask uploadTask = riversRef.putFile(file);
+
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    // Continue with the task to get the download URL
+                    return riversRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        bookImageLink = downloadUri.toString();
+                        firebaseFunction firebaseInput = new firebaseFunction();
+                        firebaseInput.profileGet(getMemberName, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
+                            Log.d("home에서 확인",resultList.get(0).getName());
+                            firebaseInput.insertBookInfo("사진링크",major,register_book_card_book_title_edit_text.getText().toString(),register_book_card_book_writer_edit_text.getText().toString(),"지갑정보",resultList.get(0).getName());
+                            return null;
+                        });
+                        finish();
+                    }
+                }
+            });
+
+            return null;
+        });
+
     }
 }

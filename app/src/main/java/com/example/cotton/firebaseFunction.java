@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+
 public class firebaseFunction {
     File localFile;
     List<MemberInfo> memberInfoList = new ArrayList<>();
@@ -53,6 +54,17 @@ public class firebaseFunction {
     private Object HomeFragment;
 
     //책에 관한 정보 저장
+
+    //region 책의 입력과 단어하나에 대한 검색
+    /**
+     *
+     * @param pictureLink   사진링크
+     * @param major         전공
+     * @param bookName      책제목
+     * @param bookWriter    책저자
+     * @param walletInfo    지갑정보
+     * @param userName      사용자이름
+     */
     public static void insertBookInfo(String pictureLink, String major, String bookName, String bookWriter, String walletInfo,String userName) {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -95,6 +107,8 @@ public class firebaseFunction {
                 });
 
     }
+    //endregion
+
 
     public void profileGet(List<MemberInfo> memberInfoList, Function<List<MemberInfo>, Void> complete) { //회원정보 받아오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -125,6 +139,13 @@ public class firebaseFunction {
 
     }
 
+    /**
+     * 모든책 받아오기 페이지
+     * List<bookSaveForm> bookSaveFormList= new ArrayList<>(); 이렇게 전역변수로 선언하나 해주고
+     * (resultList) -> {}
+     * @param bookSaveFormList
+     * @param complete
+     */
     public void bookListGet(List<bookSaveForm> bookSaveFormList, Function<List<bookSaveForm>, Void> complete) { //모든 책 정보 받아오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();

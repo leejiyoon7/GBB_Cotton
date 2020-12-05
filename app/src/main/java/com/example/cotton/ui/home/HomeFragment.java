@@ -121,7 +121,7 @@ public class HomeFragment extends Fragment {
 //             Log.d("home에서 확인",resultList.get(0).getName());
 //             return null;
 //         });
-        
+
         firebaseTest.bookListGet(bookSaveFormList, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
              Log.d("home에서 확인",resultList.get(0).getBookName());
              Log.d("home에서 확인",resultList.get(1).getBookName());

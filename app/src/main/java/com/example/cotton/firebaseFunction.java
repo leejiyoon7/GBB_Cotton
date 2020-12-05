@@ -126,7 +126,7 @@ public class firebaseFunction {
                         memberInfo = new MemberInfo((String) diaryM.get(0).get("name"),
                                 (String) diaryM.get(0).get("phoneNumber"),
                                 (String) diaryM.get(0).get("wallet"),
-                                4,
+                                (Long) diaryM.get(0).get("ticket"),
                                 (String) diaryM.get(0).get("profileLink")); // 모든 정보를 다시 memberinfo에 저장
                         memberInfoList.add(0, memberInfo);  //리스트형식 첫번째 칸에 memberinfo 저장
                         Log.d("사용자 이름", memberInfoList.get(0).getName());

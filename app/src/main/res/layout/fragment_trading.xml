@@ -14,7 +14,8 @@
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/trading_header_cotton_title_view"
@@ -105,6 +106,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.viewpager.widget.ViewPager
+        android:id="@+id/trading_content_view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
 

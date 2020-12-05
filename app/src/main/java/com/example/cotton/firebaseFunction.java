@@ -1,6 +1,7 @@
 package com.example.cotton;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,13 +10,16 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.loader.content.CursorLoader;
 
 import com.bumptech.glide.Glide;
+import com.example.cotton.ui.home.HomeFragment;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,6 +50,7 @@ public class firebaseFunction {
     List<MemberInfo> memberInfoList = new ArrayList<>();
     List<MemberInfo> memberTest = new ArrayList<>();
     MemberInfo memberInfo;
+    private Object HomeFragment;
 
     //책에 관한 정보 저장
     public static void insertBookInfo(String pictureLink, String major, String bookName, String bookWriter, String walletInfo,String userName) {
@@ -180,8 +185,8 @@ public class firebaseFunction {
     }
 
     // 파이어베이스에서 저장된 프로필 이미지 가져오기.
-/*
-    public void profileImageDownload()
+
+    public void profileImageDownload(ImageButton home_profile_image_button, Context fragment)
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -191,11 +196,7 @@ public class firebaseFunction {
             public void onSuccess(Uri uri) {
                 //이미지를 불러오는데 성공
                 //Glide를 사용
-                Glide.with(getContext())
-                        .load(uri)
-                        .circleCrop()
-                        .override(130)
-                        .into(home_profile_image_button); //이미지 버튼 아이디가 들어간다.
+                glideUtility(uri, home_profile_image_button, fragment);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -204,25 +205,22 @@ public class firebaseFunction {
             }
         });
     }
-*/
+
 
     //파이어베이스에서 저장된 책 이미지 가져오기.
-    /*
-    public void bookImageDownload()
+
+    public void bookImageDownload(ImageButton book_image_button, Context fragment, String bookName, String userName)
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        //책이름 -> bookName, lji_test3 -> user.getName() 으로 변경해서 사용
-        storageRef.child("bookSave/" + "책이름" +"_" + "lji_test3").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+       // 먼저 bookListGet으로 모든 정보를 받아온뒤 필터링을 걸어서 해당 필드의 책 이름과 사용자이름 추출해서 변수 두개에 넣으면 작동
+        storageRef.child("bookSave/" + bookName +"_" + userName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 //이미지를 불러오는데 성공
                 //Glide를 사용
-                Glide.with(getContext())
-                        .load(uri)
-                        //.override(사이즈(int))
-                        .into(home_profile_image_button); //이미지 버튼 아이디가 들어간다.
+                glideUtility(uri, book_image_button, fragment);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -231,5 +229,13 @@ public class firebaseFunction {
             }
         });
     }
-    */
+
+    public void glideUtility(Uri uri,ImageButton image_button, Context fragment){
+        Glide.with(fragment)
+                .load(uri)
+                .circleCrop()
+                .override(130)
+                .into(image_button); //이미지 버튼 아이디가 들어간다.
+
+    }
 }

@@ -29,6 +29,7 @@ import com.example.cotton.LoginActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.bookSaveForm;
+import com.example.cotton.firebaseFunction;
 import com.example.cotton.ui.food.FoodListAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -80,49 +81,33 @@ public class HomeFragment extends Fragment {
         showMyRegisteredBookFunc();
 
         // firebase_function_ProfileImageDownload (수정+ firebaseFunction으로 집어넣기)
-        /*
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        storageRef.child("users/" + user.getUid() +"/" + "Profile Image").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                //이미지를 불러오는데 성공
-                //Glide를 사용
-                Glide.with(getContext())
-                        .load(uri)
-                        .circleCrop()
-                        .override(130)
-                        .into(home_profile_image_button); //이미지 버튼 아이디가 들어간다.
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
 
-            }
-        });*/
+        firebaseFunction firebaseTest = new firebaseFunction();
 
-        // firebase_function_BookImageDownload (수정+ firebaseFunction으로 집어넣기)
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        //책이름 -> bookName, lji_test3 -> user.getName() 으로 변경해서 사용
-        storageRef.child("bookSave/" + "책이름" +"_" + "lji_test3").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                //이미지를 불러오는데 성공
-                //Glide를 사용
-                Glide.with(getContext())
-                        .load(uri)
-                        //.override(사이즈(int))
-                        .into(home_profile_image_button); //이미지 버튼 아이디가 들어간다.
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+        firebaseTest.profileImageDownload(home_profile_image_button, this.getContext());
 
-            }
-        });
+
+
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+//        StorageReference storageRef = storage.getReference();
+//        //책이름 -> bookName, lji_test3 -> user.getName() 으로 변경해서 사용
+//        storageRef.child("bookSave/" + "책이름" +"_" + "lji_test3").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                //이미지를 불러오는데 성공
+//                //Glide를 사용
+//                Glide.with(getContext())
+//                        .load(uri)
+//                        //.override(사이즈(int))
+//                        .into(home_profile_image_button); //이미지 버튼 아이디가 들어간다.
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
 
         //         firebase_function
 //         btnLogout=root.findViewById(R.id.btn_logout);

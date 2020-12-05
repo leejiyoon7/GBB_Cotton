@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
     }
 
     //로그인 액티비티로 넘어감

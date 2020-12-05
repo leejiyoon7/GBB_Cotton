@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -12,8 +12,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_exchange" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/history_listview_type_textView"
@@ -58,16 +57,15 @@
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/histoey_listview_variance_textView" />
+        app:layout_constraintTop_toBottomOf="@+id/history_listview_variance_textView" />
 
     <TextView
-        android:id="@+id/histoey_listview_variance_textView"
+        android:id="@+id/history_listview_variance_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
+        android:layout_marginEnd="16dp"
         android:text="+500 GBB"
         android:textSize="18sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/history_listview_bookname_textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/history_listview_bookname_textView" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

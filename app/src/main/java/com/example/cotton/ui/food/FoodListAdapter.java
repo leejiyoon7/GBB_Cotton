@@ -52,7 +52,7 @@ public class FoodListAdapter extends BaseAdapter {
         productIcon=convertView.findViewById(R.id.iv_productIcon);
         productType=convertView.findViewById(R.id.tv_productType);
         price=convertView.findViewById(R.id.tv_price);
-        btn_buy=(Button)convertView.findViewById(R.id.btn_buy);
+        btn_buy=convertView.findViewById(R.id.btn_buy);
 
         FoodListItem foodListItem=foodItemsList.get(position);
         //아이템 내 각 위젯에 데이터 반영

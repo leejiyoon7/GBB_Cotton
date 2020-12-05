@@ -13,16 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.loader.content.CursorLoader;
 
-import com.example.cotton.LoginActivity;
-import com.example.cotton.MainActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.firebaseFunction;
@@ -45,8 +44,13 @@ import static android.app.Activity.RESULT_OK;
 
 public class HistoryFragment extends Fragment {
 
-    EditText history_search_editText;//거래내역 검색 edittext
+    SearchView history_search_view;//거래내역 검색 searchview
     SegmentedButtonGroup segmentedButtonGroup;//segmentButtonGroup 생성
+    ListView transactional_information_list;//도서거래 ListView
+    HistoryAdapter adapter;//도서거래 adapter
+    public static final int ALL=0;
+    public static final int INCOME=1;
+    public static final int EXPENDITURE=2;
 
     String pictureLink;
     private static final String TAG_TEXT = "text";
@@ -59,14 +63,19 @@ public class HistoryFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
-//        history_search_editText=view.findViewById(R.id.history_search_editText);
+        history_search_view=view.findViewById(R.id.history_search_view);
         segmentedButtonGroup = (SegmentedButtonGroup)view.findViewById(R.id.segmentedButtonGroup);
 
+        transactional_information_list=view.findViewById(R.id.transactional_information_listView);//listview 참조
+
         //editText 부분 검색함에 따라 실시간으로 변화있게 구현 예정
-//        historySearchEditTextEvent();
+        historySearchEditTextEvent();
 
         //segmentButtonGroup 버튼 클릭 이벤트(position)별, 추후 구현 예정
         segmentButtonClickEvent();
+
+        //거래내역 Listview 설정
+        showHistoryListFunc(ALL);
 
 //        test_btn=root.findViewById(R.id.test_btn);
 //        bookImg=root.findViewById(R.id.bookImg);
@@ -89,25 +98,23 @@ public class HistoryFragment extends Fragment {
         return view;
     }
 
-//    //editText 검색 이벤트
-//    public void historySearchEditTextEvent(){
-//        history_search_editText.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-//                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-//                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                //Toast.makeText(getActivity(), history_search_editText.getText()+" 검색", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
+    //editText 검색 이벤트(12.05 기능 미구현 상태로 놔두기로 했음)
+    public void historySearchEditTextEvent(){
+
+        history_search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                Toast.makeText(getActivity(), "검색 버튼 미구현", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+
+                return false;
+            }
+        });
+    }
 
     //segmentButtonGroup 버튼 클릭 이벤트(position)별, 추후 구현 예정
     public void segmentButtonClickEvent(){
@@ -117,19 +124,49 @@ public class HistoryFragment extends Fragment {
                 switch (position) {
                     case 0:
                         Toast.makeText(getActivity(), " 전체 버튼 눌림", Toast.LENGTH_SHORT).show();
+                        showHistoryListFunc(ALL);
                         break;
                     case 1:
                         Toast.makeText(getActivity(), " 수입 버튼 눌림", Toast.LENGTH_SHORT).show();
+                        showHistoryListFunc(INCOME);
                         break;
                     case 2:
                         Toast.makeText(getActivity(), " 지출 버튼 눌림", Toast.LENGTH_SHORT).show();
+                        showHistoryListFunc(EXPENDITURE);
                         break;
                 }
             }
         });
 
-        segmentedButtonGroup.setPosition(2, 0);
+        segmentedButtonGroup.setPosition(0, 0);
     }
+
+    //segmentButtonGroup에 따라 거래내역 Listview 설정, 추후 firebase에서 동적으로 받아와서 Variance에 따라 구분하여 조건 분기할 예정
+    public void showHistoryListFunc(int state){
+        //adapter 설정
+        adapter=new HistoryAdapter();
+        //adapter 달기
+        transactional_information_list.setAdapter(adapter);
+
+        //listview에 add
+        switch(state){
+            case ALL:
+                adapter.addItem(R.drawable.ic_in,"도서거래","C언어 콘서트","2020.12.01","+100GBB","1000GBB");
+                adapter.addItem(R.drawable.ic_in,"충전","포인트 충전","2020.12.02","+500GBB","1500GBB");
+                adapter.addItem(R.drawable.ic_out,"상품구매","식권 x1","2020.12.03","-600GBB","900GBB");
+                break;
+            case INCOME:
+                adapter.addItem(R.drawable.ic_in,"도서거래","C언어 콘서트","2020.12.01","+100GBB","1000GBB");
+                adapter.addItem(R.drawable.ic_in,"충전","포인트 충전","2020.12.02","+500GBB","1500GBB");
+                break;
+            case EXPENDITURE:
+                adapter.addItem(R.drawable.ic_out,"상품구매","식권 x1","2020.12.03","-600GBB","900GBB");
+                break;
+        }
+        adapter.notifyDataSetChanged();//adapter의 변경을 알림
+    }
+
+
 
     public String getPath(Uri uri){     //사진 경로받기
         String[]proj = {MediaStore.Images.Media.DATA};

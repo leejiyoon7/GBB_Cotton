@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="48dp"
 
 
         android:letterSpacing="0.05"
@@ -20,7 +20,7 @@
         android:textAlignment="viewStart"
         android:textColor="#5e5e5e"
         android:textSize="35sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

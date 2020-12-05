@@ -16,14 +16,44 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="48dp">
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="85dp"
+                android:orientation="vertical"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/register_book_cotton_title_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+
+                    android:text="COTTON"
+                    android:textAlignment="center"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.15"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/register_book_go_to_home_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="12dp"
+                    android:background="@color/fui_transparent"
+                    android:minWidth="0dp"
+                    android:text="&lt; Home"
+                    android:textColor="#FC9714"/>
+
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/register_book_title_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="24dp"
                 android:letterSpacing="0.05"
 
 
@@ -82,7 +112,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="fitCenter"
-                                android:src="@drawable/add_book_image" />
+                                android:src="@drawable/add_book_image"
+                                android:background="@color/fui_transparent"/>
 
                         </androidx.cardview.widget.CardView>
                     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,8 +17,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        >
+        app:layout_constraintVertical_bias="1.0">
 <!-- <<<<<<< firebase_function
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -98,33 +97,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
                 android:layout_gravity="center_vertical"
+                android:background="@drawable/round_corner_15_gray"
                 app:sbg_animateSelector="fastOutSlowIn"
                 app:sbg_animateSelectorDuration="700"
-                android:background="@drawable/round_corner_15_gray"
+                app:sbg_dividerColor="#00FFFFFF"
                 app:sbg_position="1"
                 app:sbg_radius="20dp"
-                app:sbg_ripple="true"
-                app:sbg_selectorBackgroundDrawable="@drawable/round_btn_height_64"
+                app:sbg_ripple="false"
+                app:sbg_selectorBackgroundDrawable="@drawable/round_corner_15_gray"
                 app:sbg_selectorColor="@color/white">
 
                 <co.ceryle.segmentedbutton.SegmentedButton
                     android:id="@+id/history_seg_all_btn"
                     android:layout_width="0dp"
-                    android:layout_height="32dp"
+                    android:layout_height="28dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
                     app:sb_text="전체" />
 
                 <co.ceryle.segmentedbutton.SegmentedButton
                     android:id="@+id/history_seg_income_btn"
                     android:layout_width="0dp"
-                    android:layout_height="32dp"
+                    android:layout_height="28dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
                     app:sb_text="수입" />
 
                 <co.ceryle.segmentedbutton.SegmentedButton
                     android:id="@+id/history_seg_expense_btn"
                     android:layout_width="0dp"
-                    android:layout_height="32dp"
+                    android:layout_height="28dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
                     app:sb_text="지출" />
             </co.ceryle.segmentedbutton.SegmentedButtonGroup>

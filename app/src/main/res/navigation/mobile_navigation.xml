@@ -11,8 +11,8 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_exchange"
-        android:name="com.example.cotton.ui.Trading.ExchangeFragment"
+        android:id="@+id/navigation_Trade"
+        android:name="com.example.cotton.ui.Trading.TradingFragment"
         tools:layout="@layout/fragment_trading" />
 
     <fragment

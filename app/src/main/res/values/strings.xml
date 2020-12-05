@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Cotton</string>
     <string name="title_home">Home</string>
-    <string name="title_exchange">도서거래</string>
+    <string name="title_trade">도서거래</string>
     <string name="title_history">거래내역</string>
     <string name="title_food">상품구매</string>
 </resources>

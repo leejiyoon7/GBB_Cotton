@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cotton.R;
+import com.example.cotton.ui.home.register.RegisterBookActivity;
 
 import java.util.ArrayList;
 
@@ -21,12 +22,13 @@ public class FoodListAdapter extends BaseAdapter {
     private TextView productType;
     private TextView price;
     private Button btn_buy;
+    Context context;
 
     private ArrayList<FoodListItem> foodItemsList=new ArrayList<FoodListItem>();
 
     //constructor
-    public FoodListAdapter(){
-
+    public FoodListAdapter(Context context){
+        this.context=context;
     }
 
     //Adapter에 사용되는 데이터의 개수를 리턴
@@ -57,7 +59,8 @@ public class FoodListAdapter extends BaseAdapter {
         productIcon.setImageResource(foodListItem.getProductIcon());
         productType.setText(foodListItem.getProductType());
         price.setText(foodListItem.getPrice());
-
+        btn_buy.setId(foodListItem.getButtonId());
+        buyEvent();
         return convertView;
     }
 
@@ -74,12 +77,13 @@ public class FoodListAdapter extends BaseAdapter {
     }
 
     //아이템 데이터 추가를 위한 함수
-    public void addItem(int icon,String type,String price){
+    public void addItem(int icon,String type,String price,int buttonId){
         FoodListItem item=new FoodListItem();
 
         item.setProductIcon(icon);
         item.setProductType(type);
         item.setPrice(price);
+        item.setButtonId(buttonId);
 
         foodItemsList.add(item);
     }
@@ -89,7 +93,20 @@ public class FoodListAdapter extends BaseAdapter {
         btn_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                switch(view.getId()){
+                    case 600:
+                        Toast.makeText(context,"600GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1200:
+                        Toast.makeText(context,"1200GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
+                        break;
+                    case 3000:
+                        Toast.makeText(context,"3000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
+                        break;
+                    case 6000:
+                        Toast.makeText(context,"6000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
+                        break;
+                }
             }
         });
     }

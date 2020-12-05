@@ -4,136 +4,119 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.history.HistoryFragment"
-    android:background="#F4F5F9">
+    tools:context=".ui.history.HistoryFragment">
+
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
-<!-- <<<<<<< firebase_function
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/bookImg"
-        android:layout_width="145dp"
-        android:layout_height="145dp"
-        android:layout_marginTop="140dp"
-        android:background="#2DFFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_gallery" />
-
-    <Button
-        android:id="@+id/test_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></Button>
-======= -->
-
-
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/history_cotton_textView"
+            android:id="@+id/history_header_cotton_title_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_marginTop="16dp"
+
+            android:letterSpacing="0.15"
             android:text="COTTON"
-            android:textSize="20dp" />
+            android:textAlignment="center"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <SearchView
+            android:id="@+id/history_search_view"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="14dp"
+
+            android:background="@drawable/round_corner_15_gray"
+            android:iconifiedByDefault="false"
+            android:queryBackground="@color/fui_transparent"
+            android:queryHint="검색어를 입력하세요."></SearchView>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:paddingStart="80dp"
+            android:paddingEnd="80dp">
 
-            <ImageView
-                android:id="@+id/iv_productIcon"
-                android:layout_width="4dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="20dp"
-                android:layout_weight="4"
-                android:paddingStart="20dp"
-                app:srcCompat="@drawable/ic_search" />
-
-            <EditText
-                android:id="@+id/history_search_editText"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_marginEnd="20dp"
-                android:layout_weight="4"
-                android:background="@android:color/transparent"
-                android:ems="10"
-                android:hint="검색어를 입력하세요."
-                android:inputType="textPersonName" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <RadioGroup
+            <co.ceryle.segmentedbutton.SegmentedButtonGroup
+                android:id="@+id/segmentedButtonGroup"
                 android:layout_width="match_parent"
-                android:layout_height="37dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
-                android:orientation="horizontal">
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/round_corner_15_gray"
+                app:sbg_animateSelector="fastOutSlowIn"
+                app:sbg_animateSelectorDuration="700"
+                app:sbg_position="1"
+                app:sbg_radius="20dp"
+                app:sbg_ripple="false"
+                app:sbg_selectorBackgroundDrawable="@drawable/round_corner_15_gray"
+                app:sbg_selectorColor="@color/white">
 
-                <RadioButton
-                    android:id="@+id/history_radio_all"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <co.ceryle.segmentedbutton.SegmentedButton
+                    android:id="@+id/history_seg_all_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="28dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="2dp"
                     android:layout_weight="1"
-                    android:text="전체" />
+                    app:sb_text="전체" />
 
-                <RadioButton
-                    android:id="@+id/history_radio_income"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <co.ceryle.segmentedbutton.SegmentedButton
+                    android:id="@+id/history_seg_income_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="2dp"
                     android:layout_weight="1"
-                    android:text="수입" />
+                    app:sb_text="수입" />
 
-                <RadioButton
-                    android:id="@+id/history_radio_expense"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <co.ceryle.segmentedbutton.SegmentedButton
+                    android:id="@+id/history_seg_expense_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginRight="2dp"
                     android:layout_weight="1"
-                    android:text="지출" />
-            </RadioGroup>
+                    app:sb_text="지출" />
+            </co.ceryle.segmentedbutton.SegmentedButtonGroup>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:background="#F4F5F9"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/history_transactional_information_textView"
                 android:layout_width="match_parent"
                 android:layout_height="57dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="10dp"
                 android:gravity="center_vertical"
                 android:text="거래내역"
-                android:textSize="30sp" />
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
             <ListView
                 android:id="@+id/transactional_information_listView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
         </LinearLayout>
 
 

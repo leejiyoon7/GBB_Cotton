@@ -3,4 +3,14 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="cotton">#F0B828</color>
+    <color name="grey_500">#9E9E9E</color>
+    <color name="blue_300">#64B5F6</color>
+    <color name="teal_100">#B2DFDB</color>
+    <color name="teal_900">#004D40</color>
+    <color name="red_500">#F44336</color>
+    <color name="green_500">#4CAF50</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="deep_orange_100">#FFCCBC</color>
+    <color name="deep_orange_900">#BF360C</color>
+
 </resources>

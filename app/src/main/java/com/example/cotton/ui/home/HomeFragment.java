@@ -33,6 +33,7 @@ import com.example.cotton.firebaseFunction;
 import com.example.cotton.ui.food.FoodListAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.cotton.ui.home.register.RegisterBookActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -59,6 +60,7 @@ public class HomeFragment extends Fragment {
     RecyclerView home_my_registered_book_recycler_view;//나의 등록 도서 목록 RecyclerView
     MyRegisteredBookListAdapter myRegisteredBookListAdapter;//나의 등록 도서 목록 adapter
 
+    Button home_register_book_btn;//도서등록 버튼
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //인플레이션
@@ -81,10 +83,19 @@ public class HomeFragment extends Fragment {
         showMyRegisteredBookFunc();
 
         // firebase_function_ProfileImageDownload + FirebaseFunction 파일 안 설명참조
-        firebaseFunction firebaseTest = new firebaseFunction();
-        firebaseTest.profileImageDownload(home_profile_image_button, this.getContext());
+        // 프로필 사진 받아오기 (주석 지우면 실행됩니다.)
+        //firebaseFunction firebaseTest = new firebaseFunction();
+        //firebaseTest.profileImageDownload(home_profile_image_button, this.getContext());
 
+        home_register_book_btn=view.findViewById(R.id.home_register_book_btn);
 
+        home_register_book_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(), RegisterBookActivity.class);
+                startActivity(intent);
+            }
+        });
         //         firebase_function
 //         btnLogout=root.findViewById(R.id.btn_logout);
 //         //로그아웃 버튼 구현

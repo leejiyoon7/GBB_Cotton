@@ -228,11 +228,12 @@
                     app:cardPreventCornerOverlap="false"
                     app:cardUseCompatPadding="true">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/home_my_rented_book_card_view_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:descendantFocusability="blocksDescendants">
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/home_my_rented_book_recycler_view"
@@ -245,6 +246,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:layout_below="@id/home_my_rented_book_recycler_view"
 
                             android:text="+ 더보기"
                             android:textColor="#5e5e5e"
@@ -255,7 +257,7 @@
 
                             android:visibility="visible"/>
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
 
                 </androidx.cardview.widget.CardView>
@@ -291,7 +293,7 @@
                     app:cardPreventCornerOverlap="false"
                     app:cardUseCompatPadding="true">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/home_my_registered_book_card_view_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -308,6 +310,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:layout_below="@id/home_my_registered_book_recycler_view"
 
                             android:text="+ 더보기"
                             android:textColor="#5e5e5e"
@@ -318,7 +321,7 @@
 
                             android:visibility="visible"/>
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
 
                 </androidx.cardview.widget.CardView>

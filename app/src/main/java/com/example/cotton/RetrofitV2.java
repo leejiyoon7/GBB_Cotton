@@ -1,9 +1,9 @@
 package com.example.cotton;
 
-public class RetrofitV0 {
+public class RetrofitV2 {
 
     private String result;
-    private DataCreateWallet data;
+    private DataFoodBuy data;
 
     public String getResult() {
         return result;
@@ -13,11 +13,11 @@ public class RetrofitV0 {
         this.result = result;
     }
 
-    public DataCreateWallet getDataCreateWallet() {
+    public DataFoodBuy getDataFoodBuy() {
         return data;
     }
 
-    public void setDataCreateWallet(DataCreateWallet data) {
+    public void setDataFoodBuy(DataFoodBuy data) {
         this.data = data;
     }
 }

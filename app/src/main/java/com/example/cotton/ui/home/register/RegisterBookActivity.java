@@ -50,6 +50,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -76,6 +77,9 @@ public class RegisterBookActivity extends Activity {
     List<MemberInfo> getMemberName= new ArrayList<>();
     Uri selectedImageUri;
     String bookImageLink;
+
+    // Firebase에 넘길 HashTable
+    HashMap<String, String> bookInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -275,13 +279,17 @@ public class RegisterBookActivity extends Activity {
                                         String resultBookTitle = response.body().channel.item.getTitle();
                                         String resultBookWriter = response.body().channel.item.getAuthor();
                                         String resultImageUrl = response.body().channel.item.getImage();
-                                        String resultBookIsbn = detectedBarcode;
 
                                         new ImageLoadTask(resultImageUrl, register_book_image_Button).execute();
                                         register_book_card_book_title_result_text_view.setText(resultBookTitle);
                                         register_book_card_book_writer_result_text_view.setText(resultBookWriter);
-
                                         register_book_app_compat_button.setEnabled(true);
+
+                                        bookInfo = new HashMap<String, String>();
+                                        bookInfo.put("barcode", detectedBarcode);
+                                        bookInfo.put("bookName", resultBookTitle);
+                                        bookInfo.put("bookWriter", resultBookWriter);
+                                        bookInfo.put("pictureLink", resultImageUrl);
                                     }
                                     @Override
                                     public void onFailure(Call<BookSearchResultVO> call, Throwable t) {

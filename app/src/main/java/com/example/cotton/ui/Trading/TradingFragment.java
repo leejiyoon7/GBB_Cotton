@@ -225,13 +225,11 @@ public class TradingFragment extends Fragment {
                         break;
                 }
                 firebaseFunction firebaseSearch = new firebaseFunction();
-                firebaseSearch.searchBook(major, (resultList) -> {      //여기서 resultList안에 너가 원하는 모든게 있다.
-                    // Log.d("home에서 확인2", "" + resultList.get(0).getBookName());
-                    //  for(int i=0;i<resultList.size();i++){
-                    //
-                    //  }
+                firebaseSearch.searchBook(major, (resultList) -> {
+                    Log.d("testing ", major);
                     return null;
                 });
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -243,79 +241,93 @@ public class TradingFragment extends Fragment {
     //뷰 페이저 관련 함수
     public void TradingViewPagerFunc(){
 
-        Toast.makeText(getActivity(),"도서명: "+tradingChipItem.getTradingBookTitle()+" 저자명: "+tradingChipItem.getTradingBookAuthor(),Toast.LENGTH_SHORT).show();
-        if(tradingChipItem.getTradingBookTitle()!="" || tradingChipItem.getTradingBookAuthor()!=""){
+        firebaseFunction firebaseSearch = new firebaseFunction();
+        firebaseSearch.searchBook(major, (resultList) -> {
+            for(int i=0;i<resultList.size();i++){
+                Toast.makeText(getActivity(),"도서명: "+tradingChipItem.getTradingBookTitle()+" 저자명: "+tradingChipItem.getTradingBookAuthor(),Toast.LENGTH_SHORT).show();
+                if(tradingChipItem.getTradingBookTitle()!="" || tradingChipItem.getTradingBookAuthor()!=""){
 
-            //지금은 "종이 여자" 와 "기욤 뮈소"지만 추후 firebase에서 정보를 받아오면 변수선언해서 넣어줘야됨
-            if((tradingChipItem.getTradingBookTitle().contains("종이 여자") &&  tradingChipItem.getTradingBookAuthor().equals("")) ||
-                    ((tradingChipItem.getTradingBookTitle().equals("") &&  tradingChipItem.getTradingBookAuthor().contains("기욤 뮈소"))) ||
+
+                    //지금은 "종이 여자" 와 "기욤 뮈소"지만 추후 firebase에서 정보를 받아오면 변수선언해서 넣어줘야됨
+                    if((tradingChipItem.getTradingBookTitle().contains("종이 여자") &&  tradingChipItem.getTradingBookAuthor().equals("")) ||
+                            ((tradingChipItem.getTradingBookTitle().equals("") &&  tradingChipItem.getTradingBookAuthor().contains("기욤 뮈소"))) ||
                             (tradingChipItem.getTradingBookTitle().contains("종이 여자") && tradingChipItem.getTradingBookAuthor().contains("기욤 뮈소"))){
-                trading_content_view_pager.setVisibility(View.VISIBLE);
-                trading_page_indicator_text_view.setVisibility(View.VISIBLE);
-                //뷰페이저 어댑터
-                TradingViewPagerAdapter pagerAdapter=new TradingViewPagerAdapter(getChildFragmentManager());
-                //추후 파이어베이스 참조해서 구현할때 여기서 책의 개수만큼 프래그먼트를 반복문으로 제작, 필요 시 대여자 정보, 및 각종 정보를 method를 변형해서 추가 가능
-                // add your fragments
-                pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자","기욤 뮈소");
-                addItem(tradingMajorItem.getMajor(), R.drawable.book_imsi,"종이 여자","기욤 뮈소");
 
-                pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자","기욤 뮈소");
-                addItem(tradingMajorItem.getMajor(), R.drawable.book_imsi,"종이 여자","기욤 뮈소");
+                        trading_content_view_pager.setVisibility(View.VISIBLE);
+                        trading_page_indicator_text_view.setVisibility(View.VISIBLE);
+                        //뷰페이저 어댑터
+                        TradingViewPagerAdapter pagerAdapter=new TradingViewPagerAdapter(getChildFragmentManager());
+                        //추후 파이어베이스 참조해서 구현할때 여기서 책의 개수만큼 프래그먼트를 반복문으로 제작, 필요 시 대여자 정보, 및 각종 정보를 method를 변형해서 추가 가능
+                        // add your fragments
+                        pagerAdapter.addFragment(R.drawable.book_imsi,resultList.get(i).getBookName(),resultList.get(i).getBookWriter());
+                        addItem(tradingMajorItem.getMajor(), R.drawable.book_imsi,resultList.get(i).getBookName(),resultList.get(i).getBookWriter());
 
-                pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자","기욤 뮈소");
-                addItem(tradingMajorItem.getMajor(), R.drawable.book_imsi,"종이 여자","기욤 뮈소");
+                        pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자","기욤 뮈소");
+                        addItem(tradingMajorItem.getMajor(), R.drawable.book_imsi,"종이 여자","기욤 뮈소");
 
-                pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자","기욤 뮈소");
-                addItem(tradingMajorItem.getMajor(), R.drawable.book_imsi,"종이 여자","기욤 뮈소");
+                        pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자","기욤 뮈소");
+                        addItem(tradingMajorItem.getMajor(), R.drawable.book_imsi,"종이 여자","기욤 뮈소");
 
-                trading_content_view_pager.setAdapter(pagerAdapter);
+                        pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자","기욤 뮈소");
+                        addItem(tradingMajorItem.getMajor(), R.drawable.book_imsi,"종이 여자","기욤 뮈소");
 
-                pagerAdapter.notifyDataSetChanged();
+                        pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자","기욤 뮈소");
+                        addItem(tradingMajorItem.getMajor(), R.drawable.book_imsi,"종이 여자","기욤 뮈소");
 
-            }
-            else{
+                        trading_content_view_pager.setAdapter(pagerAdapter);
+
+                        pagerAdapter.notifyDataSetChanged();
+
+                    }
+                    else{
+                        //뷰페이저 가리기
+                        trading_content_view_pager.setVisibility(View.INVISIBLE);
+                        trading_page_indicator_text_view.setVisibility(View.INVISIBLE);
+                        Toast.makeText(getActivity(),"검색 결과가 없습니다.",Toast.LENGTH_SHORT).show();
+
+
+                    }
+
+                    //뷰페이저 스크롤을 하지 않아도 대여하기 버튼 이벤트가 활성화되도록 초기화
+                    tradingRentButtonClickEvent(tradingMajorItem.getMajor(),"종이 여자","기욤 뮈소");
+                    trading_page_indicator_text_view.setText("1 / 4");
+                    //뷰페이저 스크롤 이벤트, 여기서 position에 따라 가져올 정보가 각각 다름
+                    trading_content_view_pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+                        @Override
+                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                            trading_page_indicator_text_view.setText(position+1+" / 4");
+                        }
+
+                        @Override
+                        public void onPageSelected(int position) {
+                            TradingViewPagerItem tradingViewPagerItem=tradingViewPagerItems.get(position);
+
+                            String bookTitle=tradingViewPagerItem.getRegisteredBookTitle();
+                            String bookAuthor=tradingViewPagerItem.getRegisteredBookAuthor();
+
+                            tradingRentButtonClickEvent(tradingMajorItem.getMajor(),bookTitle,bookAuthor);//대여하기 버튼 클릭 이벤트
+
+                        }
+
+                        @Override
+                        public void onPageScrollStateChanged(int state) {
+
+                        }
+                    });
+
+                }
                 //뷰페이저 가리기
-                trading_content_view_pager.setVisibility(View.INVISIBLE);
-                trading_page_indicator_text_view.setVisibility(View.INVISIBLE);
-                Toast.makeText(getActivity(),"검색 결과가 없습니다.",Toast.LENGTH_SHORT).show();
+                else{
+                    trading_content_view_pager.setVisibility(View.INVISIBLE);
+                    trading_page_indicator_text_view.setVisibility(View.INVISIBLE);
+                }
 
 
             }
+            return null;
+        });
 
-            //뷰페이저 스크롤을 하지 않아도 대여하기 버튼 이벤트가 활성화되도록 초기화
-            tradingRentButtonClickEvent(tradingMajorItem.getMajor(),"종이 여자","기욤 뮈소");
-            trading_page_indicator_text_view.setText("1 / 4");
-            //뷰페이저 스크롤 이벤트, 여기서 position에 따라 가져올 정보가 각각 다름
-            trading_content_view_pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                    trading_page_indicator_text_view.setText(position+1+" / 4");
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                    TradingViewPagerItem tradingViewPagerItem=tradingViewPagerItems.get(position);
-
-                    String bookTitle=tradingViewPagerItem.getRegisteredBookTitle();
-                    String bookAuthor=tradingViewPagerItem.getRegisteredBookAuthor();
-
-                    tradingRentButtonClickEvent(tradingMajorItem.getMajor(),bookTitle,bookAuthor);//대여하기 버튼 클릭 이벤트
-
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
-
-        }
-        //뷰페이저 가리기
-        else{
-            trading_content_view_pager.setVisibility(View.INVISIBLE);
-            trading_page_indicator_text_view.setVisibility(View.INVISIBLE);
-        }
     }
 
     //아이템 데이터 추가를 위한 함수

@@ -93,7 +93,7 @@
                 android:background="@drawable/round_corner_15_gray"
                 android:iconifiedByDefault="false"
                 android:queryBackground="@color/fui_transparent"
-                android:visibility="visible"/>
+                android:visibility="invisible"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

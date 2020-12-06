@@ -1,31 +1,26 @@
 package com.example.cotton.ui.Trading;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.cotton.MainActivity;
 import com.example.cotton.R;
-import com.example.cotton.ui.food.FoodListItem;
-import com.example.cotton.ui.home.register.RegisterBookActivity;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -33,6 +28,9 @@ import java.util.ArrayList;
 public class TradingFragment extends Fragment {
 
     ChipGroup trading_header_chip_group; // 칩 그룹
+    Chip trading_hear_chip_class; //칩(강좌)
+    Chip trading_hear_chip_professor; //칩(교수)
+    Chip trading_hear_chip_book; //칩(책)
     SearchView trading_header_search_view; // 검색 창
     Spinner trading_title_department_spinner;//스피너
     ArrayAdapter spinnerAdapter;//스피너 어댑터
@@ -61,6 +59,10 @@ public class TradingFragment extends Fragment {
         trading_title_department_spinner=view.findViewById(R.id.trading_title_department_spinner);
         trading_content_view_pager=(ViewPager) view.findViewById(R.id.trading_content_view_pager);
         trading_rent_button=view.findViewById(R.id.trading_rent_button);
+        trading_hear_chip_class = view.findViewById(R.id.trading_hear_chip_class);
+        trading_hear_chip_professor = view.findViewById(R.id.trading_hear_chip_professor);
+        trading_hear_chip_book = view.findViewById(R.id.trading_hear_chip_book);
+
         //endregion
 
         //뷰페이저 어댑터
@@ -68,7 +70,13 @@ public class TradingFragment extends Fragment {
 
         tradingViewPagerItems=new ArrayList<TradingViewPagerItem>();
 
-        searchBook();//search 기능
+        // Chip설정
+        setChipOption(trading_hear_chip_class);
+        setChipOption(trading_hear_chip_professor);
+        setChipOption(trading_hear_chip_book);
+
+
+//        searchBook();//search 기능
 
         majorPickSpinner();//전공 선택 스피너
 
@@ -77,75 +85,82 @@ public class TradingFragment extends Fragment {
     
     // 기능 부
     /**
-     * 검색버튼을 누를 시
-     * - Chip중에서 검색어와 같은 Chip이 있는지 확인
-     * A. 검색어를 포함한 Chip이 없을 경우
-     * - ChipGroup에 Chip을 추가.
-     * - SearchView을 초기화.
-     * B. 검색어를 포함한 Chip이 있을 경우
-     * - SearchView을 초기화.
+     * 칩에 검색내용이 비어있는지 확인
+     * @return : 칩이 비어있을 경우 True
      */
-    public void searchBook(){
-
-        trading_header_search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // ChipGroup에서 Chip을 하나하나씩 참조한다.
-                int numberOfChip = trading_header_chip_group.getChildCount();
-                for(int i = 0; i < numberOfChip; i++) {
-                    Chip chipChild = (Chip)trading_header_chip_group.getChildAt(i);
-
-                    // 하나라도 겹치면 break
-                    if(chipChild.getText().toString().equals(query)) {
-                        trading_header_search_view.setQuery("", false);
-                        break;
-                    }
-
-                    // 하나도 겹치지 않을 경우 Chip 추가.
-                    else if (i == numberOfChip - 1){
-                        // 칩 추가 & 검색창 초기화.
-                        addChipToChipGroup(query);
-                        trading_header_search_view.setQuery("", false);
-                    }
-                }
-
-                // ChipGroup에 Chip이 하나도 없을 경우에는 그냥 추가.
-                if(trading_header_chip_group.getChildCount() == 0) {
-                    // 칩 추가 & 검색창 초기화.
-                    addChipToChipGroup(query);
-                    trading_header_search_view.setQuery("", false);
-                }
-                return false;
-            }
-
-            // 아래는 필요 없는 코드
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-        // End of: trading_header_search_view.setOnQueryTextListener
+    private void hideSearchViewIfChipIsEmpty() {
+        if (trading_hear_chip_class.getText().equals("강좌명: ") &&
+                trading_hear_chip_professor.getText().equals("교수명: ") &&
+                trading_hear_chip_book.getText().equals("도서명: ")) {
+            trading_header_search_view.setVisibility(View.INVISIBLE);
+        }
     }
 
-    /**
-     * ChipGroup에 Chip을 추가합니다.
-     * @param chipText : Chip에 들어갈 텍스트.
-     */
-    private void addChipToChipGroup(String chipText) {
-        Chip chip = new Chip(getContext());
-        chip.setText(chipText);
-        chip.setCheckable(false);
-        chip.setCloseIconVisible(true);
 
-        // Chip 닫기를 눌러서 ChipGroup에서 삭제.
+    private void setChipOption(Chip chip) {
+        chip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String queryHintWord = "";
+                if (chip.equals(trading_hear_chip_class)) {
+                    queryHintWord = "강좌명";
+                }
+                else if (chip.equals(trading_hear_chip_professor)) {
+                    queryHintWord = "교수명";
+                }
+                else if (chip.equals(trading_hear_chip_book)) {
+                    queryHintWord = "도서명";
+                }
+                trading_header_search_view.setQueryHint(queryHintWord + "을 입력해주세요.");
+
+                trading_header_search_view.setVisibility(View.VISIBLE);
+                trading_header_search_view.requestFocus();
+                // 키보드 열기
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+                trading_header_search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        if (chip.equals(trading_hear_chip_class)) {
+                            chip.setText("강좌명: " + query);
+                        }
+                        else if (chip.equals(trading_hear_chip_professor)) {
+                            chip.setText("교수명: " + query);
+                        }
+                        else if (chip.equals(trading_hear_chip_book)) {
+                            chip.setText("도서명: " + query);
+                        }
+                        trading_header_search_view.setQuery("", false);
+                        trading_header_search_view.setVisibility(View.INVISIBLE);
+                        return false;
+                    }
+                    // 아래는 필요 없는 코드
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        return false;
+                    }
+                });
+            }
+        });
+
         chip.setOnCloseIconClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trading_header_chip_group.removeView(chip);
+                if (chip.equals(trading_hear_chip_class)) {
+                    chip.setText("강좌명: ");
+                }
+                else if (chip.equals(trading_hear_chip_professor)) {
+                    chip.setText("교수명: ");
+                }
+                else if (chip.equals(trading_hear_chip_book)) {
+                    chip.setText("도서명: ");
+                }
+                hideSearchViewIfChipIsEmpty();
             }
         });
-        trading_header_chip_group.addView(chip);
     }
+
 
     //spinner 구현 method
     public void majorPickSpinner(){

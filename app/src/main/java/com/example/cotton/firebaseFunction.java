@@ -126,6 +126,28 @@ public class firebaseFunction {
                 });
     }
 
+    // 유저가 등록한 책을 user개인정보에 저장합니다.
+    public void insertRegisteredBookInfoToUser(String barcode, String bookName, String bookWriter)
+    {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        UserRegisteredBookSaveForm userRegisteredBookSaveForm = new UserRegisteredBookSaveForm(bookName, bookWriter);
+        db.collection("users/" + user.getUid() + "/RegisteredBook/").document(barcode).set(userRegisteredBookSaveForm)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("testing", "성공");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
+
+
+
     // 현재 로그인된 유저가 등록한 책에 관한 정보를 받아옵니다.
     public void myRegisteredBookListGet(Function<List<UserRegisteredBookSaveForm>, Void> complete) { //모든 책 정보 받아오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

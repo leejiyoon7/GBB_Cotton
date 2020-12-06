@@ -197,7 +197,6 @@ public class HistoryFragment extends Fragment {
         }
     }
 
-
     private void localUpload(String bookName, String major, String bookWriter) {         //업로드
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -227,16 +226,13 @@ public class HistoryFragment extends Fragment {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
                         pictureLink = downloadUri.toString();
-                        firebaseFunction.insertBookInfo(pictureLink ,major,bookName, bookWriter,"지갑정보", resultList.get(0).getName());
+                        //firebaseFunction.insertBookInfo(pictureLink ,major,bookName, bookWriter,"지갑정보", resultList.get(0).getName());
 
                     }
                 }
             });
             return null;
         });
-
-
     }
-
 
 }

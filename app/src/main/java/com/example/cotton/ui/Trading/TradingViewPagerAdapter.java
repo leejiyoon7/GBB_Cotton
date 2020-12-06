@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.cotton.R;
 
@@ -31,7 +33,6 @@ public class TradingViewPagerAdapter extends FragmentPagerAdapter {
         super(manager);
     }
 
-
     @NonNull
     @Override
     public Fragment getItem(int position) {
@@ -44,15 +45,20 @@ public class TradingViewPagerAdapter extends FragmentPagerAdapter {
     }
 
 
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
+    }
+
+    @Override public void destroyItem(View pager, int position, Object view) {
+        ((ViewPager)pager).removeView((View)view);
+    }
+
     //fragment를 이용해서 viewpager add
     public void addFragment(int registeredBookImage, String registeredBookTitle, String registeredBookAuthor){
         tradingViewPagerFragment=new TradingViewPagerFragment();
         tradingViewPagerFragment.setItems(registeredBookImage,registeredBookTitle,registeredBookAuthor);
         mFragmentList.add(tradingViewPagerFragment);
-    }
-
-    public Bundle getValueFunc(int position){
-        return mFragmentList.get(position).getArguments();
     }
 
     public static class TradingViewPagerFragment extends Fragment {

@@ -62,14 +62,14 @@ public class firebaseFunction {
      * @param major         전공
      * @param bookName      책제목
      * @param bookWriter    책저자
-     * @param walletInfo    지갑정보
-     * @param userName      사용자이름
      */
+
+/*
     public static void insertBookInfo(String pictureLink, String major, String bookName, String bookWriter, String walletInfo,String userName) {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter, walletInfo, userName);
+        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter, userName);
 
         db.collection("bookSave/").document(bookName + "_" + userName).set(booksave) // 책 저장하기
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -85,21 +85,136 @@ public class firebaseFunction {
                     }
                 });
     }
+*/
 
-    public void serchBook(String word) { //책 검색 , 하나밖에 검색안됨 / 저자별
+    // New DB Structure
+    public static void insertBookInfo2(String barcode, String bookName, String pictureLink, String bookWriter, String major,
+                                       String registerDate, int rentCount){
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("bookSave")
-                .whereEqualTo("bookWriter", word)
+        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter);
+        //bookSaveForm booksave = new bookSaveForm("pictureLink", "major", "bookName", "bookWriter");
+        BookDateSaveForm bookDateSaveForm = new BookDateSaveForm(registerDate, rentCount);
+        //BookDateSaveForm bookDateSaveForm = new BookDateSaveForm("registerDate", 10);
+
+        db.collection("bookSave/").document(barcode).set(booksave) // 책 정보 (북네임, 이미지, 저자, 학과) 저장
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("testing", "성공");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+
+        db.collection("bookSave/").document(barcode).collection("RegisteredUsers/")
+                .document(user.getUid()).set(bookDateSaveForm) // 책을 등록한 날짜, Rent 횟수 저장
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("testing", "성공");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
+
+    // 현재 로그인된 유저가 등록한 책에 관한 정보를 받아옵니다.
+    public void myRegisteredBookListGet(Function<List<UserRegisteredBookSaveForm>, Void> complete) { //모든 책 정보 받아오기
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
+        final List<UserRegisteredBookSaveForm> bookSaveList = new ArrayList<>();
+        db.collection("users/"+user.getUid() + "/RegisteredBook")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("testingFor", document.getId() + " => " + document.getData());
+                                Log.d("testtetetet", document.getId());
+                                bookSaveInit.add(document.getData());
                             }
+                            for (int i=0;i<bookSaveInit.size();i++) {
+                                UserRegisteredBookSaveForm bookSaveFormProto = new UserRegisteredBookSaveForm(
+                                        (String)bookSaveInit.get(i).get("bookName"),
+                                        (String)bookSaveInit.get(i).get("bookWriter"));
+                                bookSaveList.add(bookSaveFormProto);
+                                Log.d("TTTTTTTT",(String)bookSaveInit.get(i).get("bookName") );
+                            }
+                            complete.apply(bookSaveList);
+
+                        } else {
+
+                        }
+                    }
+                });
+
+    }
+
+    // 현재 로그인된 유저가 빌린 책에 관한 정보를 받아옵니다.
+    public void myRentedBookListGet(Function<List<UserRentedBookSaveForm>, Void> complete) { //모든 책 정보 받아오기
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
+        final List<UserRentedBookSaveForm> bookSaveList = new ArrayList<>();
+        db.collection("users/"+user.getUid() + "/RentedBook")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                bookSaveInit.add(document.getData());
+                            }
+                            for (int i=0;i<bookSaveInit.size();i++) {
+                                UserRentedBookSaveForm bookSaveFormProto = new UserRentedBookSaveForm(
+                                        (String)bookSaveInit.get(i).get("bookName"),
+                                        (String)bookSaveInit.get(i).get("bookWriter"),
+                                        (String)bookSaveInit.get(i).get("status"));
+                                bookSaveList.add(bookSaveFormProto);
+                                Log.d("TTTTTTTT",(String)bookSaveInit.get(i).get("bookName") );
+                            }
+                            complete.apply(bookSaveList);
+                        } else {
+
+                        }
+                    }
+                });
+
+    }
+
+    public void searchBook(String word, Function<List<bookSaveForm>, Void> complete) { // 전공별로 가져와서 리스트에 저장할꺼임
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
+        final List<bookSaveForm> bookSaveList = new ArrayList<>();
+        db.collection("bookSave")
+                .whereEqualTo("major", word)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                bookSaveInit.add(document.getData());
+                            }
+                            for (int i=0;i<bookSaveInit.size();i++) {
+                                bookSaveForm bookSaveFormProto = new bookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),
+                                        (String)bookSaveInit.get(i).get("major"),
+                                        (String)bookSaveInit.get(i).get("bookName"),
+                                        (String)bookSaveInit.get(i).get("bookWriter"));
+                                bookSaveList.add(bookSaveFormProto);
+
+                            }
+                            complete.apply(bookSaveList);
                         } else {
 
                         }
@@ -148,9 +263,8 @@ public class firebaseFunction {
      * 모든책 받아오기 페이지
      * List<bookSaveForm> bookSaveFormList= new ArrayList<>(); 이렇게 전역변수로 선언하나 해주고
      * (resultList) -> {}
-     * @param bookSaveFormList
-     * @param complete
      */
+    /*
     public void bookListGet(List<bookSaveForm> bookSaveFormList, Function<List<bookSaveForm>, Void> complete) { //모든 책 정보 받아오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -170,7 +284,6 @@ public class firebaseFunction {
                                         (String)bookSaveInit.get(i).get("major"),
                                         (String)bookSaveInit.get(i).get("bookName"),
                                         (String)bookSaveInit.get(i).get("bookWriter"),
-                                        (String)bookSaveInit.get(i).get("walletInfo"),
                                         (String)bookSaveInit.get(i).get("userName"));
                                 bookSaveList.add(bookSaveFormProto);
                             }
@@ -182,7 +295,7 @@ public class firebaseFunction {
                 });
 
     }
-
+*/
 
 
 
@@ -267,4 +380,6 @@ public class firebaseFunction {
                 .placeholder(R.drawable.cotton_icon)
                 .into(image_button); //이미지 버튼 아이디가 들어간다.
     }
+
+
 }

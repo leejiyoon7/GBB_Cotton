@@ -29,5 +29,9 @@ public interface ApiService {
             "X-Naver-Client-Secret: NuY6KgaU2t"
     })
     Call<BookSearchResultVO> searchBookByBarcode(@Query("d_isbn") String wallet);
+  
+  
+    @POST("v1.1/transactions/foodParchase2")
+        Call<RetrofitV2> buyFood(@Body HashMap<String, String> buyFoodBody, @HeaderMap HashMap<String, String> map);
 }
 

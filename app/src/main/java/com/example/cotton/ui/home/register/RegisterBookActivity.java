@@ -202,6 +202,9 @@ public class RegisterBookActivity extends Activity {
                 if(register_book_card_book_title_result_text_view.getText().length()!=0 && register_book_card_book_writer_result_text_view.getText().length()!=0){
                     Toast.makeText(RegisterBookActivity.this,"전공: "+major+" 도서 제목: "+ register_book_card_book_title_result_text_view.getText().toString()+" 도서 저자: "+ register_book_card_book_writer_result_text_view.getText().toString(),Toast.LENGTH_SHORT).show();
                     localUpoad();
+
+                    //저장 방식은 localUpload에 명시되어 있습니다.
+
                     Intent intent=new Intent(RegisterBookActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -339,7 +342,12 @@ public class RegisterBookActivity extends Activity {
                         firebaseFunction firebaseInput = new firebaseFunction();
                         firebaseInput.profileGet(getMemberName, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
                             Log.d("home에서 확인",resultList.get(0).getName());
-                            firebaseInput.insertBookInfo("사진링크",major, register_book_card_book_title_result_text_view.getText().toString(), register_book_card_book_writer_result_text_view.getText().toString(),"지갑정보",resultList.get(0).getName());
+
+                            /*
+                            // 책 저장 방식입니다.
+                            // 인자 값으로 (String 바코드, String 책제목, String 이미지링크, String 저자, String 학과, String 등록날짜, int 빌려준 횟수(0으로 초기화해서 사용해주세요.) )
+                            firebaseInput.insertBookInfo2("9788959522057", "ARTHAS: RISE OF THE LICH KING", "pictureLink", "크리스티 골든", "흑마법전공", "2020-12-06", 10);
+                            */
                             return null;
                         });
                         finish();

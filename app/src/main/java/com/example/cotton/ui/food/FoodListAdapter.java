@@ -2,6 +2,7 @@ package com.example.cotton.ui.food;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,24 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.cotton.ApiService;
 import com.example.cotton.MainActivity;
+import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
+import com.example.cotton.RetrofitClient;
+import com.example.cotton.RetrofitV0;
+import com.example.cotton.RetrofitV1;
+import com.example.cotton.RetrofitV2;
+import com.example.cotton.firebaseFunction;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FoodListAdapter extends BaseAdapter {
 
@@ -103,15 +117,19 @@ public class FoodListAdapter extends BaseAdapter {
             public void onClick(View view) {
                 switch(view.getId()){
                     case 600:
+                        getWallet(view.getId());
                         Toast.makeText(context,"600GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 1200:
+                        getWallet(view.getId());
                         Toast.makeText(context,"1200GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 3000:
+                        getWallet(view.getId());
                         Toast.makeText(context,"3000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 6000:
+                        getWallet(view.getId());
                         Toast.makeText(context,"6000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                 }
@@ -120,6 +138,55 @@ public class FoodListAdapter extends BaseAdapter {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 context.startActivity(intent);
             }
+        });
+    }
+
+
+    public void getWallet(int price) {
+        List<MemberInfo> getMemberName= new ArrayList<>();
+
+        firebaseFunction firebaseInput = new firebaseFunction();
+        firebaseInput.profileGet(getMemberName, (resultList) -> {
+
+            String wallet = resultList.get(0).getWallet();
+            buyFood(price ,wallet);
+            return null;
+        });
+    }
+
+
+    public void buyFood(int value, String wallet) {
+
+        ApiService call = RetrofitClient.getApiService();
+
+        HashMap<String, String> headerMap = new HashMap<String, String>();
+        headerMap.put("Content-Type", "application/json");
+        headerMap.put("Authorization", "Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"); //Dapp API키값
+
+        HashMap<String, String> bodyMap2 = new HashMap<String, String>();
+
+        bodyMap2.put("valueAmount", value + "000000000000000000"); //가격
+        bodyMap2.put("receiverAddress", "0x0fe24b865654653BE6ee9Da779177BB194075276");
+
+        HashMap<String, String> bodyMap = new HashMap<String, String>();
+        bodyMap.put("from", wallet); //보내는사람 지갑주소
+        bodyMap.put("inputs", bodyMap2.toString()); //bodyMap2
+
+        Log.d("성공 : ", "result : " + bodyMap.toString());
+
+        call.buyFood(bodyMap,headerMap).enqueue(new Callback<RetrofitV2>() {
+            @Override
+            public void onResponse(Call<RetrofitV2> call, Response<RetrofitV2> response) {
+                Log.d("성공 : ", "result : " + response.body().getResult());
+                Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
+                Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
+            }
+
+            @Override
+            public void onFailure(Call<RetrofitV2> call, Throwable t) {
+                Log.d("실패 : ", t.toString());
+            }
+
         });
     }
 }

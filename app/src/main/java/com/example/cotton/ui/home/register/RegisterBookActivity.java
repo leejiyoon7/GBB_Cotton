@@ -1,12 +1,19 @@
 package com.example.cotton.ui.home.register;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.SparseIntArray;
+import android.view.Surface;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,11 +26,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.content.CursorLoader;
 
+import com.example.cotton.BarCodeService;
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MainActivity;
 import com.example.cotton.MemberInfo;
@@ -33,19 +42,31 @@ import com.example.cotton.firebaseFunction;
 import com.example.cotton.ui.home.HomeFragment;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
+import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class RegisterBookActivity extends Activity {
+
+
 
     HomeFragment homeFragment;//이동할 homefragment
     AppCompatButton register_book_go_to_home_button;//Homefragment 이동 버튼
@@ -83,6 +104,7 @@ public class RegisterBookActivity extends Activity {
         majorPickSpinner();//전공 선택 스피너
 
         registerBook();//도서 등록 버튼 클릭 이벤트 method
+
 
 
 
@@ -188,7 +210,7 @@ public class RegisterBookActivity extends Activity {
 
     private void showGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
-        intent. setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, 200);
     }
 
@@ -209,6 +231,34 @@ public class RegisterBookActivity extends Activity {
         if (requestCode == 200 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
             register_book_image_Button.setImageURI(selectedImageUri);
+
+            // 바코드 인식 실험코드
+            FirebaseVisionImage image = null;
+            try {
+                image = FirebaseVisionImage.fromFilePath(this, selectedImageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            BarCodeService barCodeService = new BarCodeService();
+            FirebaseVisionBarcodeDetector detector = FirebaseVision.getInstance()
+                    .getVisionBarcodeDetector(barCodeService.getOptions());
+
+            Task<List<FirebaseVisionBarcode>> result = detector.detectInImage(image)
+                    .addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionBarcode>>() {
+                        @Override
+                        public void onSuccess(List<FirebaseVisionBarcode> barcodes) {
+                            for (FirebaseVisionBarcode barcode: barcodes) {
+                                Log.d("Barcode Result : ", "Success(" + barcode.getRawValue() + ")");
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("Barcode Result : ", "Barcode Fail ");
+                        }
+                    });
         }
     }
     private void localUpoad() {

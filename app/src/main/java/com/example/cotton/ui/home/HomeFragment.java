@@ -127,7 +127,12 @@ public class HomeFragment extends Fragment {
 
 
 
-        firebaseTest.myRegisteredBookListGet((resultList) -> {
+        firebaseTest.myRegisteredBookListGet((resultList) -> { //resultList안에 너가 원하는 모든게 있단다.
+                                                               //resultList.get(i).getBookName();
+            return null;
+        });
+
+        firebaseTest.myRentedBookListGet((resultList) -> {
             return null;
         });
 

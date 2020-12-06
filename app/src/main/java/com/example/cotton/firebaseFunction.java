@@ -132,13 +132,14 @@ public class firebaseFunction {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
         final List<UserRegisteredBookSaveForm> bookSaveList = new ArrayList<>();
-        db.collection("user/"+user.getUid() + "/RegistertedBook")
+        db.collection("users/"+user.getUid() + "/RegisteredBook")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("testtetetet", document.getId());
                                 bookSaveInit.add(document.getData());
                             }
                             for (int i=0;i<bookSaveInit.size();i++) {
@@ -164,7 +165,7 @@ public class firebaseFunction {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
         final List<UserRentedBookSaveForm> bookSaveList = new ArrayList<>();
-        db.collection("user/"+user.getUid() + "/RentedBook")
+        db.collection("users/"+user.getUid() + "/RentedBook")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

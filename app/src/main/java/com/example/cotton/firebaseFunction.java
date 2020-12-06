@@ -98,7 +98,7 @@ public class firebaseFunction {
         BookDateSaveForm bookDateSaveForm = new BookDateSaveForm(registerDate, rentCount);
         //BookDateSaveForm bookDateSaveForm = new BookDateSaveForm("registerDate", 10);
 
-        db.collection("bookSave/").document("barcode").set(booksave) // 책 정보 (북네임, 이미지, 저자, 학과) 저장
+        db.collection("bookSave/").document(barcode).set(booksave) // 책 정보 (북네임, 이미지, 저자, 학과) 저장
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void avoid) {
@@ -111,7 +111,7 @@ public class firebaseFunction {
                     }
                 });
 
-        db.collection("bookSave/").document("barcode").collection("RegisteredUsers/")
+        db.collection("bookSave/").document(barcode).collection("RegisteredUsers/")
                 .document(user.getUid()).set(bookDateSaveForm) // 책을 등록한 날짜, Rent 횟수 저장
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -125,6 +125,18 @@ public class firebaseFunction {
                     }
                 });
     }
+
+    // 현재 로그인된 유저가 등록한 책에 관한 정보를 저장합니다.
+    public void insertRegisteredBookToUser(String barcode, String bookName, String bookWriter){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    }
+
+    // 현재 로그인된 유저가 빌린 책에 관한 정보를 저장합니다.
+    public void insertRentedBookToUser(String barcode, String bookName, String bookWriter, String status){
+
+    }
+
 
     public void searchBook(String word, Function<List<bookSaveForm>, Void> complete) { // 전공별로 가져와서 리스트에 저장할꺼임
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -315,5 +327,6 @@ public class firebaseFunction {
                 .placeholder(R.drawable.cotton_icon)
                 .into(image_button); //이미지 버튼 아이디가 들어간다.
     }
-    
+
+
 }

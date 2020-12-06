@@ -3,9 +3,6 @@ package com.example.cotton.ui.home;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,41 +10,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.example.cotton.ApiService;
+import com.example.cotton.Utils.ApiService;
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
-import com.example.cotton.RetrofitClient;
-import com.example.cotton.RetrofitV1;
+import com.example.cotton.Utils.BaseUrlInterface;
+import com.example.cotton.Utils.RetrofitClientJson;
+import com.example.cotton.ValueObject.GetBalance.GetBalanceResultVO;
 import com.example.cotton.UserRegisteredBookSaveForm;
 import com.example.cotton.bookSaveForm;
 import com.example.cotton.firebaseFunction;
-import com.example.cotton.ui.food.FoodListAdapter;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -156,15 +139,15 @@ public class HomeFragment extends Fragment {
         // Home화면에 지갑잔고 출력
         firebaseTest.profileGet(memberInfos, (resultList) -> {
 
-            ApiService call = RetrofitClient.getApiService();
+            ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
 
             HashMap<String, String> headerMap = new HashMap<String, String>();
             headerMap.put("Content-Type", "application/json");
             headerMap.put("Authorization", "Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"); //Dapp API키값
 
-            call.getMoney(resultList.get(0).getWallet(),headerMap).enqueue(new Callback<RetrofitV1>() {
+            call.getMoney(resultList.get(0).getWallet(),headerMap).enqueue(new Callback<GetBalanceResultVO>() {
                 @Override
-                public void onResponse(Call<RetrofitV1> call, Response<RetrofitV1> response) {
+                public void onResponse(Call<GetBalanceResultVO> call, Response<GetBalanceResultVO> response) {
                     Log.d("성공 : ", "result : " + response.body().getResult());
                     Log.d("성공 : ", "address : " + response.body().getDataBalance().getBalance());
                     money = Double.parseDouble(response.body().getDataBalance().getBalance());
@@ -173,7 +156,7 @@ public class HomeFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<RetrofitV1> call, Throwable t) {
+                public void onFailure(Call<GetBalanceResultVO> call, Throwable t) {
                     Log.d("실패 : ", t.toString());
                 }
 

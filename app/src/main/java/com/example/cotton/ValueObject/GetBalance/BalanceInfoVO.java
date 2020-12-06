@@ -1,6 +1,6 @@
-package com.example.cotton;
+package com.example.cotton.ValueObject.GetBalance;
 
-public class DataBalance {
+public class BalanceInfoVO {
 
     private String balance;
 

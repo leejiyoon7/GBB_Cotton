@@ -1,6 +1,6 @@
-package com.example.cotton;
+package com.example.cotton.ValueObject.SetBalance;
 
-public class DataFoodBuy {
+public class FoodBuyVO {
 
     private String txId;
     private String reqTs;

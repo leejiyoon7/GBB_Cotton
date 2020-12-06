@@ -1,6 +1,6 @@
-package com.example.cotton;
+package com.example.cotton.ValueObject.CreateWallet;
 
-public class DataCreateWallet {
+public class WalletInfoVO {
 
     private String address;
 

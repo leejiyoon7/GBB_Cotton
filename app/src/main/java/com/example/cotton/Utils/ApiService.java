@@ -1,5 +1,8 @@
-package com.example.cotton;
+package com.example.cotton.Utils;
 
+import com.example.cotton.ValueObject.CreateWallet.CreateWalletResultVO;
+import com.example.cotton.ValueObject.GetBalance.GetBalanceResultVO;
+import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.ValueObject.BookSearchByBarcode.BookSearchResultVO;
 
 import java.util.HashMap;
@@ -16,10 +19,10 @@ import retrofit2.http.Query;
 public interface ApiService {
 
     @POST("v1.1/wallets")
-        Call<RetrofitV0> listRepos(@Body HashMap<String, String> gradeBody, @HeaderMap HashMap<String, String> map);
+        Call<CreateWalletResultVO> listRepos(@Body HashMap<String, String> gradeBody, @HeaderMap HashMap<String, String> map);
 
     @GET("v1.1/wallets/{wallet}/GCC/GBBGC/balance")
-        Call<RetrofitV1> getMoney(@Path("wallet") String wallet, @HeaderMap HashMap<String, String> map);
+        Call<GetBalanceResultVO> getMoney(@Path("wallet") String wallet, @HeaderMap HashMap<String, String> map);
 
 
 
@@ -32,6 +35,6 @@ public interface ApiService {
   
   
     @POST("v1.1/transactions/foodParchase2")
-        Call<RetrofitV2> buyFood(@Body HashMap<String, String> buyFoodBody, @HeaderMap HashMap<String, String> map);
+        Call<SetBalanceResultVO> buyFood(@Body HashMap<String, String> buyFoodBody, @HeaderMap HashMap<String, String> map);
 }
 

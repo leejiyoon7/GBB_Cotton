@@ -15,6 +15,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.cotton.Utils.ApiService;
+import com.example.cotton.Utils.BaseUrlInterface;
+import com.example.cotton.Utils.RetrofitClientJson;
+import com.example.cotton.ValueObject.CreateWallet.CreateWalletResultVO;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -60,7 +64,7 @@ public class MemberInitActivity extends AppCompatActivity {
                     //파베에서 유저정보 가져옴
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                    ApiService call = RetrofitClient.getApiService();
+                    ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
                     HashMap<String, String> headerMap = new HashMap<String, String>();
                     headerMap.put("Content-Type", "application/json");
                     headerMap.put("Authorization", "Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"); //Dapp API키값
@@ -69,9 +73,9 @@ public class MemberInitActivity extends AppCompatActivity {
                     bodyMap.put("walletType", "LUNIVERSE"); //지갑타입:루니버스
                     bodyMap.put("userKey", user.getUid()); //userKey를 파베 사용자의 UID를 가져와서 사용
 
-                    call.listRepos(bodyMap,headerMap).enqueue(new Callback<RetrofitV0>() {
+                    call.listRepos(bodyMap,headerMap).enqueue(new Callback<CreateWalletResultVO>() {
                         @Override
-                        public void onResponse(Call<RetrofitV0> call, Response<RetrofitV0> response) {
+                        public void onResponse(Call<CreateWalletResultVO> call, Response<CreateWalletResultVO> response) {
                             Log.d("성공 : ", "result : " + response.body().getResult());
                             Log.d("성공 : ", "address : " + response.body().getDataCreateWallet().getAddress());
                             walletAdress = response.body().getDataCreateWallet().getAddress();
@@ -80,7 +84,7 @@ public class MemberInitActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<RetrofitV0> call, Throwable t) {
+                        public void onFailure(Call<CreateWalletResultVO> call, Throwable t) {
                             Log.d("실패 : ", t.toString());
                         }
                     });

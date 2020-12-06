@@ -1,23 +1,21 @@
-package com.example.cotton;
+package com.example.cotton.Utils;
 
-import com.example.cotton.ApiService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitClient {
-    private static final String BASE_URL = "https://api.luniverse.io/tx/";
+public class RetrofitClientJson {
 
-    public static ApiService getApiService(){
-        return getInstance().create(ApiService.class);
+    public static ApiService getApiService(String baseUrl){
+        return getInstance(baseUrl).create(ApiService.class);
     }
 
-    private static Retrofit getInstance(){
+    private static Retrofit getInstance(String baseUrl){
         Gson gson = new GsonBuilder().setLenient().create();
         return new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }

@@ -1,10 +1,6 @@
-package com.example.cotton;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+package com.example.cotton.Utils;
 
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 //public class RetrofitClient2 {
@@ -23,7 +19,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 //}
 
 
-public class RetrofitClient2 {
+public class RetrofitClientXml {
 
     public static ApiService getApiService(String baseURL){
         return getInstance(baseURL).create(ApiService.class);

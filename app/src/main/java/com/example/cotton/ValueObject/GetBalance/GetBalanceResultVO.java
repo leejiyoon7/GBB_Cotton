@@ -1,9 +1,9 @@
-package com.example.cotton;
+package com.example.cotton.ValueObject.GetBalance;
 
-public class RetrofitV0 {
+public class GetBalanceResultVO {
 
     private String result;
-    private DataCreateWallet data;
+    private BalanceInfoVO data;
 
     public String getResult() {
         return result;
@@ -13,11 +13,11 @@ public class RetrofitV0 {
         this.result = result;
     }
 
-    public DataCreateWallet getDataCreateWallet() {
+    public BalanceInfoVO getDataBalance() {
         return data;
     }
 
-    public void setDataCreateWallet(DataCreateWallet data) {
+    public void setDataBalance(BalanceInfoVO data) {
         this.data = data;
     }
 }

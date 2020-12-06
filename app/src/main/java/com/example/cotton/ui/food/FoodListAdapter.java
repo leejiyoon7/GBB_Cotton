@@ -12,19 +12,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-
-import com.example.cotton.ApiService;
+import com.example.cotton.Utils.ApiService;
 import com.example.cotton.MainActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
-import com.example.cotton.RetrofitClient;
-import com.example.cotton.RetrofitV0;
-import com.example.cotton.RetrofitV1;
-import com.example.cotton.RetrofitV2;
+import com.example.cotton.Utils.BaseUrlInterface;
+import com.example.cotton.Utils.RetrofitClientJson;
+import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.firebaseFunction;
-import com.example.cotton.ui.home.register.RegisterBookActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -157,7 +152,7 @@ public class FoodListAdapter extends BaseAdapter {
 
     public void buyFood(int value, String wallet) {
 
-        ApiService call = RetrofitClient.getApiService();
+        ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
 
         HashMap<String, String> headerMap = new HashMap<String, String>();
         headerMap.put("Content-Type", "application/json");
@@ -174,16 +169,16 @@ public class FoodListAdapter extends BaseAdapter {
 
         Log.d("성공 : ", "result : " + bodyMap.toString());
 
-        call.buyFood(bodyMap,headerMap).enqueue(new Callback<RetrofitV2>() {
+        call.buyFood(bodyMap,headerMap).enqueue(new Callback<SetBalanceResultVO>() {
             @Override
-            public void onResponse(Call<RetrofitV2> call, Response<RetrofitV2> response) {
+            public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
                 Log.d("성공 : ", "result : " + response.body().getResult());
                 Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
                 Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
             }
 
             @Override
-            public void onFailure(Call<RetrofitV2> call, Throwable t) {
+            public void onFailure(Call<SetBalanceResultVO> call, Throwable t) {
                 Log.d("실패 : ", t.toString());
             }
 

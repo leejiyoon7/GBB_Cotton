@@ -1,9 +1,9 @@
-package com.example.cotton;
+package com.example.cotton.ValueObject.SetBalance;
 
-public class RetrofitV1 {
+public class SetBalanceResultVO {
 
     private String result;
-    private DataBalance data;
+    private FoodBuyVO data;
 
     public String getResult() {
         return result;
@@ -13,11 +13,11 @@ public class RetrofitV1 {
         this.result = result;
     }
 
-    public DataBalance getDataBalance() {
+    public FoodBuyVO getDataFoodBuy() {
         return data;
     }
 
-    public void setDataBalance(DataBalance data) {
+    public void setDataFoodBuy(FoodBuyVO data) {
         this.data = data;
     }
 }

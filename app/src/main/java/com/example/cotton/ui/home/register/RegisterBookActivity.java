@@ -21,12 +21,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.loader.content.CursorLoader;
 
-import com.example.cotton.ApiService;
+import com.example.cotton.Utils.ApiService;
 import com.example.cotton.BarCodeService;
 import com.example.cotton.MainActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
-import com.example.cotton.RetrofitClient2;
+import com.example.cotton.Utils.BaseUrlInterface;
+import com.example.cotton.Utils.RetrofitClientXml;
 import com.example.cotton.Utils.ImageLoadTask;
 import com.example.cotton.ValueObject.BookSearchByBarcode.BookSearchResultVO;
 import com.example.cotton.firebaseFunction;
@@ -289,7 +290,7 @@ public class RegisterBookActivity extends Activity {
                                 Log.d("Barcode Result : ", detectedBarcode);
 
                                 // C. 네이버 API를 통해서 책 정보 받아오기.
-                                ApiService call = RetrofitClient2.getApiService("https://openapi.naver.com/");
+                                ApiService call = RetrofitClientXml.getApiService(BaseUrlInterface.NAVER);
                                 Log.d("Barcode Result : ", detectedBarcode);
                                 call.searchBookByBarcode(detectedBarcode).enqueue(new Callback<BookSearchResultVO>() {
 

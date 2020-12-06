@@ -5,20 +5,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.cotton.ApiService;
+import com.example.cotton.Utils.ApiService;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
-import com.example.cotton.RetrofitClient;
-import com.example.cotton.RetrofitV0;
-import com.example.cotton.RetrofitV1;
+import com.example.cotton.Utils.BaseUrlInterface;
+import com.example.cotton.Utils.RetrofitClientJson;
+import com.example.cotton.ValueObject.GetBalance.GetBalanceResultVO;
 import com.example.cotton.firebaseFunction;
 
 import java.util.ArrayList;
@@ -82,15 +80,15 @@ public class FoodFragment extends Fragment {
 
     public void searchMoney(String wallet){
 
-        ApiService call = RetrofitClient.getApiService();
+        ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
 
         HashMap<String, String> headerMap = new HashMap<String, String>();
         headerMap.put("Content-Type", "application/json");
         headerMap.put("Authorization", "Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"); //Dapp API키값
 
-        call.getMoney(wallet,headerMap).enqueue(new Callback<RetrofitV1>() {
+        call.getMoney(wallet,headerMap).enqueue(new Callback<GetBalanceResultVO>() {
             @Override
-            public void onResponse(Call<RetrofitV1> call, Response<RetrofitV1> response) {
+            public void onResponse(Call<GetBalanceResultVO> call, Response<GetBalanceResultVO> response) {
                 Log.d("성공 : ", "result : " + response.body().getResult());
                 Log.d("성공 : ", "address : " + response.body().getDataBalance().getBalance());
                 money = Double.parseDouble(response.body().getDataBalance().getBalance());
@@ -99,7 +97,7 @@ public class FoodFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<RetrofitV1> call, Throwable t) {
+            public void onFailure(Call<GetBalanceResultVO> call, Throwable t) {
                 Log.d("실패 : ", t.toString());
             }
 

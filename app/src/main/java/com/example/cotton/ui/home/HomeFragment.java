@@ -152,9 +152,6 @@ public class HomeFragment extends Fragment {
             return null;
         });
 
-
-
-
 //         btnLogout=root.findViewById(R.id.btn_logout);
 //         //로그아웃 버튼 구현
 //         btnLogout.setOnClickListener(new View.OnClickListener() {

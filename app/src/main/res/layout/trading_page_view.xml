@@ -51,7 +51,7 @@
                     android:layout_marginBottom="12dp">
 
                     <ImageView
-                        android:id="@+id/register_book_image_view"
+                        android:id="@+id/registered_book_image_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitCenter"
@@ -61,26 +61,26 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
+                android:id="@+id/registered_book_title_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
 
-                android:textSize="20sp"
-                android:text="이곳에 도서 제목"
-                android:textStyle="bold"
-                android:textColor="#5e5e5e"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:textAlignment="center"
-                android:gravity="center"/>
+                android:textColor="#5e5e5e"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/registered_book_author_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
 
-                android:text="지은이 지음"
-                android:textSize="15sp"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:textAlignment="center"
-                android:gravity="center"/>
+                android:textSize="15sp" />
 
         </LinearLayout>
 

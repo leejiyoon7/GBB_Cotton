@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/history_listview_type_textView"
-        android:layout_width="0dp"
+        android:layout_width="45dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
@@ -42,8 +42,10 @@
         android:id="@+id/history_listview_date_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
         android:text="2020.12.05"
-        android:textSize="10sp"
+        android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -52,12 +54,11 @@
         android:id="@+id/history_listview_balance_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
         android:text="5000 GBB"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/history_listview_variance_textView" />
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/history_listview_type_textView"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/history_listview_variance_textView"

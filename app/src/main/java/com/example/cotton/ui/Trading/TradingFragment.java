@@ -2,6 +2,7 @@ package com.example.cotton.ui.Trading;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,13 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.cotton.MainActivity;
 import com.example.cotton.R;
+import com.example.cotton.ui.food.FoodListItem;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
+
+import java.util.ArrayList;
 
 public class TradingFragment extends Fragment {
 
@@ -37,8 +41,13 @@ public class TradingFragment extends Fragment {
     TradingViewPagerAdapter pagerAdapter;
 
     String major;//전공 value
+    String bookTitle;//전공 책 제목
+    String bookAuthor;//전공 책 작가
 
-    AppCompatButton trading_rent_button;
+    ArrayList<TradingViewPagerItem> tradingViewPagerItems=new ArrayList<TradingViewPagerItem>();
+
+
+    AppCompatButton trading_rent_button;//대여 버튼
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -54,15 +63,14 @@ public class TradingFragment extends Fragment {
         trading_rent_button=view.findViewById(R.id.trading_rent_button);
         //endregion
 
+        //뷰페이저 어댑터
         pagerAdapter=new TradingViewPagerAdapter(getChildFragmentManager());
+
+        tradingViewPagerItems=new ArrayList<TradingViewPagerItem>();
 
         searchBook();//search 기능
 
         majorPickSpinner();//전공 선택 스피너
-
-        TradingViewPagerFunc();//뷰 페이저 관련 함수
-
-        tradingRentButtonClickEvent();//대여하기 버튼 클릭 이벤트
 
         return view;
     }
@@ -153,24 +161,24 @@ public class TradingFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 switch(position){
                     case 0:
-                        Toast.makeText(getActivity(),"컴퓨터공학과 선택",Toast.LENGTH_SHORT).show();
                         major="컴퓨터공학과";
+                        TradingViewPagerFunc(major);//뷰 페이저 관련 함수
                         break;
                     case 1:
-                        Toast.makeText(getActivity(),"전자공학과 선택",Toast.LENGTH_SHORT).show();
                         major="전자공학과";
+                        TradingViewPagerFunc(major);
                         break;
                     case 2:
-                        Toast.makeText(getActivity(),"전기공학과 선택",Toast.LENGTH_SHORT).show();
                         major="전기공학과";
+                        TradingViewPagerFunc(major);
                         break;
                     case 3:
-                        Toast.makeText(getActivity(),"AI.소프트웨어학부 선택",Toast.LENGTH_SHORT).show();
                         major="AI.소프트웨어학부";
+                        TradingViewPagerFunc(major);
                         break;
                     case 4:
-                        Toast.makeText(getActivity(),"에너지IT학과",Toast.LENGTH_SHORT).show();
                         major="에너지IT학과";
+                        TradingViewPagerFunc(major);
                         break;
                 }
             }
@@ -182,23 +190,32 @@ public class TradingFragment extends Fragment {
     }
 
     //뷰 페이저 관련 함수
-    public void TradingViewPagerFunc(){
+    public void TradingViewPagerFunc(String _major){
 
         //추후 파이어베이스 참조해서 구현할때 여기서 책의 개수만큼 프래그먼트를 반복문으로 제작, 필요 시 대여자 정보, 및 각종 정보를 method를 변형해서 추가 가능
         // add your fragments
         pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자1","기욤 뮈소1");
+        addItem(_major, R.drawable.book_imsi,"종이 여자1","기욤 뮈소1");
 
         pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자2","기욤 뮈소2");
+        addItem(_major, R.drawable.book_imsi,"종이 여자2","기욤 뮈소2");
 
         pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자3","기욤 뮈소3");
+        addItem(_major, R.drawable.book_imsi,"종이 여자3","기욤 뮈소3");
 
         pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자4","기욤 뮈소4");
+        addItem(_major, R.drawable.book_imsi,"종이 여자4","기욤 뮈소4");
 
         trading_content_view_pager.setAdapter(pagerAdapter);
 
         pagerAdapter.notifyDataSetChanged();
 
+        //뷰페이저 스크롤을 하지 않아도 대여하기 버튼 이벤트가 활성화되도록 초기화
+        tradingRentButtonClickEvent(_major,"종이 여자1","기욤 뮈소1");
+
+        //뷰페이저 스크롤 이벤트, 여기서 position에 따라 가져올 정보가 각각 다름
         trading_content_view_pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -207,9 +224,13 @@ public class TradingFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
 
-                //fragment의 개수에 따라 메소드 라이브러리 사용해야합니다.
-                Toast.makeText(getActivity(),"onPageSelected 현재 페이지: "+position, Toast.LENGTH_SHORT).show();
-                
+                TradingViewPagerItem tradingViewPagerItem=tradingViewPagerItems.get(position);
+
+                String bookTitle=tradingViewPagerItem.getRegisteredBookTitle();
+                String bookAuthor=tradingViewPagerItem.getRegisteredBookAuthor();
+
+                tradingRentButtonClickEvent(_major,bookTitle,bookAuthor);//대여하기 버튼 클릭 이벤트
+
             }
 
             @Override
@@ -218,15 +239,26 @@ public class TradingFragment extends Fragment {
             }
         });
     }
+    //아이템 데이터 추가를 위한 함수
+    public void addItem(String _major, int _bookImg, String _bookTitle, String _bookAuthor){
+        TradingViewPagerItem item=new TradingViewPagerItem();
+
+        item.setMajor(_major);
+        item.setRegisteredBookImage(_bookImg);
+        item.setRegisteredBookTitle(_bookTitle);
+        item.setRegisteredBookAuthor(_bookAuthor);
+
+        tradingViewPagerItems.add(item);
+    }
 
     //대여하기 버튼 클릭 이벤트
-    public void tradingRentButtonClickEvent(){
+    public void tradingRentButtonClickEvent(String _major, String _bookTitle, String _bookAuthor){
         //구매 버튼 누를 시 MainActivity로 이동
         trading_rent_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(getActivity(),"대여하기 버튼 클릭됨",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"전공: "+_major+" 책 제목: "+_bookTitle+" 저자: "+_bookAuthor,Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(getActivity(), MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

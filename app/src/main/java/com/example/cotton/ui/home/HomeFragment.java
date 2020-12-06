@@ -35,6 +35,7 @@ import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.RetrofitClient;
 import com.example.cotton.RetrofitV1;
+import com.example.cotton.UserRegisteredBookSaveForm;
 import com.example.cotton.bookSaveForm;
 import com.example.cotton.firebaseFunction;
 import com.example.cotton.ui.food.FoodListAdapter;
@@ -46,6 +47,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +61,7 @@ public class HomeFragment extends Fragment {
    // Button btnLogout;
     List<MemberInfo> memberInfos = new ArrayList<>();
     List<bookSaveForm> bookSaveFormList= new ArrayList<>();
+    List<UserRegisteredBookSaveForm> testList = new ArrayList<>();
 
     ImageButton home_profile_image_button;//프로필 이미지
     TextView home_my_point_user_name_text_view;//사용자명
@@ -121,6 +124,14 @@ public class HomeFragment extends Fragment {
         firebaseFunction firebaseInput = new firebaseFunction();
         firebaseInput.insertBookInfo2("9788959522057", "ARTHAS: RISE OF THE LICH KING", "pictureLink", "크리스티 골든", "흑마법전공", "2020-12-06", 10);
         */
+
+
+
+        firebaseTest.myRegisteredBookListGet((resultList) -> {
+            return null;
+        });
+
+
 
 
         // Home화면에 UserName 출력

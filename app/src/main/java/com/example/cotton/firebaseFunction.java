@@ -126,17 +126,69 @@ public class firebaseFunction {
                 });
     }
 
-    // 현재 로그인된 유저가 등록한 책에 관한 정보를 저장합니다.
-    public void insertRegisteredBookToUser(String barcode, String bookName, String bookWriter){
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    // 현재 로그인된 유저가 등록한 책에 관한 정보를 받아옵니다.
+    public void myRegisteredBookListGet(Function<List<UserRegisteredBookSaveForm>, Void> complete) { //모든 책 정보 받아오기
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
+        final List<UserRegisteredBookSaveForm> bookSaveList = new ArrayList<>();
+        db.collection("user/"+user.getUid() + "/RegistertedBook")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                bookSaveInit.add(document.getData());
+                            }
+                            for (int i=0;i<bookSaveInit.size();i++) {
+                                UserRegisteredBookSaveForm bookSaveFormProto = new UserRegisteredBookSaveForm(
+                                        (String)bookSaveInit.get(i).get("bookName"),
+                                        (String)bookSaveInit.get(i).get("bookWriter"));
+                                bookSaveList.add(bookSaveFormProto);
+                                Log.d("TTTTTTTT",(String)bookSaveInit.get(i).get("bookName") );
+                            }
+                            complete.apply(bookSaveList);
+
+                        } else {
+
+                        }
+                    }
+                });
+
     }
 
-    // 현재 로그인된 유저가 빌린 책에 관한 정보를 저장합니다.
-    public void insertRentedBookToUser(String barcode, String bookName, String bookWriter, String status){
+    // 현재 로그인된 유저가 빌린 책에 관한 정보를 받아옵니다.
+    public void myRentedBookListGet(Function<List<UserRentedBookSaveForm>, Void> complete) { //모든 책 정보 받아오기
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
+        final List<UserRentedBookSaveForm> bookSaveList = new ArrayList<>();
+        db.collection("user/"+user.getUid() + "/RentedBook")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                bookSaveInit.add(document.getData());
+                            }
+                            for (int i=0;i<bookSaveInit.size();i++) {
+                                UserRentedBookSaveForm bookSaveFormProto = new UserRentedBookSaveForm(
+                                        (String)bookSaveInit.get(i).get("bookName"),
+                                        (String)bookSaveInit.get(i).get("bookWriter"),
+                                        (String)bookSaveInit.get(i).get("status"));
+                                bookSaveList.add(bookSaveFormProto);
+                                Log.d("TTTTTTTT",(String)bookSaveInit.get(i).get("bookName") );
+                            }
+                            complete.apply(bookSaveList);
+                        } else {
+
+                        }
+                    }
+                });
 
     }
-
 
     public void searchBook(String word, Function<List<bookSaveForm>, Void> complete) { // 전공별로 가져와서 리스트에 저장할꺼임
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

@@ -50,7 +50,7 @@
 
 
             <TextView
-                android:id="@+id/register_book_title_text_view"
+                android:id="@+id/registered_book_title_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"

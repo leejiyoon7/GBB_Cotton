@@ -154,24 +154,20 @@ public class FoodListAdapter extends BaseAdapter {
 
         ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
 
-        HashMap<String, String> headerMap = new HashMap<String, String>();
-        headerMap.put("Content-Type", "application/json");
-        headerMap.put("Authorization", "Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"); //Dapp API키값
-
         HashMap<String, String> bodyMap2 = new HashMap<String, String>();
-
         bodyMap2.put("valueAmount", value + "000000000000000000"); //가격
         bodyMap2.put("receiverAddress", "0x0fe24b865654653BE6ee9Da779177BB194075276");
 
-        HashMap<String, String> bodyMap = new HashMap<String, String>();
-        bodyMap.put("from", wallet); //보내는사람 지갑주소
-        bodyMap.put("inputs", bodyMap2.toString()); //bodyMap2
+        HashMap<String, Object> bodyMap = new HashMap<String, Object>();
+        bodyMap.put("from", new String(wallet)); //보내는사람 지갑주소
+        bodyMap.put("inputs", new HashMap<String, String>(bodyMap2)); //bodyMap2
 
         Log.d("성공 : ", "result : " + bodyMap.toString());
 
-        call.buyFood(bodyMap,headerMap).enqueue(new Callback<SetBalanceResultVO>() {
+        call.buyFood(bodyMap).enqueue(new Callback<SetBalanceResultVO>() {
             @Override
             public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
+                Log.d("성공 : ", "result : " + response.raw());
                 Log.d("성공 : ", "result : " + response.body().getResult());
                 Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
                 Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());

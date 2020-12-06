@@ -141,11 +141,7 @@ public class HomeFragment extends Fragment {
 
             ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
 
-            HashMap<String, String> headerMap = new HashMap<String, String>();
-            headerMap.put("Content-Type", "application/json");
-            headerMap.put("Authorization", "Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"); //Dapp API키값
-
-            call.getMoney(resultList.get(0).getWallet(),headerMap).enqueue(new Callback<GetBalanceResultVO>() {
+            call.getMoney(resultList.get(0).getWallet()).enqueue(new Callback<GetBalanceResultVO>() {
                 @Override
                 public void onResponse(Call<GetBalanceResultVO> call, Response<GetBalanceResultVO> response) {
                     Log.d("성공 : ", "result : " + response.body().getResult());

@@ -18,23 +18,38 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
+    /* Luniverse */
     @POST("v1.1/wallets")
-        Call<CreateWalletResultVO> listRepos(@Body HashMap<String, String> gradeBody, @HeaderMap HashMap<String, String> map);
+    @Headers({
+            "Content-Type: application/json",
+            "Authorization: Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"
+    })
+    Call<CreateWalletResultVO> listRepos(@Body HashMap<String, String> gradeBody);
+
+
 
     @GET("v1.1/wallets/{wallet}/GCC/GBBGC/balance")
-        Call<GetBalanceResultVO> getMoney(@Path("wallet") String wallet, @HeaderMap HashMap<String, String> map);
+    @Headers({
+            "Content-Type: application/json",
+            "Authorization: Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"
+    })
+    Call<GetBalanceResultVO> getMoney(@Path("wallet") String wallet);
 
 
+    @POST("v1.1/transactions/foodParchase2")
+    @Headers({
+            "Content-Type: application/json",
+            "Authorization: Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"
+    })
+    Call<SetBalanceResultVO> buyFood(@Body HashMap<String, Object> buyFoodBody);
 
+
+    /* Naver */
     @GET("v1/search/book_adv.xml")
     @Headers({
             "X-Naver-Client-Id: 2BZk7zU17z265z9ODeX4",
             "X-Naver-Client-Secret: NuY6KgaU2t"
     })
     Call<BookSearchResultVO> searchBookByBarcode(@Query("d_isbn") String wallet);
-  
-  
-    @POST("v1.1/transactions/foodParchase2")
-        Call<SetBalanceResultVO> buyFood(@Body HashMap<String, String> buyFoodBody, @HeaderMap HashMap<String, String> map);
 }
 

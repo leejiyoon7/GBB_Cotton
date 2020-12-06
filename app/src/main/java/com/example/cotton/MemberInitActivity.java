@@ -65,15 +65,12 @@ public class MemberInitActivity extends AppCompatActivity {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                     ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
-                    HashMap<String, String> headerMap = new HashMap<String, String>();
-                    headerMap.put("Content-Type", "application/json");
-                    headerMap.put("Authorization", "Pr35dc2sqok4JsPXjRkZ63T1R1MTujVwqfwzNHZBo9Z2oVPDvBbmqdsk28FhLenv"); //Dapp API키값
 
                     HashMap<String, String> bodyMap = new HashMap<String, String>();
                     bodyMap.put("walletType", "LUNIVERSE"); //지갑타입:루니버스
                     bodyMap.put("userKey", user.getUid()); //userKey를 파베 사용자의 UID를 가져와서 사용
 
-                    call.listRepos(bodyMap,headerMap).enqueue(new Callback<CreateWalletResultVO>() {
+                    call.listRepos(bodyMap).enqueue(new Callback<CreateWalletResultVO>() {
                         @Override
                         public void onResponse(Call<CreateWalletResultVO> call, Response<CreateWalletResultVO> response) {
                             Log.d("성공 : ", "result : " + response.body().getResult());

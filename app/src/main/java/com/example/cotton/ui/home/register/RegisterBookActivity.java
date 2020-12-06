@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,6 +48,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -131,8 +133,28 @@ public class RegisterBookActivity extends Activity {
         register_book_image_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(RegisterBookActivity.this,"사진추가 클릭 이벤트 발생",Toast.LENGTH_SHORT).show();
-                showGallery();
+                final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(RegisterBookActivity.this);
+                bottomSheetDialog.setContentView(R.layout.camera_or_album_bottom_dialog);
+
+                TextView cameraTextView = bottomSheetDialog.findViewById(R.id.camera_or_album_camer);
+                TextView albumTextView = bottomSheetDialog.findViewById(R.id.camera_or_album_album);
+
+                cameraTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+                albumTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showGallery();
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                bottomSheetDialog.show();
+
             }
         });
     }

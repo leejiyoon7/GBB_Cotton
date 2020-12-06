@@ -28,9 +28,8 @@ import java.util.ArrayList;
 public class TradingFragment extends Fragment {
 
     ChipGroup trading_header_chip_group; // 칩 그룹
-    Chip trading_hear_chip_class; //칩(강좌)
-    Chip trading_hear_chip_professor; //칩(교수)
     Chip trading_hear_chip_book; //칩(책)
+    Chip trading_hear_chip_writer; //칩(교수)
     SearchView trading_header_search_view; // 검색 창
     Spinner trading_title_department_spinner;//스피너
     ArrayAdapter spinnerAdapter;//스피너 어댑터
@@ -59,8 +58,7 @@ public class TradingFragment extends Fragment {
         trading_title_department_spinner=view.findViewById(R.id.trading_title_department_spinner);
         trading_content_view_pager=(ViewPager) view.findViewById(R.id.trading_content_view_pager);
         trading_rent_button=view.findViewById(R.id.trading_rent_button);
-        trading_hear_chip_class = view.findViewById(R.id.trading_hear_chip_class);
-        trading_hear_chip_professor = view.findViewById(R.id.trading_hear_chip_professor);
+        trading_hear_chip_writer = view.findViewById(R.id.trading_hear_chip_writer);
         trading_hear_chip_book = view.findViewById(R.id.trading_hear_chip_book);
 
         //endregion
@@ -71,9 +69,9 @@ public class TradingFragment extends Fragment {
         tradingViewPagerItems=new ArrayList<TradingViewPagerItem>();
 
         // Chip 초기 설정
-        setChipOption(trading_hear_chip_class);
-        setChipOption(trading_hear_chip_professor);
         setChipOption(trading_hear_chip_book);
+        setChipOption(trading_hear_chip_writer);
+
 
 
 //        searchBook();//search 기능
@@ -89,8 +87,7 @@ public class TradingFragment extends Fragment {
      * 칩이 비어있을 경우 SearchView를 숨김.
      */
     private void hideSearchViewIfChipIsEmpty() {
-        if (trading_hear_chip_class.getText().equals("강좌명: ") &&
-                trading_hear_chip_professor.getText().equals("교수명: ") &&
+        if (trading_hear_chip_writer.getText().equals("교수명: ") &&
                 trading_hear_chip_book.getText().equals("도서명: ")) {
             trading_header_search_view.setVisibility(View.INVISIBLE);
         }
@@ -110,14 +107,11 @@ public class TradingFragment extends Fragment {
             public void onClick(View v) {
                 // SearchView 검색 힌트 등록.
                 String queryHintWord = "";
-                if (chip.equals(trading_hear_chip_class)) {
-                    queryHintWord = "강좌명";
-                }
-                else if (chip.equals(trading_hear_chip_professor)) {
-                    queryHintWord = "교수명";
-                }
-                else if (chip.equals(trading_hear_chip_book)) {
+                if (chip.equals(trading_hear_chip_book)) {
                     queryHintWord = "도서명";
+                }
+                else if (chip.equals(trading_hear_chip_writer)) {
+                    queryHintWord = "저자명";
                 }
                 trading_header_search_view.setQueryHint(queryHintWord + "을 입력해주세요.");
                 trading_header_search_view.setVisibility(View.VISIBLE);
@@ -130,14 +124,12 @@ public class TradingFragment extends Fragment {
                 trading_header_search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
-                        if (chip.equals(trading_hear_chip_class)) {
-                            chip.setText("강좌명: " + query);
-                        }
-                        else if (chip.equals(trading_hear_chip_professor)) {
-                            chip.setText("교수명: " + query);
-                        }
-                        else if (chip.equals(trading_hear_chip_book)) {
+
+                        if (chip.equals(trading_hear_chip_book)) {
                             chip.setText("도서명: " + query);
+                        }
+                        else if (chip.equals(trading_hear_chip_writer)) {
+                            chip.setText("저자명: " + query);
                         }
                         trading_header_search_view.setQuery("", false);
                         trading_header_search_view.setVisibility(View.INVISIBLE);
@@ -156,14 +148,11 @@ public class TradingFragment extends Fragment {
         chip.setOnCloseIconClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (chip.equals(trading_hear_chip_class)) {
-                    chip.setText("강좌명: ");
-                }
-                else if (chip.equals(trading_hear_chip_professor)) {
-                    chip.setText("교수명: ");
-                }
-                else if (chip.equals(trading_hear_chip_book)) {
+                if (chip.equals(trading_hear_chip_book)) {
                     chip.setText("도서명: ");
+                }
+                else if (chip.equals(trading_hear_chip_writer)) {
+                    chip.setText("저자명: ");
                 }
                 hideSearchViewIfChipIsEmpty();
             }

@@ -70,7 +70,7 @@ public class TradingFragment extends Fragment {
 
         tradingViewPagerItems=new ArrayList<TradingViewPagerItem>();
 
-        // Chip설정
+        // Chip 초기 설정
         setChipOption(trading_hear_chip_class);
         setChipOption(trading_hear_chip_professor);
         setChipOption(trading_hear_chip_book);
@@ -85,8 +85,8 @@ public class TradingFragment extends Fragment {
     
     // 기능 부
     /**
-     * 칩에 검색내용이 비어있는지 확인
-     * @return : 칩이 비어있을 경우 True
+     * 칩에 검색내용이 비어있는지 확인하고
+     * 칩이 비어있을 경우 SearchView를 숨김.
      */
     private void hideSearchViewIfChipIsEmpty() {
         if (trading_hear_chip_class.getText().equals("강좌명: ") &&
@@ -96,11 +96,19 @@ public class TradingFragment extends Fragment {
         }
     }
 
-
+    /**
+     * 칩 초기설정을 추가.
+     * A. Chip을 누르면 SearchView가 보여짐.
+     * B. 검색을 완료하면 Chip에 검색어 등록.
+     * C. Chip 닫기를 누르면 Chip에 포함된 검색어가 사라짐.
+     * @param chip: ChipGroup에 등록 된 칩.
+     */
     private void setChipOption(Chip chip) {
         chip.setOnClickListener(new View.OnClickListener() {
+            /*A. Chip을 누르면 SearchView가 보여짐.*/
             @Override
             public void onClick(View v) {
+                // SearchView 검색 힌트 등록.
                 String queryHintWord = "";
                 if (chip.equals(trading_hear_chip_class)) {
                     queryHintWord = "강좌명";
@@ -112,13 +120,13 @@ public class TradingFragment extends Fragment {
                     queryHintWord = "도서명";
                 }
                 trading_header_search_view.setQueryHint(queryHintWord + "을 입력해주세요.");
-
                 trading_header_search_view.setVisibility(View.VISIBLE);
                 trading_header_search_view.requestFocus();
                 // 키보드 열기
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
+                /*B. 검색을 완료하면 Chip에 검색어 등록.*/
                 trading_header_search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
@@ -142,8 +150,9 @@ public class TradingFragment extends Fragment {
                     }
                 });
             }
-        });
+        }); //End of: chip.setOnClickListener
 
+        /*C. Chip 닫기를 누르면 Chip에 포함된 검색어가 사라짐.*/
         chip.setOnCloseIconClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +168,7 @@ public class TradingFragment extends Fragment {
                 hideSearchViewIfChipIsEmpty();
             }
         });
-    }
+    } // End of: setChipOption
 
 
     //spinner 구현 method

@@ -242,7 +242,7 @@ public class RegisterBookActivity extends Activity {
                         firebaseFunction firebaseInput = new firebaseFunction();
                         firebaseInput.profileGet(getMemberName, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
                             Log.d("home에서 확인",resultList.get(0).getName());
-                            firebaseInput.insertBookInfo("사진링크",major,register_book_card_book_title_edit_text.getText().toString(),register_book_card_book_writer_edit_text.getText().toString(),"지갑정보",resultList.get(0).getName());
+                            //firebaseInput.insertBookInfo("사진링크",major,register_book_card_book_title_edit_text.getText().toString(),register_book_card_book_writer_edit_text.getText().toString(),"지갑정보",resultList.get(0).getName());
                             return null;
                         });
                         finish();

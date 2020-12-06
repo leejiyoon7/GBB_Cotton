@@ -5,18 +5,18 @@ public class bookSaveForm {
     private String major;
     private String bookName;
     private String bookWriter;
-    private String walletInfo;
-    private String userName;
+    //private String walletInfo;
+    //private String userName;
 
 
     public bookSaveForm(){}
-    public bookSaveForm(String pictureLink, String major, String bookName, String bookWriter, String walletInfo, String userName){
+    public bookSaveForm(String pictureLink, String major, String bookName, String bookWriter/*, String userName*/){
         this.pictureLink = pictureLink;
         this.major = major;
         this.bookName = bookName;
         this.bookWriter = bookWriter;
-        this.walletInfo = walletInfo;
-        this.userName = userName;
+        //this.walletInfo = walletInfo;
+        //this.userName = userName;
     }
 
     public String getPictureLink() {
@@ -51,19 +51,4 @@ public class bookSaveForm {
         this.bookWriter = bookWriter;
     }
 
-    public String getWalletInfo() {
-        return walletInfo;
-    }
-
-    public void setWalletInfo(String walletInfo) {
-        this.walletInfo = walletInfo;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 }

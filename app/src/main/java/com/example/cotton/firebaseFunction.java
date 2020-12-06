@@ -62,14 +62,14 @@ public class firebaseFunction {
      * @param major         전공
      * @param bookName      책제목
      * @param bookWriter    책저자
-     * @param walletInfo    지갑정보
-     * @param userName      사용자이름
      */
+
+/*
     public static void insertBookInfo(String pictureLink, String major, String bookName, String bookWriter, String walletInfo,String userName) {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter, walletInfo, userName);
+        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter, userName);
 
         db.collection("bookSave/").document(bookName + "_" + userName).set(booksave) // 책 저장하기
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -85,6 +85,49 @@ public class firebaseFunction {
                     }
                 });
     }
+*/
+
+    // New DB Structure
+    public static void insertBookInfo2(String barcode, String bookName, String pictureLink, String bookWriter, String major,
+                                       String registerDate, int rentCount){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter);
+        //bookSaveForm booksave = new bookSaveForm("pictureLink", "major", "bookName", "bookWriter");
+        BookDateSaveForm bookDateSaveForm = new BookDateSaveForm(registerDate, rentCount);
+        //BookDateSaveForm bookDateSaveForm = new BookDateSaveForm("registerDate", 10);
+
+        db.collection("bookSave/").document("barcode").set(booksave) // 책 정보 (북네임, 이미지, 저자, 학과) 저장
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("testing", "성공");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+
+        db.collection("bookSave/").document("barcode").collection("RegisteredUsers/")
+                .document(user.getUid()).set(bookDateSaveForm) // 책을 등록한 날짜, Rent 횟수 저장
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("testing", "성공");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
+
+
+
 
     public void serchBook(String word) { //책 검색 , 하나밖에 검색안됨 / 저자별
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -148,9 +191,8 @@ public class firebaseFunction {
      * 모든책 받아오기 페이지
      * List<bookSaveForm> bookSaveFormList= new ArrayList<>(); 이렇게 전역변수로 선언하나 해주고
      * (resultList) -> {}
-     * @param bookSaveFormList
-     * @param complete
      */
+    /*
     public void bookListGet(List<bookSaveForm> bookSaveFormList, Function<List<bookSaveForm>, Void> complete) { //모든 책 정보 받아오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -170,7 +212,6 @@ public class firebaseFunction {
                                         (String)bookSaveInit.get(i).get("major"),
                                         (String)bookSaveInit.get(i).get("bookName"),
                                         (String)bookSaveInit.get(i).get("bookWriter"),
-                                        (String)bookSaveInit.get(i).get("walletInfo"),
                                         (String)bookSaveInit.get(i).get("userName"));
                                 bookSaveList.add(bookSaveFormProto);
                             }
@@ -182,7 +223,7 @@ public class firebaseFunction {
                 });
 
     }
-
+*/
 
 
 

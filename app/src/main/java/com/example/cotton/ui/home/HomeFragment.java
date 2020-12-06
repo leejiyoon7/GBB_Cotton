@@ -114,6 +114,8 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        firebaseFunction firebaseInput = new firebaseFunction();
+        firebaseInput.insertBookInfo2("9788959522057", "ARTHAS: RISE OF THE LICH KING", "pictureLink", "크리스티 골든", "흑마법전공", "2020-12-06", 10);
 
         // Home화면에 UserName 출력
         firebaseTest.profileGet(memberInfos, (resultList) -> {
@@ -202,7 +204,8 @@ public class HomeFragment extends Fragment {
 //             Log.d("home에서 확인",resultList.get(0).getName());
 //             return null;
 //         });
-        
+
+        /*
         firebaseTest.bookListGet(bookSaveFormList, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
              Log.d("home에서 확인",resultList.get(0).getBookName());
              Log.d("home에서 확인",resultList.get(1).getBookName());
@@ -210,6 +213,8 @@ public class HomeFragment extends Fragment {
              return null;
          });
 
+
+        */
 
 
 //        btnLogout=root.findViewById(R.id.btn_logout);

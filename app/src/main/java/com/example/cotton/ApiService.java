@@ -18,4 +18,8 @@ public interface ApiService {
 
     @GET("v1.1/wallets/{wallet}/GCC/GBBGC/balance")
         Call<RetrofitV1> getMoney(@Path("wallet") String wallet, @HeaderMap HashMap<String, String> map);
+
+    @POST("v1.1/transactions/foodParchase2")
+        Call<RetrofitV2> buyFood(@Body HashMap<String, String> buyFoodBody, @HeaderMap HashMap<String, String> map);
+
 }

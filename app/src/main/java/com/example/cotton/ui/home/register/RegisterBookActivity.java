@@ -121,6 +121,11 @@ public class RegisterBookActivity extends Activity {
     }
 
     //사진 등록 method, 추후 구현 예정
+
+    /**
+     * Bottom Sheet Dialog를 통해서
+     * 바코드를 인식할 사진을 카메라로 찍을지 앨범에서 가져올지 정함.
+     */
     public void registerBookImage(){
         register_book_image_Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +136,7 @@ public class RegisterBookActivity extends Activity {
                 TextView cameraTextView = bottomSheetDialog.findViewById(R.id.camera_or_album_camer);
                 TextView albumTextView = bottomSheetDialog.findViewById(R.id.camera_or_album_album);
 
-                // 카메라 선택시 들어갈 동작.
+                // 카메라 선택시
                 cameraTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -139,6 +144,7 @@ public class RegisterBookActivity extends Activity {
                     }
                 });
 
+                // 앨 선택시
                 albumTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -247,31 +253,42 @@ public class RegisterBookActivity extends Activity {
 
         return cursor.getString(index);
     }
+
+
+    /**
+     * 바코드를 인식할 사진의 정보를 받을 경우
+     * A. uri를 바탕으로 이미지를 Bitmap형태로 변환
+     * B. Bitmap Image를 바탕으로 바코드 인식 수행.
+     * C. 바코드 인식 성공 시 네이버 API를 통해서 책 정보 받아오기.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 200 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
-//            register_book_image_Button.setImageURI(selectedImageUri);
 
+            // A. uri를 바탕으로 이미지를 Bitmap형태로 변환
             Bitmap bitmap = null;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
 
+            // B. Bitmap Image를 바탕으로 바코드 인식 수행.
+            FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
             BarCodeService barCodeService = new BarCodeService();
             FirebaseVisionBarcodeDetector detector = FirebaseVision.getInstance().getVisionBarcodeDetector(barCodeService.getOptions());
             Task<List<FirebaseVisionBarcode>> result = detector.detectInImage(image)
                     .addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionBarcode>>() {
+                        // 바코드 인식 성공시
                         @Override
                         public void onSuccess(List<FirebaseVisionBarcode> barcodes) {
                             for (FirebaseVisionBarcode barcode : barcodes) {
                                 String detectedBarcode = barcode.getRawValue();
                                 Log.d("Barcode Result : ", detectedBarcode);
 
+                                // C. 네이버 API를 통해서 책 정보 받아오기.
                                 ApiService call = RetrofitClient2.getApiService("https://openapi.naver.com/");
                                 Log.d("Barcode Result : ", detectedBarcode);
                                 call.searchBookByBarcode(detectedBarcode).enqueue(new Callback<BookSearchResultVO>() {

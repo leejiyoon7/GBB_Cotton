@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -45,6 +46,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.ml.vision.FirebaseVision;
@@ -232,23 +235,21 @@ public class RegisterBookActivity extends Activity {
             selectedImageUri = data.getData();
             register_book_image_Button.setImageURI(selectedImageUri);
 
-            // 바코드 인식 실험코드
-            FirebaseVisionImage image = null;
+            Bitmap bitmap = null;
             try {
-                image = FirebaseVisionImage.fromFilePath(this, selectedImageUri);
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
 
             BarCodeService barCodeService = new BarCodeService();
-            FirebaseVisionBarcodeDetector detector = FirebaseVision.getInstance()
-                    .getVisionBarcodeDetector(barCodeService.getOptions());
-
+            FirebaseVisionBarcodeDetector detector = FirebaseVision.getInstance().getVisionBarcodeDetector(barCodeService.getOptions());
             Task<List<FirebaseVisionBarcode>> result = detector.detectInImage(image)
                     .addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionBarcode>>() {
                         @Override
                         public void onSuccess(List<FirebaseVisionBarcode> barcodes) {
-                            for (FirebaseVisionBarcode barcode: barcodes) {
+                            for (FirebaseVisionBarcode barcode : barcodes) {
                                 Log.d("Barcode Result : ", "Success(" + barcode.getRawValue() + ")");
                             }
                         }
@@ -261,6 +262,7 @@ public class RegisterBookActivity extends Activity {
                     });
         }
     }
+
     private void localUpoad() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
 

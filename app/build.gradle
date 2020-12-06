@@ -57,7 +57,9 @@ dependencies {
     implementation 'com.github.ceryle:SegmentedButton:v2.0.2'
 
     // 바코드 인식을 위한 라이브러리
-    implementation 'com.google.android.gms:play-services-vision:20.0.0'
-    implementation 'com.google.firebase:firebase-ml-vision:24.0.3'
-    implementation 'com.google.firebase:firebase-ml-vision-barcode-model:16.1.1'
+    implementation 'com.google.android.gms:play-services-vision:20.1.2'
+
+    implementation 'com.google.firebase:firebase-ml-vision:24.1.0'
+    implementation 'com.google.firebase:firebase-ml-vision-barcode-model:16.1.2'
+
 }

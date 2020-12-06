@@ -1,45 +1,34 @@
 package com.example.cotton.ui.home.register;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.util.SparseIntArray;
-import android.view.Surface;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.content.CursorLoader;
 
+import com.example.cotton.ApiService;
 import com.example.cotton.BarCodeService;
-import com.example.cotton.LoginActivity;
 import com.example.cotton.MainActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
-import com.example.cotton.bookSaveForm;
+import com.example.cotton.RetrofitClient2;
+import com.example.cotton.Utils.ImageLoadTask;
+import com.example.cotton.ValueObject.BookSearchByBarcode.BookSearchResultVO;
 import com.example.cotton.firebaseFunction;
 import com.example.cotton.ui.home.HomeFragment;
 import com.google.android.gms.tasks.Continuation;
@@ -47,26 +36,25 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class RegisterBookActivity extends Activity {
@@ -77,8 +65,8 @@ public class RegisterBookActivity extends Activity {
     AppCompatButton register_book_go_to_home_button;//Homefragment 이동 버튼
     ImageButton register_book_image_Button;//도서등록 사진추가 이미지뷰
     Spinner register_book_card_department_spinner;//학과 스피너
-    EditText register_book_card_book_title_edit_text;//도서 제목 editText
-    EditText register_book_card_book_writer_edit_text;//도서 저자 editText
+    TextView register_book_card_book_title_result_text_view;//도서 제목 editText
+    TextView register_book_card_book_writer_result_text_view;//도서 저자 editText
     AppCompatButton register_book_app_compat_button;//등록하기 버튼
 
     ArrayAdapter spinnerAdapter;//스피너 어댑터
@@ -98,8 +86,8 @@ public class RegisterBookActivity extends Activity {
         register_book_go_to_home_button=findViewById(R.id.register_book_go_to_home_button);
         register_book_image_Button=findViewById(R.id.register_book_image_Button);
         register_book_card_department_spinner=findViewById(R.id.register_book_card_department_spinner);
-        register_book_card_book_title_edit_text=(EditText)findViewById(R.id.register_book_card_book_title_edit_text);
-        register_book_card_book_writer_edit_text=(EditText)findViewById(R.id.register_book_card_book_writer_edit_text);
+        register_book_card_book_title_result_text_view =findViewById(R.id.register_book_card_book_title_result_text_view);
+        register_book_card_book_writer_result_text_view =findViewById(R.id.register_book_card_book_writer_result_text_view);
         register_book_app_compat_button=findViewById(R.id.register_book_app_compat_button);
 
         goToHome();//MainActivity 이동 이벤트 method
@@ -139,6 +127,7 @@ public class RegisterBookActivity extends Activity {
                 TextView cameraTextView = bottomSheetDialog.findViewById(R.id.camera_or_album_camer);
                 TextView albumTextView = bottomSheetDialog.findViewById(R.id.camera_or_album_album);
 
+                // 카메라 선택시 들어갈 동작.
                 cameraTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -150,6 +139,7 @@ public class RegisterBookActivity extends Activity {
                     @Override
                     public void onClick(View v) {
                         showGallery();
+                        register_book_app_compat_button.setEnabled(false);
                         bottomSheetDialog.dismiss();
                     }
                 });
@@ -205,8 +195,8 @@ public class RegisterBookActivity extends Activity {
         register_book_app_compat_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(register_book_card_book_title_edit_text.getText().length()!=0 && register_book_card_book_writer_edit_text.getText().length()!=0){
-                    Toast.makeText(RegisterBookActivity.this,"전공: "+major+" 도서 제목: "+register_book_card_book_title_edit_text.getText().toString()+" 도서 저자: "+register_book_card_book_writer_edit_text.getText().toString(),Toast.LENGTH_SHORT).show();
+                if(register_book_card_book_title_result_text_view.getText().length()!=0 && register_book_card_book_writer_result_text_view.getText().length()!=0){
+                    Toast.makeText(RegisterBookActivity.this,"전공: "+major+" 도서 제목: "+ register_book_card_book_title_result_text_view.getText().toString()+" 도서 저자: "+ register_book_card_book_writer_result_text_view.getText().toString(),Toast.LENGTH_SHORT).show();
                     localUpoad();
                     Intent intent=new Intent(RegisterBookActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -255,7 +245,7 @@ public class RegisterBookActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 200 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
-            register_book_image_Button.setImageURI(selectedImageUri);
+//            register_book_image_Button.setImageURI(selectedImageUri);
 
             Bitmap bitmap = null;
             try {
@@ -272,7 +262,32 @@ public class RegisterBookActivity extends Activity {
                         @Override
                         public void onSuccess(List<FirebaseVisionBarcode> barcodes) {
                             for (FirebaseVisionBarcode barcode : barcodes) {
-                                Log.d("Barcode Result : ", "Success(" + barcode.getRawValue() + ")");
+                                String detectedBarcode = barcode.getRawValue();
+                                Log.d("Barcode Result : ", detectedBarcode);
+
+                                ApiService call = RetrofitClient2.getApiService("https://openapi.naver.com/");
+                                Log.d("Barcode Result : ", detectedBarcode);
+                                call.searchBookByBarcode(detectedBarcode).enqueue(new Callback<BookSearchResultVO>() {
+
+                                    @Override
+                                    public void onResponse(Call<BookSearchResultVO> call, Response<BookSearchResultVO> response) {
+                                        Log.d("BookSearchResult Successs", String.valueOf(response.message()));
+                                        String resultBookTitle = response.body().channel.item.getTitle();
+                                        String resultBookWriter = response.body().channel.item.getAuthor();
+                                        String resultImageUrl = response.body().channel.item.getImage();
+                                        String resultBookIsbn = detectedBarcode;
+
+                                        new ImageLoadTask(resultImageUrl, register_book_image_Button).execute();
+                                        register_book_card_book_title_result_text_view.setText(resultBookTitle);
+                                        register_book_card_book_writer_result_text_view.setText(resultBookWriter);
+
+                                        register_book_app_compat_button.setEnabled(true);
+                                    }
+                                    @Override
+                                    public void onFailure(Call<BookSearchResultVO> call, Throwable t) {
+                                        Log.d("BookSearchResult Successs", String.valueOf(t));
+                                    }
+                                });
                             }
                         }
                     })
@@ -295,7 +310,7 @@ public class RegisterBookActivity extends Activity {
         Uri file = Uri.fromFile(new File(getPath(selectedImageUri)));
         firebaseFunction firebaseInput = new firebaseFunction();
         firebaseInput.profileGet(getMemberName, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
-            final StorageReference riversRef = storageRef.child("bookSave/" + register_book_card_book_title_edit_text.getText().toString() + "_" + resultList.get(0).getName());
+            final StorageReference riversRef = storageRef.child("bookSave/" + register_book_card_book_title_result_text_view.getText().toString() + "_" + resultList.get(0).getName());
             UploadTask uploadTask = riversRef.putFile(file);
 
             Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -316,7 +331,7 @@ public class RegisterBookActivity extends Activity {
                         firebaseFunction firebaseInput = new firebaseFunction();
                         firebaseInput.profileGet(getMemberName, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
                             Log.d("home에서 확인",resultList.get(0).getName());
-                            firebaseInput.insertBookInfo("사진링크",major,register_book_card_book_title_edit_text.getText().toString(),register_book_card_book_writer_edit_text.getText().toString(),"지갑정보",resultList.get(0).getName());
+                            firebaseInput.insertBookInfo("사진링크",major, register_book_card_book_title_result_text_view.getText().toString(), register_book_card_book_writer_result_text_view.getText().toString(),"지갑정보",resultList.get(0).getName());
                             return null;
                         });
                         finish();

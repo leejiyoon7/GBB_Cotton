@@ -115,7 +115,11 @@
             <ListView
                 android:id="@+id/transactional_information_listView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="10dp"/>
 
         </LinearLayout>
 

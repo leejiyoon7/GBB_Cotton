@@ -135,10 +135,7 @@ public class TradingFragment extends Fragment {
         Chip chip = new Chip(getContext());
         chip.setText(chipText);
         chip.setCheckable(false);
-
-        // Chip 스타일 적용
-        ChipDrawable drawable = ChipDrawable.createFromAttributes(getContext(), null, 0, R.style.Widget_MaterialComponents_Chip_Entry);
-        chip.setChipDrawable(drawable);
+        chip.setCloseIconVisible(true);
 
         // Chip 닫기를 눌러서 ChipGroup에서 삭제.
         chip.setOnCloseIconClickListener(new View.OnClickListener() {

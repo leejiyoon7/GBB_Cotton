@@ -49,7 +49,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -359,12 +361,14 @@ public class RegisterBookActivity extends Activity {
                         firebaseFunction firebaseInput = new firebaseFunction();
                         firebaseInput.profileGet(getMemberName, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
                             Log.d("home에서 확인",resultList.get(0).getName());
-
-                            /*
+                            long now = System.currentTimeMillis();
+                            Date dateNow = new Date(now);
+                            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                            String formatDate = sdfNow.format(dateNow);
                             // 책 저장 방식입니다.
                             // 인자 값으로 (String 바코드, String 책제목, String 이미지링크, String 저자, String 학과, String 등록날짜, int 빌려준 횟수(0으로 초기화해서 사용해주세요.) )
-                            firebaseInput.insertBookInfo2("9788959522057", "ARTHAS: RISE OF THE LICH KING", "pictureLink", "크리스티 골든", "흑마법전공", "2020-12-06", 10);
-                            */
+                            firebaseInput.insertBookInfo2(bookInfo.get("barcode"), bookInfo.get("bookName"), bookInfo.get("pictureLink"), bookInfo.get("bookWriter"), major, formatDate, 0);
+                            firebaseInput.insertRegisteredBookInfoToUser(bookInfo.get("barcode"), bookInfo.get("bookName"), bookInfo.get("bookWriter"));
                             return null;
                         });
                         finish();

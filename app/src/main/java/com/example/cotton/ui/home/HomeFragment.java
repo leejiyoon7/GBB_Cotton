@@ -1,5 +1,7 @@
 package com.example.cotton.ui.home;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -14,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -87,6 +90,9 @@ public class HomeFragment extends Fragment {
         home_my_rented_book_recycler_view=view.findViewById(R.id.home_my_rented_book_recycler_view);
         home_my_registered_book_recycler_view=view.findViewById(R.id.home_my_registered_book_recycler_view);
 
+        home_my_rented_book_recycler_view.setNestedScrollingEnabled(false);
+        home_my_registered_book_recycler_view.setNestedScrollingEnabled(false);
+
         //대여 도서 목록 RecyclerView 설정 method
         showMyRentedBookListFunc();
 
@@ -152,17 +158,37 @@ public class HomeFragment extends Fragment {
             return null;
         });
 
-//         btnLogout=root.findViewById(R.id.btn_logout);
-//         //로그아웃 버튼 구현
-//         btnLogout.setOnClickListener(new View.OnClickListener() {
-//             @Override
-//             public void onClick(View view) {
-//                 FirebaseAuth.getInstance().signOut();
-//                 Intent intent=new Intent(getActivity(), LoginActivity.class);
-//                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                 startActivity(intent);
-//             }
-//         });
+        //로그아웃 버튼 구현
+        home_profile_image_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                builder.setTitle("로그아웃").setMessage("\n로그아웃 하시겠습니까?\n");
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent=new Intent(getActivity(), LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
+                });
+
+                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        Toast.makeText(getContext(), "로그아웃 취소", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
 
 
 

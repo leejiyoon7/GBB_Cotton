@@ -36,8 +36,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.navigation:navigation-fragment:2.3.1'
-    implementation 'androidx.navigation:navigation-ui:2.3.1'
+    implementation 'androidx.navigation:navigation-fragment:2.3.2'
+    implementation 'androidx.navigation:navigation-ui:2.3.2'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation platform('com.google.firebase:firebase-bom:26.1.0')
@@ -55,4 +55,16 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.github.ceryle:SegmentedButton:v2.0.2'
+
+    // 바코드 인식을 위한 라이브러리
+    implementation 'com.google.android.gms:play-services-vision:20.1.2'
+
+    implementation 'com.google.firebase:firebase-ml-vision:24.1.0'
+    implementation 'com.google.firebase:firebase-ml-vision-barcode-model:16.1.2'
+    compile ('com.squareup.retrofit2:converter-simplexml:2.1.0'){
+        exclude group: 'stax', module: 'stax-api'
+        exclude group: 'stax', module: 'stax'
+        exclude group: 'xpp3', module: 'xpp3'
+    }
+
 }

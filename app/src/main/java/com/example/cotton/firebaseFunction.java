@@ -65,13 +65,13 @@ public class firebaseFunction {
      * @param walletInfo    지갑정보
      * @param userName      사용자이름
      */
-    public static void insertBookInfo(String pictureLink, String major, String bookName, String bookWriter, String walletInfo,String userName) {
+    public static void insertBookInfo(String pictureLink, String major, String bookName, String bookWriter) {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter, walletInfo, userName);
+        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter);
 
-        db.collection("bookSave/").document(bookName + "_" + userName).set(booksave) // 책 저장하기
+        db.collection("bookSave/").document(bookName).set(booksave) // 책 저장하기
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void avoid) {
@@ -86,20 +86,30 @@ public class firebaseFunction {
                 });
     }
 
-    public void serchBook(String word) { //책 검색 , 하나밖에 검색안됨 / 저자별
+    public void searchBook(String word, Function<List<bookSaveForm>, Void> complete) { //책 검색 , 하나밖에 검색안됨 / 저자별
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-
+        final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
+        final List<bookSaveForm> bookSaveList = new ArrayList<>();
         db.collection("bookSave")
-                .whereEqualTo("bookWriter", word)
+                .whereEqualTo("major", word)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("testingFor", document.getId() + " => " + document.getData());
+                                bookSaveInit.add(document.getData());
                             }
+                            for (int i=0;i<bookSaveInit.size();i++) {
+                                bookSaveForm bookSaveFormProto = new bookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),
+                                        (String)bookSaveInit.get(i).get("major"),
+                                        (String)bookSaveInit.get(i).get("bookName"),
+                                        (String)bookSaveInit.get(i).get("bookWriter"));
+                                bookSaveList.add(bookSaveFormProto);
+
+                            }
+                            complete.apply(bookSaveList);
                         } else {
 
                         }
@@ -169,9 +179,7 @@ public class firebaseFunction {
                                 bookSaveForm bookSaveFormProto = new bookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),
                                         (String)bookSaveInit.get(i).get("major"),
                                         (String)bookSaveInit.get(i).get("bookName"),
-                                        (String)bookSaveInit.get(i).get("bookWriter"),
-                                        (String)bookSaveInit.get(i).get("walletInfo"),
-                                        (String)bookSaveInit.get(i).get("userName"));
+                                        (String)bookSaveInit.get(i).get("bookWriter"));
                                 bookSaveList.add(bookSaveFormProto);
                             }
                             complete.apply(bookSaveList);

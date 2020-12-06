@@ -114,8 +114,14 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        /*
+        // 책 저장 방식입니다.
+        // 인자 값으로 (String 바코드, String 책제목, String 이미지링크, String 저자, String 학과, String 등록날짜, int 빌려준 횟수(0으로 초기화해서 사용해주세요.) )
         firebaseFunction firebaseInput = new firebaseFunction();
         firebaseInput.insertBookInfo2("9788959522057", "ARTHAS: RISE OF THE LICH KING", "pictureLink", "크리스티 골든", "흑마법전공", "2020-12-06", 10);
+        */
+
 
         // Home화면에 UserName 출력
         firebaseTest.profileGet(memberInfos, (resultList) -> {

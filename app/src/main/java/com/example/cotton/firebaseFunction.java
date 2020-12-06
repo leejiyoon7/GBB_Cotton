@@ -126,23 +126,30 @@ public class firebaseFunction {
                 });
     }
 
-
-
-
-    public void serchBook(String word) { //책 검색 , 하나밖에 검색안됨 / 저자별
+    public void searchBook(String word, Function<List<bookSaveForm>, Void> complete) { // 전공별로 가져와서 리스트에 저장할꺼임
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-
+        final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
+        final List<bookSaveForm> bookSaveList = new ArrayList<>();
         db.collection("bookSave")
-                .whereEqualTo("bookWriter", word)
+                .whereEqualTo("major", word)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("testingFor", document.getId() + " => " + document.getData());
+                                bookSaveInit.add(document.getData());
                             }
+                            for (int i=0;i<bookSaveInit.size();i++) {
+                                bookSaveForm bookSaveFormProto = new bookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),
+                                        (String)bookSaveInit.get(i).get("major"),
+                                        (String)bookSaveInit.get(i).get("bookName"),
+                                        (String)bookSaveInit.get(i).get("bookWriter"));
+                                bookSaveList.add(bookSaveFormProto);
+
+                            }
+                            complete.apply(bookSaveList);
                         } else {
 
                         }
@@ -308,4 +315,5 @@ public class firebaseFunction {
                 .placeholder(R.drawable.cotton_icon)
                 .into(image_button); //이미지 버튼 아이디가 들어간다.
     }
+    
 }

@@ -20,6 +20,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.cotton.MainActivity;
 import com.example.cotton.R;
+import com.example.cotton.firebaseFunction;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -191,6 +192,14 @@ public class TradingFragment extends Fragment {
                         TradingViewPagerFunc(major);
                         break;
                 }
+                firebaseFunction firebaseSearch = new firebaseFunction();
+                firebaseSearch.searchBook(major, (resultList) -> {      //여기서 resultList안에 너가 원하는 모든게 있다.
+                    // Log.d("home에서 확인2", "" + resultList.get(0).getBookName());
+                    //  for(int i=0;i<resultList.size();i++){
+                    //
+                    //  }
+                    return null;
+                });
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {

@@ -156,7 +156,7 @@ public class FoodListAdapter extends BaseAdapter {
 
         HashMap<String, String> bodyMap2 = new HashMap<String, String>();
         bodyMap2.put("valueAmount", value + "000000000000000000"); //가격
-        bodyMap2.put("receiverAddress", "0x0fe24b865654653BE6ee9Da779177BB194075276");
+        bodyMap2.put("receiverAddress", "0xfb8e77f5808121c3ecf19d92ffb56b2e3d8db57b");
 
         HashMap<String, Object> bodyMap = new HashMap<String, Object>();
         bodyMap.put("from", new String(wallet)); //보내는사람 지갑주소

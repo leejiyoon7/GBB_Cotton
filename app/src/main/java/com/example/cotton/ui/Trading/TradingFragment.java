@@ -7,11 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -36,7 +39,6 @@ public class TradingFragment extends Fragment {
     String major;//전공 value
 
     AppCompatButton trading_rent_button;
-
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -182,19 +184,39 @@ public class TradingFragment extends Fragment {
     //뷰 페이저 관련 함수
     public void TradingViewPagerFunc(){
 
-        //추후 파이어베이스 참조해서 구현할때 여기서 책의 개수만큼 프래그먼트를 반복문으로 제작
+        //추후 파이어베이스 참조해서 구현할때 여기서 책의 개수만큼 프래그먼트를 반복문으로 제작, 필요 시 대여자 정보, 및 각종 정보를 method를 변형해서 추가 가능
         // add your fragments
-        pagerAdapter.addFragment(new TradingViewPagerFragment());
+        pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자1","기욤 뮈소1");
 
-        pagerAdapter.addFragment(new TradingViewPagerFragment());
+        pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자2","기욤 뮈소2");
 
-        pagerAdapter.addFragment(new TradingViewPagerFragment());
+        pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자3","기욤 뮈소3");
 
-        pagerAdapter.addFragment(new TradingViewPagerFragment());
+        pagerAdapter.addFragment(R.drawable.book_imsi,"종이 여자4","기욤 뮈소4");
 
         trading_content_view_pager.setAdapter(pagerAdapter);
 
         pagerAdapter.notifyDataSetChanged();
+
+        trading_content_view_pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                //fragment의 개수에 따라 메소드 라이브러리 사용해야합니다.
+                Toast.makeText(getActivity(),"onPageSelected 현재 페이지: "+position, Toast.LENGTH_SHORT).show();
+                
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     //대여하기 버튼 클릭 이벤트
@@ -211,4 +233,5 @@ public class TradingFragment extends Fragment {
             }
         });
     }
+
 }

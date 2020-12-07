@@ -256,6 +256,7 @@ public class TradingFragment extends Fragment {
         firebaseFunction firebaseSearch = new firebaseFunction();
         firebaseSearch.searchBook(major, (resultList) -> {
             bookSearchResultByMajor = resultList;
+            Log.d("result = ", String.valueOf(resultList.size()));
             updateViewPager();
             return null;
         });
@@ -271,14 +272,14 @@ public class TradingFragment extends Fragment {
 
         Set<bookSaveForm> filteredSet = new HashSet<>();
         bookSearchResultByMajor.forEach(book -> {
-            String chipQuery = chip.getText().toString().substring(5);
+            String chipQuery = chip.getText().toString().substring(5).replace(" ", "");
             if(chip.equals(trading_hear_chip_book)){
-                if (book.getBookName().contains(chipQuery)) {
+                if (book.getBookName().replace(" ", "").contains(chipQuery)) {
                     filteredSet.add(book);
                 }
             }
             if(chip.equals(trading_hear_chip_writer)) {
-                if (book.getBookWriter().contains(chipQuery)) {
+                if (book.getBookWriter().replace(" ", "").contains(chipQuery)) {
                     filteredSet.add(book);
                 }
             }

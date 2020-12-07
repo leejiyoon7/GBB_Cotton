@@ -65,9 +65,7 @@ public class TradingViewPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public void clearFragmentList() {
-        Log.d("clearFragmentList: ", "exec");
         mFragmentList.clear();
-        Log.d("clearFragmentList: ", "count = " + mFragmentList.size());
     }
 
     public static class TradingViewPagerFragment extends Fragment {

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +16,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cotton.MainActivity;
 import com.example.cotton.Utils.ApiService;
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MemberInfo;
@@ -40,7 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements Runnable{
 
    // Button btnLogout;
     List<MemberInfo> memberInfos = new ArrayList<>();
@@ -63,6 +66,8 @@ public class HomeFragment extends Fragment {
 
     double money;
 
+    HomeFragment homeFragment;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //인플레이션
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -79,6 +84,8 @@ public class HomeFragment extends Fragment {
 
         home_my_rented_book_recycler_view.setNestedScrollingEnabled(false);
         home_my_registered_book_recycler_view.setNestedScrollingEnabled(false);
+
+        homeFragment=new HomeFragment();
 
         //대여 도서 목록 RecyclerView 설정 method
         showMyRentedBookListFunc();
@@ -230,9 +237,9 @@ public class HomeFragment extends Fragment {
 
                     return null;
                 });
-
-
+                goToHomeFragmentFunc();
             }
+
         });
 
 
@@ -260,6 +267,12 @@ public class HomeFragment extends Fragment {
         */
 
         return view;
+    }
+
+    public void goToHomeFragmentFunc(){
+        Thread thread=new Thread(this);
+        thread.start();
+        Toast.makeText(getActivity(),"10000GBB가 충전되었습니다.",Toast.LENGTH_SHORT).show();
     }
 
     //대여 도서 목록 RecyclerView 설정
@@ -316,5 +329,16 @@ public class HomeFragment extends Fragment {
 
 
 
+    }
+
+    @Override
+    public void run() {
+        try {
+            Thread.sleep(2000);
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.detach(this).attach(this).commit();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -27,11 +27,15 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -95,7 +99,7 @@ public class firebaseFunction {
 
         bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter);
         //bookSaveForm booksave = new bookSaveForm("pictureLink", "major", "bookName", "bookWriter");
-        BookDateSaveForm bookDateSaveForm = new BookDateSaveForm(registerDate, rentCount);
+        BookDateSaveForm bookDateSaveForm = new BookDateSaveForm(registerDate, rentCount, "a");
         //BookDateSaveForm bookDateSaveForm = new BookDateSaveForm("registerDate", 10);
 
         db.collection("bookSave/").document(barcode).set(booksave) // 책 정보 (북네임, 이미지, 저자, 학과) 저장
@@ -125,6 +129,63 @@ public class firebaseFunction {
                     }
                 });
     }
+
+    //가장 대여횟수가 낮고 대여중이 아닌 책 주인의 uuid 가져오기
+    public void getUuid(String barcode, Function<String, Void> complete){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String uuid = "test";
+        db.collection("bookSave/").document(barcode).collection("RegisteredUsers/")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("testtetetet", document.getId());
+                                complete.apply(document.getId());
+                            }
+                        } else {
+
+                        }
+                    }
+                });
+    }
+
+
+    //대여하기 버튼 클릭했을시 대여자 필드 변경
+    public void updateRentMember(String barcode){
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        getUuid(barcode, (result) -> {
+             final DocumentReference sfDocRef = db.collection("bookSave/").document(barcode).collection("RegisteredUsers/").document(result);
+             db.runTransaction(new Transaction.Function<Void>() {
+                 @Override
+                 public Void apply(Transaction transaction) throws FirebaseFirestoreException {
+                     DocumentSnapshot snapshot = transaction.get(sfDocRef);
+                     int newRentCount = Integer.parseInt(snapshot.getString("rentCount")) + 1;
+                     transaction.update(sfDocRef, "rentCount", newRentCount);
+                     transaction.update(sfDocRef, "rentedMember", "대여중");
+                     return null;
+                 }
+             }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                 @Override
+                 public void onSuccess(Void aVoid) {
+                     Log.d("", "Transaction success!");
+                 }
+             })
+                     .addOnFailureListener(new OnFailureListener() {
+                         @Override
+                         public void onFailure(@NonNull Exception e) {
+                             Log.w("", "Transaction failure.", e);
+                         }
+                     });
+
+             return null;
+         });
+
+    }
+
+
 
     // 유저가 등록한 책을 user개인정보에 저장합니다.
     public void insertRegisteredBookInfoToUser(String barcode, String bookName, String bookWriter)

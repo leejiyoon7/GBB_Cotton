@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,6 +45,8 @@ public class TradingFragment extends Fragment {
 
     TextView trading_page_indicator_current_page_text_view;//현재페이지번호 텍스트뷰
     TextView trading_page_indicator_total_page_text_view;//전체페이지번호 텍스트뷰
+    TextView trading_no_search_result_text_view;
+    LinearLayout trading_page_indicator_wrap_layout;
 
     ViewPager trading_content_view_pager;
 
@@ -75,6 +78,9 @@ public class TradingFragment extends Fragment {
         trading_hear_chip_book = view.findViewById(R.id.trading_hear_chip_book);
         trading_page_indicator_current_page_text_view = view.findViewById(R.id.trading_page_indicator_current_page_text_view);
         trading_page_indicator_total_page_text_view = view.findViewById(R.id.trading_page_indicator_total_page_text_view);
+        trading_no_search_result_text_view = view.findViewById(R.id.trading_no_search_result_text_view);
+        trading_page_indicator_wrap_layout = view.findViewById(R.id.trading_page_indicator_wrap_layout);
+
         //endregion
 
         tradingViewPagerItems=new ArrayList<TradingViewPagerItem>();
@@ -289,10 +295,23 @@ public class TradingFragment extends Fragment {
         List<bookSaveForm> finalFilteredList = Lists.newArrayList(finalFilteredSet);
 
         pagerAdapter.clearFragmentList();
-        finalFilteredList.forEach(book -> {
-            pagerAdapter.addFragment(book.getPictureLink(),book.getBookName(),book.getBookWriter());
-            pagerAdapter.notifyDataSetChanged();
-        });
+        if (finalFilteredList.isEmpty()) {
+            pagerAdapter.addFragment("", "", "");
+            trading_no_search_result_text_view.setVisibility(View.VISIBLE);
+            trading_page_indicator_wrap_layout.setVisibility(View.INVISIBLE);
+            trading_content_view_pager.setVisibility(View.INVISIBLE);
+            trading_rent_button.setEnabled(false);
+        }
+        else {
+            finalFilteredList.forEach(book -> {
+                pagerAdapter.addFragment(book.getPictureLink(),book.getBookName(),book.getBookWriter());
+            });
+            trading_no_search_result_text_view.setVisibility(View.INVISIBLE);
+            trading_page_indicator_wrap_layout.setVisibility(View.VISIBLE);
+            trading_content_view_pager.setVisibility(View.VISIBLE);
+            trading_rent_button.setEnabled(true);
+        }
+        pagerAdapter.notifyDataSetChanged();
 
         trading_page_indicator_total_page_text_view.setText(String.valueOf(finalFilteredList.size()));
     }
@@ -302,13 +321,7 @@ public class TradingFragment extends Fragment {
         trading_content_view_pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                String totalPage = String.valueOf(pagerAdapter.getCount());
-                if(totalPage.equals("0")) {
-                    trading_page_indicator_current_page_text_view.setText("");
-                }
-                else {
-                    trading_page_indicator_current_page_text_view.setText(String.valueOf(position + 1));
-                }
+                trading_page_indicator_current_page_text_view.setText(String.valueOf(position + 1));
             }
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }

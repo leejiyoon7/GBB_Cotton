@@ -217,28 +217,11 @@ public class HomeFragment extends Fragment {
 
         */
 
-
-//        btnLogout=root.findViewById(R.id.btn_logout);
-//        //로그아웃 버튼 구현
-//        btnLogout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                FirebaseAuth.getInstance().signOut();
-//                Intent intent=new Intent(getActivity(), LoginActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(intent);
-//            }
-//        });
-
-
-
         return view;
     }
 
     //대여 도서 목록 RecyclerView 설정
     public void showMyRentedBookListFunc(){
-        //adapter 생성
-
 
         firebaseFunction firebaseTest = new firebaseFunction();
 
@@ -250,11 +233,11 @@ public class HomeFragment extends Fragment {
             for(int i=0;i<resultList.size();i++){
                 myRentedBookListAdapter.addItem(resultList.get(i).getBookName(),resultList.get(i).getBookWriter(),resultList.get(i).getStatus());
             }
-            // 리사이클러뷰에 표시할 데이터 리스트 생성(예시로 3개), 추후 firebase에서 data 받아와 동적으로 생성되게 짤 예정
+/*            // 리사이클러뷰에 표시할 데이터 리스트 생성(예시로 3개), 추후 firebase에서 data 받아와 동적으로 생성되게 짤 예정
             myRentedBookListAdapter.addItem("C언어 콘서트","김동주","도서대여");
             myRentedBookListAdapter.addItem("Java 콘서트","김민석","연체");
             myRentedBookListAdapter.addItem("C++ 콘서트","이정일","반납대기");
-            myRentedBookListAdapter.addItem("C# 콘서트","심민수","반납대기");
+            myRentedBookListAdapter.addItem("C# 콘서트","심민수","반납대기");*/
             myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             return null;
         });
@@ -277,21 +260,17 @@ public class HomeFragment extends Fragment {
             for(int i=0;i<resultList.size();i++) {
                 myRegisteredBookListAdapter.addItem(resultList.get(i).getBookName(), resultList.get(i).getBookWriter());
             }
-            myRegisteredBookListAdapter.addItem("알기 쉽게 해설한 데이터구조","김동주");
+/*            myRegisteredBookListAdapter.addItem("알기 쉽게 해설한 데이터구조","김동주");
             myRegisteredBookListAdapter.addItem("케라스 창시자에게 배우는 딥러닝","김민석");
-            myRegisteredBookListAdapter.addItem("JAVA Programming","이정일");
+            myRegisteredBookListAdapter.addItem("JAVA Programming","이정일");*/
 
             myRegisteredBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             return null;
         });
 
-
-        // 리사이클러뷰에 표시할 데이터 리스트 생성(예시로 3개), 추후 firebase에서 data 받아와 동적으로 생성되게 짤 예정
-
     }
 
     public void searchMoney(String wallet){
-
 
 
 

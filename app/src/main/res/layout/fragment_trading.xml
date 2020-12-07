@@ -137,7 +137,7 @@
             android:layout_height="0dp"
 
             android:layout_margin="12dp"
-            app:layout_constraintBottom_toTopOf="@id/trading_page_indicator_text_view"
+            app:layout_constraintBottom_toTopOf="@id/trading_page_indicator_wrap_layout"
             app:layout_constraintTop_toBottomOf="@id/trading_title_wrap_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -145,17 +145,48 @@
 
         </androidx.viewpager.widget.ViewPager>
 
-        <TextView
-            android:id="@+id/trading_page_indicator_text_view"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/trading_page_indicator_wrap_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
             app:layout_constraintBottom_toTopOf="@id/trading_rent_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            android:text="1 / 1"
-            android:textAlignment="center"
-            android:layout_marginBottom="12dp"
-            android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/trading_page_indicator_current_page_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="1"
+                android:textAlignment="center"
+                android:layout_marginBottom="12dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text=" / "
+                android:textAlignment="center"
+                android:layout_marginBottom="12dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/trading_page_indicator_total_page_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="1"
+                android:textAlignment="center"
+                android:layout_marginBottom="12dp"
+                android:textStyle="bold"/>
+
+
+        </LinearLayout>
+
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/trading_rent_button"

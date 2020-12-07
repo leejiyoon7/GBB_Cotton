@@ -42,7 +42,8 @@ public class TradingFragment extends Fragment {
     Spinner trading_title_department_spinner;//스피너
     ArrayAdapter spinnerAdapter;//스피너 어댑터
 
-    TextView trading_page_indicator_text_view;//쪽번호 텍스트뷰
+    TextView trading_page_indicator_current_page_text_view;//현재페이지번호 텍스트뷰
+    TextView trading_page_indicator_total_page_text_view;//전체페이지번호 텍스트뷰
 
     ViewPager trading_content_view_pager;
 
@@ -72,7 +73,8 @@ public class TradingFragment extends Fragment {
         trading_rent_button=view.findViewById(R.id.trading_rent_button);
         trading_hear_chip_writer = view.findViewById(R.id.trading_hear_chip_writer);
         trading_hear_chip_book = view.findViewById(R.id.trading_hear_chip_book);
-        trading_page_indicator_text_view=view.findViewById(R.id.trading_page_indicator_text_view);
+        trading_page_indicator_current_page_text_view = view.findViewById(R.id.trading_page_indicator_current_page_text_view);
+        trading_page_indicator_total_page_text_view = view.findViewById(R.id.trading_page_indicator_total_page_text_view);
         //endregion
 
         tradingViewPagerItems=new ArrayList<TradingViewPagerItem>();
@@ -82,18 +84,24 @@ public class TradingFragment extends Fragment {
         tradingMajorItem=new TradingMajorItem();
 
 
+        // ViewPager 초기 설정
         trading_content_view_pager.setSaveFromParentEnabled(false);
         pagerAdapter = new TradingViewPagerAdapter(getChildFragmentManager());
         trading_content_view_pager.setAdapter(pagerAdapter);
+        viewPagerSetOnChangePage();
         // Chip 초기 설정
         setChipOption(trading_hear_chip_book);
         setChipOption(trading_hear_chip_writer);
+
+
+
+//        searchBook();//search 기능
 
         majorPickSpinner();//전공 선택 스피너
 
         return view;
     }
-    
+
     // 기능 부
     /**
      * 칩에 검색내용이 비어있는지 확인하고
@@ -186,6 +194,7 @@ public class TradingFragment extends Fragment {
         });
     }
 
+
     //spinner 구현 method
     public void majorPickSpinner(){
         String[] items=getResources().getStringArray(R.array.major);
@@ -238,16 +247,15 @@ public class TradingFragment extends Fragment {
 
     //뷰 페이저 관련 함수
     public void TradingViewPagerFunc(){
-
         firebaseFunction firebaseSearch = new firebaseFunction();
         firebaseSearch.searchBook(major, (resultList) -> {
             bookSearchResultByMajor = resultList;
             updateViewPager();
-
             return null;
         });
-
     }
+
+
 
     public Set<bookSaveForm> filterResultByChipQuery(Chip chip) {
         // 검색어가 없을 경우 학과 기준 검색결과 반환
@@ -284,6 +292,28 @@ public class TradingFragment extends Fragment {
         finalFilteredList.forEach(book -> {
             pagerAdapter.addFragment(book.getPictureLink(),book.getBookName(),book.getBookWriter());
             pagerAdapter.notifyDataSetChanged();
+        });
+
+        trading_page_indicator_total_page_text_view.setText(String.valueOf(finalFilteredList.size()));
+    }
+
+    private void viewPagerSetOnChangePage() {
+        trading_content_view_pager.clearOnPageChangeListeners();
+        trading_content_view_pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                String totalPage = String.valueOf(pagerAdapter.getCount());
+                if(totalPage.equals("0")) {
+                    trading_page_indicator_current_page_text_view.setText("");
+                }
+                else {
+                    trading_page_indicator_current_page_text_view.setText(String.valueOf(position + 1));
+                }
+            }
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+            @Override
+            public void onPageScrollStateChanged(int state) { }
         });
     }
 

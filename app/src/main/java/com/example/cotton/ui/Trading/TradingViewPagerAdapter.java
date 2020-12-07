@@ -1,6 +1,7 @@
 package com.example.cotton.ui.Trading;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -20,10 +22,10 @@ import com.example.cotton.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TradingViewPagerAdapter extends FragmentPagerAdapter {
+public class TradingViewPagerAdapter extends FragmentStatePagerAdapter {
 
     //fragment list
-    private final List<Fragment> mFragmentList = new ArrayList<>();
+    private final ArrayList<Fragment> mFragmentList = new ArrayList<Fragment>();
 
     //참조형 fragment 제작
     TradingViewPagerFragment tradingViewPagerFragment;
@@ -33,7 +35,7 @@ public class TradingViewPagerAdapter extends FragmentPagerAdapter {
         super(manager);
     }
 
-    @NonNull
+//    @NonNull
     @Override
     public Fragment getItem(int position) {
         return mFragmentList.get(position);
@@ -46,8 +48,8 @@ public class TradingViewPagerAdapter extends FragmentPagerAdapter {
 
 
     @Override
-    public int getItemPosition(@NonNull Object object) {
-        return POSITION_NONE;
+    public int getItemPosition(Object object) {
+        return PagerAdapter.POSITION_NONE;
     }
 
     @Override public void destroyItem(View pager, int position, Object view) {
@@ -59,6 +61,12 @@ public class TradingViewPagerAdapter extends FragmentPagerAdapter {
         tradingViewPagerFragment=new TradingViewPagerFragment();
         tradingViewPagerFragment.setItems(registeredBookImage,registeredBookTitle,registeredBookAuthor);
         mFragmentList.add(tradingViewPagerFragment);
+    }
+
+    public void clearFragmentList() {
+        Log.d("clearFragmentList: ", "exec");
+        mFragmentList.clear();
+        Log.d("clearFragmentList: ", "count = " + mFragmentList.size());
     }
 
     public static class TradingViewPagerFragment extends Fragment {

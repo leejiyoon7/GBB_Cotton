@@ -154,7 +154,7 @@ public class firebaseFunction {
 
 
     //대여하기 버튼 클릭했을시 대여자 필드 변경
-    public void updateRentMember(String barcode){
+    public void updateRentMember(String barcode, String name){
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         getUuid(barcode, (result) -> {
              final DocumentReference sfDocRef = db.collection("bookSave/").document(barcode).collection("RegisteredUsers/").document(result);
@@ -164,7 +164,7 @@ public class firebaseFunction {
                      DocumentSnapshot snapshot = transaction.get(sfDocRef);
                      int newRentCount = Integer.parseInt(snapshot.getString("rentCount")) + 1;
                      transaction.update(sfDocRef, "rentCount", newRentCount);
-                     transaction.update(sfDocRef, "rentedMember", "대여중");
+                     transaction.update(sfDocRef, "rentedMember", name);
                      return null;
                  }
              }).addOnSuccessListener(new OnSuccessListener<Void>() {

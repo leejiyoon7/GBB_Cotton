@@ -371,7 +371,7 @@ public class TradingFragment extends Fragment {
 
         pagerAdapter.clearFragmentList();
         finalFilteredList.forEach(book -> {
-            pagerAdapter.addFragment(R.drawable.book_imsi,book.getBookName(),book.getBookWriter());
+            pagerAdapter.addFragment(book.getPictureLink(),book.getBookName(),book.getBookWriter());
             pagerAdapter.notifyDataSetChanged();
         });
     }

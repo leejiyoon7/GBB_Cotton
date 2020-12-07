@@ -3,7 +3,7 @@ package com.example.cotton.ui.Trading;
 public class TradingViewPagerItem {
 
     String major;
-    int registeredBookImage;
+    String registeredBookImage;
     String registeredBookTitle;
     String registeredBookAuthor;
 
@@ -11,7 +11,7 @@ public class TradingViewPagerItem {
         this.major = major;
     }
 
-    public void setRegisteredBookImage(int registeredBookImage) {
+    public void setRegisteredBookImage(String registeredBookImage) {
         this.registeredBookImage = registeredBookImage;
     }
 
@@ -27,7 +27,7 @@ public class TradingViewPagerItem {
         return major;
     }
 
-    public int getRegisteredBookImage() {
+    public String getRegisteredBookImage() {
         return registeredBookImage;
     }
 

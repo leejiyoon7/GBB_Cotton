@@ -18,6 +18,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.cotton.R;
+import com.example.cotton.Utils.ImageLoadTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class TradingViewPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     //fragment를 이용해서 viewpager add
-    public void addFragment(int registeredBookImage, String registeredBookTitle, String registeredBookAuthor){
+    public void addFragment(String registeredBookImage, String registeredBookTitle, String registeredBookAuthor){
         tradingViewPagerFragment=new TradingViewPagerFragment();
         tradingViewPagerFragment.setItems(registeredBookImage,registeredBookTitle,registeredBookAuthor);
         mFragmentList.add(tradingViewPagerFragment);
@@ -89,7 +90,8 @@ public class TradingViewPagerAdapter extends FragmentStatePagerAdapter {
             registered_book_author_text_view=view.findViewById(R.id.registered_book_author_text_view);
 
             //fragment를 이용하여 viewpager에 값 넣어주기
-            registered_book_image_view.setImageResource(item.getRegisteredBookImage());
+            new ImageLoadTask(item.getRegisteredBookImage(), registered_book_image_view).execute();
+//            registered_book_image_view.setImageResource(item.getRegisteredBookImage());
             registered_book_title_text_view.setText(item.getRegisteredBookTitle());
             registered_book_author_text_view.setText(item.getRegisteredBookAuthor());
 
@@ -97,7 +99,7 @@ public class TradingViewPagerAdapter extends FragmentStatePagerAdapter {
         }
 
         //Item set
-        public void setItems(int registeredBookImage, String registeredBookTitle, String registeredBookAuthor){
+        public void setItems(String registeredBookImage, String registeredBookTitle, String registeredBookAuthor){
             item.setRegisteredBookImage(registeredBookImage);
             item.setRegisteredBookTitle(registeredBookTitle);
             item.setRegisteredBookAuthor(registeredBookAuthor);

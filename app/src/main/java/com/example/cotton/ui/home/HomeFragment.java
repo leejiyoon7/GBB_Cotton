@@ -26,6 +26,7 @@ import com.example.cotton.Utils.BaseUrlInterface;
 import com.example.cotton.Utils.RetrofitClientJson;
 import com.example.cotton.ValueObject.GetBalance.GetBalanceResultVO;
 import com.example.cotton.UserRegisteredBookSaveForm;
+import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.bookSaveForm;
 import com.example.cotton.firebaseFunction;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
@@ -190,6 +191,47 @@ public class HomeFragment extends Fragment {
 
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
+            }
+        });
+
+        //클릭시 manager 계정에서 10000코인 송금받음
+        home_my_point_plus_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                firebaseTest.profileGet(memberInfos, (resultList) -> {
+                    ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
+
+                    HashMap<String, String> bodyMap2 = new HashMap<String, String>();
+                    bodyMap2.put("valueAmount", "10000000000000000000000"); //가격
+                    bodyMap2.put("receiverAddress", resultList.get(0).getWallet());
+
+                    HashMap<String, Object> bodyMap = new HashMap<String, Object>();
+                    bodyMap.put("from", "0xfb8e77f5808121c3ecf19d92ffb56b2e3d8db57b"); //보내는사람 지갑주소
+                    bodyMap.put("inputs", new HashMap<String, String>(bodyMap2)); //bodyMap2
+
+                    Log.d("성공 : ", "result : " + bodyMap.toString());
+
+                    call.buyFood(bodyMap).enqueue(new Callback<SetBalanceResultVO>() {
+                        @Override
+                        public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
+                            Log.d("성공 : ", "result : " + response.raw());
+                            Log.d("성공 : ", "result : " + response.body().getResult());
+                            Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
+                            Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
+                        }
+
+                        @Override
+                        public void onFailure(Call<SetBalanceResultVO> call, Throwable t) {
+                            Log.d("실패 : ", t.toString());
+                        }
+
+                    });
+
+                    return null;
+                });
+
+
             }
         });
 

@@ -97,7 +97,7 @@ public class firebaseFunction {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter);
+        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter,barcode);
         //bookSaveForm booksave = new bookSaveForm("pictureLink", "major", "bookName", "bookWriter");
         BookDateSaveForm bookDateSaveForm = new BookDateSaveForm(registerDate, rentCount, "a");
         //BookDateSaveForm bookDateSaveForm = new BookDateSaveForm("registerDate", 10);
@@ -291,10 +291,12 @@ public class firebaseFunction {
                                 bookSaveInit.add(document.getData());
                             }
                             for (int i=0;i<bookSaveInit.size();i++) {
-                                bookSaveForm bookSaveFormProto = new bookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),
+                                bookSaveForm bookSaveFormProto = new bookSaveForm(
+                                        (String)bookSaveInit.get(i).get("pictureLink"),
                                         (String)bookSaveInit.get(i).get("major"),
                                         (String)bookSaveInit.get(i).get("bookName"),
-                                        (String)bookSaveInit.get(i).get("bookWriter"));
+                                        (String)bookSaveInit.get(i).get("bookWriter"),
+                                        (String)bookSaveInit.get(i).get("barcode"));
                                 bookSaveList.add(bookSaveFormProto);
 
                             }

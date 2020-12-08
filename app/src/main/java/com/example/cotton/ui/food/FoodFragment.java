@@ -65,7 +65,7 @@ public class FoodFragment extends Fragment {
     public void showFoodListFunc(){
 
         //adapter 생성
-        adapter=new FoodListAdapter(getContext());
+        adapter=new FoodListAdapter(getContext(), this);
         //adapter 달기
         ticketList.setAdapter(adapter);
 

@@ -246,7 +246,7 @@ public class firebaseFunction {
     }
 
     //ticket구매시 user의 보유티켓개수가 증가합니다.
-    public void raiseMyTicketCount()
+    public void raiseMyTicketCount(int ticket)
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -255,7 +255,7 @@ public class firebaseFunction {
             @Override
             public Void apply(Transaction transaction) throws FirebaseFirestoreException {
                 DocumentSnapshot snapshot = transaction.get(userDocRef);
-                int newTicketCount = Integer.parseInt(snapshot.getString("ticket")) + 1;
+                Long newTicketCount = (snapshot.getLong("ticket")) + ticket;
                 transaction.update(userDocRef, "ticket", newTicketCount);
                 return null;
             }

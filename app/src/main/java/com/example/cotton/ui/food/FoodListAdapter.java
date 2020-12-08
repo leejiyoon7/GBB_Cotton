@@ -118,18 +118,22 @@ public class FoodListAdapter extends BaseAdapter{
                 switch(view.getId()){
                     case 600:
                         getWallet(view.getId());
+                        increaseTicket(1);
                         Toast.makeText(context,"600GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 1200:
                         getWallet(view.getId());
+                        increaseTicket(2);
                         Toast.makeText(context,"1200GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 3000:
                         getWallet(view.getId());
+                        increaseTicket(5);
                         Toast.makeText(context,"3000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 6000:
                         getWallet(view.getId());
+                        increaseTicket(10);
                         Toast.makeText(context,"6000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                 }
@@ -169,6 +173,11 @@ public class FoodListAdapter extends BaseAdapter{
             buyFood(price ,wallet);
             return null;
         });
+    }
+
+    public void increaseTicket(int ticket) {
+        firebaseFunction firebaseInput = new firebaseFunction();
+        firebaseInput.raiseMyTicketCount(ticket);
     }
 
 

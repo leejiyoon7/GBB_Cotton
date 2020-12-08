@@ -281,7 +281,6 @@ public class firebaseFunction {
         final List<bookSaveForm> bookSaveList = new ArrayList<>();
         db.collection("bookSave")
                 .whereEqualTo("major", word)
-                .whereEqualTo("rentedMember" , "a")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

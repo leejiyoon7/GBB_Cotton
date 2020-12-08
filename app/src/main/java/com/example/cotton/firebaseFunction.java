@@ -134,8 +134,9 @@ public class firebaseFunction {
     public void getUuid(String barcode, Function<String, Void> complete){
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uuid = "test";
         db.collection("bookSave/").document(barcode).collection("RegisteredUsers/")
+                .limit(1)
+                .orderBy("rentCount")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -150,6 +151,10 @@ public class firebaseFunction {
                         }
                     }
                 });
+    }
+
+    public void countMember(){
+
     }
 
 

@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.cotton.MainActivity;
@@ -78,11 +79,14 @@ public class TradingFragment extends Fragment {
     AppCompatButton trading_rent_button;//대여 버튼
     TradingViewPagerAdapter pagerAdapter;
 
+    TradingFragment tradingFragment;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_trading, container, false);
+
+        tradingFragment=this;
 
         //region UI 선언 부
         trading_header_chip_group = view.findViewById(R.id.trading_header_chip_group);
@@ -125,6 +129,8 @@ public class TradingFragment extends Fragment {
             userWallet = result.get(0).getWallet();
             return null;
         });
+
+
 
         tradingRentButtonClickEvent();
         return view;
@@ -482,17 +488,12 @@ public class TradingFragment extends Fragment {
                     return null;
                 });
 
-
-
-
-
-
-
-
-                //Toast.makeText(getActivity(),"전공: "+_major+" 책 제목: "+_bookTitle+" 저자: "+_bookAuthor,Toast.LENGTH_SHORT).show();
-                Intent intent=new Intent(getActivity(), MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                FragmentTransaction ft;
+                if(tradingFragment.getFragmentManager()!=null){
+                    ft = tradingFragment.getFragmentManager().beginTransaction();
+                    ft.detach(tradingFragment).attach(tradingFragment).commit();
+                    Toast.makeText(getActivity(),"대여가 완료되었습니다.",Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

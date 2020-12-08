@@ -279,9 +279,47 @@ public class firebaseFunction {
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
         final List<bookSaveForm> bookSaveList = new ArrayList<>();
+        List<String> bacodeList = new ArrayList<>();
         db.collection("bookSave")
                 .whereEqualTo("major", word)
-                .whereEqualTo("rentedMember" , "a")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                bookSaveInit.add(document.getData());
+                                bacodeList.add(document.getId());
+                            }
+                            for (int i=0;i<bookSaveInit.size();i++) {
+                                bookSaveForm bookSaveFormProto = new bookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),
+                                        (String)bookSaveInit.get(i).get("major"),
+                                        (String)bookSaveInit.get(i).get("bookName"),
+                                        (String)bookSaveInit.get(i).get("bookWriter"));
+                                bookSaveList.add(bookSaveFormProto);
+                            }
+                            complete.apply(bookSaveList);
+                            for(int i =0; i< bacodeList.size();i++) {
+                                int finalI = i;
+                                searchBookDetail(bacodeList.get(i), (result) -> {
+                                    Log.d("dkdkdkdkd", String.valueOf(result.get(finalI)));
+                                    return null;
+                                });
+                            }
+                        } else {
+
+                        }
+                    }
+                });
+
+    }
+
+    public void searchBookDetail(String barcode, Function<List<bookSaveForm>, Void> complete) {
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
+        final List<bookSaveForm> bookSaveList = new ArrayList<>();
+        db.collection("bookSave/" +barcode + "/RegisteredUsers/")
+                .whereEqualTo("rentedMember", "a")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -304,7 +342,6 @@ public class firebaseFunction {
                         }
                     }
                 });
-
     }
     //endregion
 

@@ -153,9 +153,129 @@ public class firebaseFunction {
                 });
     }
 
-    public void countMember(String barcode, Function<Integer, Void> complete){
+    //로그정보를 파이어베이스에 저장합니다.
+    public void logInput(String from, String to, String message, String category, String amount){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        LogForm logForm = new LogForm(from, to,message,category,amount);
+
+        db.collection("Log/").document().set(logForm)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("Log testing", "성공!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
+
+    //로그정보를 파이어베이스에서 받아옵니다. (from)
+    public void logFromOutput(Function<List<LogForm>, Void> complete)
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final List<LogForm> logFormList = new ArrayList<>();
+        final ArrayList<Map<String, Object>> logSaveInit = new ArrayList<Map<String, Object>>();
+        db.collection("Log/")
+                .whereEqualTo("from", user.getUid()) // 필터링 조건은 변경가능합니다.
+                //.whereEqualTo("to" , user.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                logSaveInit.add(document.getData());
+                            }
+                            for (int i=0;i<logSaveInit.size();i++) {
+                                LogForm logSaveFormProto = new LogForm(
+                                        (String)logSaveInit.get(i).get("from"),
+                                        (String)logSaveInit.get(i).get("to"),
+                                        (String)logSaveInit.get(i).get("message"),
+                                        (String)logSaveInit.get(i).get("category"),
+                                        (String)logSaveInit.get(i).get("message")
+                                );
+                                logFormList.add(logSaveFormProto);
+                            }
+                            complete.apply(logFormList);
+                        } else {
+
+                        }
+                    }
+                });
+    }
+
+    //로그정보를 파이어베이스에서 받아옵니다. (to)
+    public void logToOutput(Function<List<LogForm>, Void> complete)
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final List<LogForm> logFormList = new ArrayList<>();
+        final ArrayList<Map<String, Object>> logSaveInit = new ArrayList<Map<String, Object>>();
+        db.collection("Log/")
+                .whereEqualTo("to" , user.getUid()) // 필터링 조건은 변경가능합니다.
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                logSaveInit.add(document.getData());
+                            }
+                            for (int i=0;i<logSaveInit.size();i++) {
+                                LogForm logSaveFormProto = new LogForm(
+                                        (String)logSaveInit.get(i).get("from"),
+                                        (String)logSaveInit.get(i).get("to"),
+                                        (String)logSaveInit.get(i).get("message"),
+                                        (String)logSaveInit.get(i).get("category"),
+                                        (String)logSaveInit.get(i).get("message")
+                                );
+                                logFormList.add(logSaveFormProto);
+                            }
+                            complete.apply(logFormList);
+                        } else {
+
+                        }
+                    }
+                });
+    }
+
+    //ticket구매시 user의 보유티켓개수가 증가합니다.
+    public void raiseMyTicketCount()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final DocumentReference userDocRef = db.collection("users/").document(user.getUid());
+        db.runTransaction(new Transaction.Function<Void>() {
+            @Override
+            public Void apply(Transaction transaction) throws FirebaseFirestoreException {
+                DocumentSnapshot snapshot = transaction.get(userDocRef);
+                int newTicketCount = Integer.parseInt(snapshot.getString("ticket")) + 1;
+                transaction.update(userDocRef, "ticket", newTicketCount);
+                return null;
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("", "Ticket Up success!");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("", "Ticket Up Failure.", e);
+                    }
+                });
+    }
+
+
+    public void countMember(String barcode, Function<Integer, Void> complete){
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("bookSave/").document(barcode).collection("RegisteredUsers/")
                 .whereEqualTo("rentedMember", "a")
                 .get()
@@ -176,15 +296,6 @@ public class firebaseFunction {
                     }
                 });
 
-    }
-
-    public void updateRent(String barcode, String name){
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        getUuid(barcode, (result)->{
-            db.collection("bookSave/" + barcode + "/RegisteredUsers/" + result);
-
-            return null;
-        });
     }
 
 

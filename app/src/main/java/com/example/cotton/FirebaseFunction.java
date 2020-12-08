@@ -1,58 +1,39 @@
 package com.example.cotton;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.loader.content.CursorLoader;
 
 import com.bumptech.glide.Glide;
-import com.example.cotton.ui.home.HomeFragment;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 
-public class firebaseFunction {
+public class FirebaseFunction {
     File localFile;
     List<MemberInfo> memberInfoList = new ArrayList<>();
     List<MemberInfo> memberTest = new ArrayList<>();
@@ -99,7 +80,7 @@ public class firebaseFunction {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter, barcode);
+        BookSaveForm booksave = new BookSaveForm(pictureLink, major, bookName, bookWriter, barcode);
         //bookSaveForm booksave = new bookSaveForm("pictureLink", "major", "bookName", "bookWriter");
         BookDateSaveForm bookDateSaveForm = new BookDateSaveForm(registerDate, rentCount, "a");
         //BookDateSaveForm bookDateSaveForm = new BookDateSaveForm("registerDate", 10);
@@ -483,11 +464,11 @@ public class firebaseFunction {
 
     }
 
-    public void searchBook(String word, Function<List<bookSaveForm>, Void> complete) { // 전공별로 가져와서 리스트에 저장할꺼임
+    public void searchBook(String word, Function<List<BookSaveForm>, Void> complete) { // 전공별로 가져와서 리스트에 저장할꺼임
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
-        final List<bookSaveForm> bookSaveList = new ArrayList<>();
+        final List<BookSaveForm> bookSaveList = new ArrayList<>();
         db.collection("bookSave")
                 .whereEqualTo("major", word)
                 .get()
@@ -499,7 +480,7 @@ public class firebaseFunction {
                                 bookSaveInit.add(document.getData());
                             }
                             for (int i=0;i<bookSaveInit.size();i++) {
-                                bookSaveForm bookSaveFormProto = new bookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),
+                                BookSaveForm bookSaveFormProto = new BookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),
                                         (String)bookSaveInit.get(i).get("major"),
                                         (String)bookSaveInit.get(i).get("bookName"),
                                         (String)bookSaveInit.get(i).get("bookWriter"),

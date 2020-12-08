@@ -2,7 +2,6 @@ package com.example.cotton.ui.home.register;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.loader.content.CursorLoader;
 
 import com.example.cotton.Utils.ApiService;
 import com.example.cotton.BarCodeService;
@@ -30,29 +28,21 @@ import com.example.cotton.Utils.BaseUrlInterface;
 import com.example.cotton.Utils.RetrofitClientXml;
 import com.example.cotton.Utils.ImageLoadTask;
 import com.example.cotton.ValueObject.BookSearchByBarcode.BookSearchResultVO;
-import com.example.cotton.firebaseFunction;
+import com.example.cotton.FirebaseFunction;
 import com.example.cotton.ui.home.HomeFragment;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.google.zxing.oned.EAN13Reader;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -351,7 +341,7 @@ public class RegisterBookActivity extends Activity {
     private void localUpoad() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
-        firebaseFunction firebaseInput = new firebaseFunction();
+        FirebaseFunction firebaseInput = new FirebaseFunction();
         firebaseInput.profileGet(getMemberName, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
             Log.d("home에서 확인",resultList.get(0).getName());
             long now = System.currentTimeMillis();

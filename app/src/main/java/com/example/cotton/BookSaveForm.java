@@ -1,6 +1,6 @@
 package com.example.cotton;
 
-public class bookSaveForm {
+public class BookSaveForm {
     private String pictureLink;
     private String major;
     private String bookName;
@@ -10,8 +10,8 @@ public class bookSaveForm {
     //private String userName;
 
 
-    public bookSaveForm(){}
-    public bookSaveForm(String pictureLink, String major, String bookName, String bookWriter, String barcode/*, String userName*/){
+    public BookSaveForm(){}
+    public BookSaveForm(String pictureLink, String major, String bookName, String bookWriter, String barcode/*, String userName*/){
         this.pictureLink = pictureLink;
         this.major = major;
         this.bookName = bookName;

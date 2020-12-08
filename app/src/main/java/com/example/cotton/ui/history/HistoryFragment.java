@@ -5,14 +5,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -24,7 +21,7 @@ import androidx.loader.content.CursorLoader;
 
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
-import com.example.cotton.firebaseFunction;
+import com.example.cotton.FirebaseFunction;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -203,7 +200,7 @@ public class HistoryFragment extends Fragment {
         // Create a storage reference from our app
         StorageReference storageRef = storage.getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        firebaseFunction firebaseTest = new firebaseFunction();
+        FirebaseFunction firebaseTest = new FirebaseFunction();
 
         firebaseTest.profileGet(memberInfos, (resultList) -> {
             Log.d("home에서 확인",resultList.get(0).getName());

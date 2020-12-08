@@ -17,10 +17,9 @@ import com.example.cotton.R;
 import com.example.cotton.Utils.BaseUrlInterface;
 import com.example.cotton.Utils.RetrofitClientJson;
 import com.example.cotton.ValueObject.GetBalance.GetBalanceResultVO;
-import com.example.cotton.firebaseFunction;
+import com.example.cotton.FirebaseFunction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,7 +45,7 @@ public class FoodFragment extends Fragment {
 
         List<MemberInfo> getMemberName= new ArrayList<>();
 
-        firebaseFunction firebaseInput = new firebaseFunction();
+        FirebaseFunction firebaseInput = new FirebaseFunction();
         firebaseInput.profileGet(getMemberName, (resultList) -> {
 
             String wallet = resultList.get(0).getWallet();

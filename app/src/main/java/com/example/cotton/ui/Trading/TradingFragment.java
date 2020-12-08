@@ -28,8 +28,8 @@ import com.example.cotton.Utils.ApiService;
 import com.example.cotton.Utils.BaseUrlInterface;
 import com.example.cotton.Utils.RetrofitClientJson;
 import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
-import com.example.cotton.bookSaveForm;
-import com.example.cotton.firebaseFunction;
+import com.example.cotton.BookSaveForm;
+import com.example.cotton.FirebaseFunction;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.common.collect.Lists;
@@ -67,8 +67,8 @@ public class TradingFragment extends Fragment {
     String userWallet; //현재 사용자 지갑주소
 
     ArrayList<TradingViewPagerItem> tradingViewPagerItems=new ArrayList<TradingViewPagerItem>();
-    List<bookSaveForm> bookSearchResultByMajor;
-    List<bookSaveForm> finalFilteredList;
+    List<BookSaveForm> bookSearchResultByMajor;
+    List<BookSaveForm> finalFilteredList;
     List<MemberInfo> memberInfos = new ArrayList<>();;
     int currentViewPagerIndex;
 
@@ -119,7 +119,7 @@ public class TradingFragment extends Fragment {
         //전공 선택 스피너
         majorPickSpinner();
 
-        firebaseFunction firebaseUserCall = new firebaseFunction();
+        FirebaseFunction firebaseUserCall = new FirebaseFunction();
         firebaseUserCall.profileGet(memberInfos, (result)->{
             userName = result.get(0).getName();
             userWallet = result.get(0).getWallet();
@@ -286,7 +286,7 @@ public class TradingFragment extends Fragment {
      * 전공을 기준으로 파이어베이스에서 책 정보를 받아옴.
      */
     public void searchBookFromFirebase(){
-        firebaseFunction firebaseSearch = new firebaseFunction();
+        FirebaseFunction firebaseSearch = new FirebaseFunction();
         firebaseSearch.searchBook(major, (resultList) -> {
             bookSearchResultByMajor = resultList;
             Log.d("result = ", String.valueOf(resultList.size()));
@@ -301,13 +301,13 @@ public class TradingFragment extends Fragment {
      * @param chip : 대상이 되는 Chip
      * @return 조건 검색 완료된 bookSaveForm타입의 Set
      */
-    public Set<bookSaveForm> filterResultByChipQuery(Chip chip) {
+    public Set<BookSaveForm> filterResultByChipQuery(Chip chip) {
         // 검색어가 없을 경우 학과 기준 검색결과 반환
         if(chip.getText().length() == 4) {
             return new HashSet<>(bookSearchResultByMajor);
         }
 
-        Set<bookSaveForm> filteredSet = new HashSet<>();
+        Set<BookSaveForm> filteredSet = new HashSet<>();
         bookSearchResultByMajor.forEach(book -> {
             String chipQuery = chip.getText().toString().substring(5).replace(" ", "");
             if(chip.equals(trading_hear_chip_book)){
@@ -335,9 +335,9 @@ public class TradingFragment extends Fragment {
      * 최종 검색 결과를 통해서 ViewPager 갱신.
      */
     public void updateViewPager() {
-        Set<bookSaveForm> filteredBookNameSet = filterResultByChipQuery(trading_hear_chip_book);
-        Set<bookSaveForm> filteredBookWriterSet = filterResultByChipQuery(trading_hear_chip_writer);
-        Set<bookSaveForm> finalFilteredSet = filteredBookNameSet;
+        Set<BookSaveForm> filteredBookNameSet = filterResultByChipQuery(trading_hear_chip_book);
+        Set<BookSaveForm> filteredBookWriterSet = filterResultByChipQuery(trading_hear_chip_writer);
+        Set<BookSaveForm> finalFilteredSet = filteredBookNameSet;
         finalFilteredSet.retainAll(filteredBookWriterSet);
         finalFilteredList = Lists.newArrayList(finalFilteredSet);
 
@@ -401,15 +401,18 @@ public class TradingFragment extends Fragment {
         trading_rent_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bookSaveForm selectedBookInfo = new bookSaveForm();
+                BookSaveForm selectedBookInfo = new BookSaveForm();
                 selectedBookInfo = finalFilteredList.get(currentViewPagerIndex);
                 String barcode = selectedBookInfo.getBarcode();
+                String selectedBookName = selectedBookInfo.getBookName();
+                String selectedBookWriter = selectedBookInfo.getBookWriter();
+
                 if (selectedBookInfo != null) {
-                    firebaseFunction firebaseFunction = new firebaseFunction();
+                    FirebaseFunction firebaseFunction = new FirebaseFunction();
                     firebaseFunction.updateRentMember(barcode, userName);
                 }
 
-                firebaseFunction firebaseFunction = new firebaseFunction();
+                FirebaseFunction firebaseFunction = new FirebaseFunction();
 
                 firebaseFunction.getUuid(barcode, (result) -> {
 
@@ -427,9 +430,14 @@ public class TradingFragment extends Fragment {
 
                         Log.d("성공 : ", "result : " + bodyMap.toString());
 
+                        //대여 성공시 user개인정보 빌린도서 목록에 추가됩니다.
+                        //상태는 대여성공시 "대여중"으로 초기화됩니다.
+                        firebaseFunction.insertRentedBookInfoToUser(barcode,selectedBookName, selectedBookWriter, "대여중");
+
                         call.buyFood(bodyMap).enqueue(new Callback<SetBalanceResultVO>() {
                             @Override
                             public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
+
                                 Log.d("성공 : ", "result : " + response.raw());
                                 Log.d("성공 : ", "result : " + response.body().getResult());
                                 Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.cotton.MainActivity;
 import com.example.cotton.Utils.ApiService;
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MemberInfo;
@@ -30,8 +28,8 @@ import com.example.cotton.Utils.RetrofitClientJson;
 import com.example.cotton.ValueObject.GetBalance.GetBalanceResultVO;
 import com.example.cotton.UserRegisteredBookSaveForm;
 import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
-import com.example.cotton.bookSaveForm;
-import com.example.cotton.firebaseFunction;
+import com.example.cotton.BookSaveForm;
+import com.example.cotton.FirebaseFunction;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -47,7 +45,7 @@ public class HomeFragment extends Fragment implements Runnable{
 
    // Button btnLogout;
     List<MemberInfo> memberInfos = new ArrayList<>();
-    List<bookSaveForm> bookSaveFormList= new ArrayList<>();
+    List<BookSaveForm> bookSaveFormList= new ArrayList<>();
     List<UserRegisteredBookSaveForm> testList = new ArrayList<>();
 
     ImageButton home_profile_image_button;//프로필 이미지
@@ -95,7 +93,7 @@ public class HomeFragment extends Fragment implements Runnable{
 
         // firebase_function_ProfileImageDownload + FirebaseFunction 파일 안 설명참조
         // 프로필 사진 받아오기 (주석 지우면 실행됩니다.)
-        firebaseFunction firebaseTest = new firebaseFunction();
+        FirebaseFunction firebaseTest = new FirebaseFunction();
         firebaseTest.profileImageDownload(home_profile_image_button, this.getContext());
 
 
@@ -266,7 +264,7 @@ public class HomeFragment extends Fragment implements Runnable{
     //대여 도서 목록 RecyclerView 설정
     public void showMyRentedBookListFunc(){
 
-        firebaseFunction firebaseTest = new firebaseFunction();
+        FirebaseFunction firebaseTest = new FirebaseFunction();
 
         firebaseTest.myRentedBookListGet((resultList) -> {
             myRentedBookListAdapter = new MyRentedBookListAdapter() ;
@@ -292,7 +290,7 @@ public class HomeFragment extends Fragment implements Runnable{
         //adapter 생성
 
 
-        firebaseFunction firebaseTest = new firebaseFunction();
+        FirebaseFunction firebaseTest = new FirebaseFunction();
         firebaseTest.myRegisteredBookListGet((resultList) -> { //resultList안에 너가 원하는 모든게 있단다.
             myRegisteredBookListAdapter = new MyRegisteredBookListAdapter() ;
 

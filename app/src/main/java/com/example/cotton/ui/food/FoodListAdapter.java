@@ -1,7 +1,6 @@
 package com.example.cotton.ui.food;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +15,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.cotton.Utils.ApiService;
-import com.example.cotton.MainActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.Utils.BaseUrlInterface;
 import com.example.cotton.Utils.RetrofitClientJson;
 import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
-import com.example.cotton.firebaseFunction;
+import com.example.cotton.FirebaseFunction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -169,7 +167,7 @@ public class FoodListAdapter extends BaseAdapter{
     public void getWallet(int price) {
         List<MemberInfo> getMemberName= new ArrayList<>();
 
-        firebaseFunction firebaseInput = new firebaseFunction();
+        FirebaseFunction firebaseInput = new FirebaseFunction();
         firebaseInput.profileGet(getMemberName, (resultList) -> {
 
             String wallet = resultList.get(0).getWallet();
@@ -179,7 +177,7 @@ public class FoodListAdapter extends BaseAdapter{
     }
 
     public void increaseTicket(int ticket) {
-        firebaseFunction firebaseInput = new firebaseFunction();
+        FirebaseFunction firebaseInput = new FirebaseFunction();
         firebaseInput.raiseMyTicketCount(ticket);
     }
 

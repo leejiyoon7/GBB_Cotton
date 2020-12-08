@@ -60,7 +60,7 @@ public class FoodListAdapter extends BaseAdapter{
     //position에 위치한 데이터를 화면에 출력하는데 사용될 View를 리턴
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-       final Context context=parent.getContext();
+        final Context context=parent.getContext();
 
         //"food_listview_item" Layout을 inflate하여 convertView 참조 획득
         if(convertView==null){
@@ -149,9 +149,12 @@ public class FoodListAdapter extends BaseAdapter{
             @Override
             public void run() {
                 try {
+                    FragmentTransaction ft;
                     Thread.sleep(2000);
-                    FragmentTransaction ft = fragment.getFragmentManager().beginTransaction();
-                    ft.detach(fragment).attach(fragment).commit();
+                    if(fragment.getFragmentManager()!=null){
+                        ft = fragment.getFragmentManager().beginTransaction();
+                        ft.detach(fragment).attach(fragment).commit();
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -12,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.example.cotton.Utils.ApiService;
 import com.example.cotton.MainActivity;
 import com.example.cotton.MemberInfo;
@@ -29,7 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FoodListAdapter extends BaseAdapter {
+public class FoodListAdapter extends BaseAdapter{
 
     //listview items
     private ImageView productIcon;
@@ -38,12 +41,14 @@ public class FoodListAdapter extends BaseAdapter {
     private Button btn_buy;
     Context context;
     FoodFragment foodFragment;
+    Fragment fragment;
 
     private ArrayList<FoodListItem> foodItemsList=new ArrayList<FoodListItem>();
 
     //constructor
-    public FoodListAdapter(Context context){
+    public FoodListAdapter(Context context, Fragment fragment){
         this.context=context;
+        this.fragment=fragment;
     }
 
     //Adapter에 사용되는 데이터의 개수를 리턴
@@ -128,13 +133,30 @@ public class FoodListAdapter extends BaseAdapter {
                         Toast.makeText(context,"6000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                 }
-                //구매 버튼 누를 시 MainActivity로 이동
-                Intent intent=new Intent(context, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivity(intent);
+                //foodFragment 갱신 함수
+                foodFragmentRenewFunc();
+
             }
         });
     }
+    //foodFragment 갱신 함수
+    public void foodFragmentRenewFunc(){
+        Thread thread=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                    FragmentTransaction ft = fragment.getFragmentManager().beginTransaction();
+                    ft.detach(fragment).attach(fragment).commit();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
+
 
 
     public void getWallet(int price) {

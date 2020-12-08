@@ -178,15 +178,6 @@ public class firebaseFunction {
 
     }
 
-    public void updateRent(String barcode, String name){
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        getUuid(barcode, (result)->{
-            db.collection("bookSave/" + barcode + "/RegisteredUsers/" + result);
-
-            return null;
-        });
-    }
-
 
     //대여하기 버튼 클릭했을시 대여자 필드 변경
     public void updateRentMember(String barcode, String name){

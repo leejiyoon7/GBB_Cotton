@@ -255,18 +255,6 @@ public class RegisterBookActivity extends Activity {
         startActivityForResult(intent, 200);
     }
 
-    public String getPath(Uri uri){
-        String[]proj = {MediaStore.Images.Media.DATA};
-        CursorLoader cursorLoader = new CursorLoader(this,uri,proj,null,null,null);
-
-        Cursor cursor = cursorLoader.loadInBackground();
-        int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-        cursor.moveToFirst();
-
-        return cursor.getString(index);
-    }
-
 
     /**
      * 바코드를 인식할 사진의 정보를 받을 경우
@@ -363,51 +351,35 @@ public class RegisterBookActivity extends Activity {
     private void localUpoad() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
-        // Create a storage reference from our app
-        StorageReference storageRef = storage.getReference();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        Uri file = Uri.fromFile(new File(getPath(selectedImageUri)));
         firebaseFunction firebaseInput = new firebaseFunction();
         firebaseInput.profileGet(getMemberName, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
-            final StorageReference riversRef = storageRef.child("bookSave/" + register_book_card_book_title_result_text_view.getText().toString() + "_" + resultList.get(0).getName());
-            UploadTask uploadTask = riversRef.putFile(file);
-
-            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
-                    // Continue with the task to get the download URL
-                    return riversRef.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-                        bookImageLink = downloadUri.toString();
-                        firebaseFunction firebaseInput = new firebaseFunction();
-                        firebaseInput.profileGet(getMemberName, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
-                            Log.d("home에서 확인",resultList.get(0).getName());
-                            long now = System.currentTimeMillis();
-                            Date dateNow = new Date(now);
-                            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                            String formatDate = sdfNow.format(dateNow);
-                            // 책 저장 방식입니다.
-                            // 인자 값으로 (String 바코드, String 책제목, String 이미지링크, String 저자, String 학과, String 등록날짜, int 빌려준 횟수(0으로 초기화해서 사용해주세요.) )
-                            firebaseInput.insertBookInfo2(bookInfo.get("barcode"), bookInfo.get("bookName"), bookInfo.get("pictureLink"), bookInfo.get("bookWriter"), major, formatDate, 0);
-                            firebaseInput.insertRegisteredBookInfoToUser(bookInfo.get("barcode"), bookInfo.get("bookName"), bookInfo.get("bookWriter"));
-                            return null;
-                        });
-                        finish();
-                    }
-                }
-            });
+            Log.d("home에서 확인",resultList.get(0).getName());
+            long now = System.currentTimeMillis();
+            Date dateNow = new Date(now);
+            SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            String formatDate = sdfNow.format(dateNow);
+            // 책 저장 방식입니다.
+            // 인자 값으로 (String 바코드, String 책제목, String 이미지링크, String 저자, String 학과, String 등록날짜, int 빌려준 횟수(0으로 초기화해서 사용해주세요.) )
+            firebaseInput.insertBookInfo2(bookInfo.get("barcode"), bookInfo.get("bookName"), bookInfo.get("pictureLink"), bookInfo.get("bookWriter"), major, formatDate, 0);
+            firebaseInput.insertRegisteredBookInfoToUser(bookInfo.get("barcode"), bookInfo.get("bookName"), bookInfo.get("bookWriter"));
 
             return null;
-        });
+        }); //EOF
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -134,8 +134,9 @@ public class firebaseFunction {
     public void getUuid(String barcode, Function<String, Void> complete){
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uuid = "test";
         db.collection("bookSave/").document(barcode).collection("RegisteredUsers/")
+                .orderBy("rentCount")
+                .limit(1)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -156,7 +157,7 @@ public class firebaseFunction {
     //대여하기 버튼 클릭했을시 대여자 필드 변경
     public void updateRentMember(String barcode, String name){
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        getUuid(barcode, (result) -> {
+        getUuid(barcode,(result) -> {
              final DocumentReference sfDocRef = db.collection("bookSave/").document(barcode).collection("RegisteredUsers/").document(result);
              db.runTransaction(new Transaction.Function<Void>() {
                  @Override

@@ -116,7 +116,11 @@ public class HomeFragment extends Fragment implements Runnable{
         firebaseInput.insertBookInfo2("9788959522057", "ARTHAS: RISE OF THE LICH KING", "pictureLink", "크리스티 골든", "흑마법전공", "2020-12-06", 10);
         */
 
-
+        /*
+        // 로그 저장방식입니다.
+        // 인자 값으로 (String from, String to, String message, String category, String amount)를 받습니다.
+        //firebaseTest.logInput("from", "to", "message" ,"category","amount");
+        */
 
         firebaseTest.myRegisteredBookListGet((resultList) -> { //resultList안에 너가 원하는 모든게 있단다.
                                                                //resultList.get(i).getBookName();

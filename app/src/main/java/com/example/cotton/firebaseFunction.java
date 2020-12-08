@@ -153,6 +153,7 @@ public class firebaseFunction {
                 });
     }
 
+<<<<<<< HEAD
     public void countMember(String barcode, Function<Integer, Void> complete){
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -176,6 +177,33 @@ public class firebaseFunction {
                     }
             });
 
+=======
+    //로그정보를 파이어베이스에 저장합니다.
+    public void logInput(String from, String to, String message, String category, String amount){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        logForm logForm = new logForm(from, to,message,category,amount);
+
+        db.collection("Log/").document().set(logForm)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("Log testing", "성공!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
+
+
+
+    public void countMember(){
+        
+>>>>>>> e7fee4c3d6fc6ad93dfc1a7d5e9d2b0eb119c0bb
     }
 
 

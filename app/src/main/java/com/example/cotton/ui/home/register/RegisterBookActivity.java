@@ -47,10 +47,6 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-import com.google.zxing.oned.EAN13Reader;
 
 import java.io.File;
 import java.io.IOException;
@@ -147,8 +143,7 @@ public class RegisterBookActivity extends Activity {
                 cameraTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showCamera();
-                        bottomSheetDialog.dismiss();
+
                     }
                 });
 
@@ -218,6 +213,7 @@ public class RegisterBookActivity extends Activity {
                     localUpoad();
 
                     //저장 방식은 localUpload에 명시되어 있습니다.
+
                     Intent intent=new Intent(RegisterBookActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -241,12 +237,6 @@ public class RegisterBookActivity extends Activity {
     }
 
 
-    private void showCamera() {
-        IntentIntegrator intentIntegrator = new IntentIntegrator(RegisterBookActivity.this);
-        intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
-        intentIntegrator.setDesiredBarcodeFormats(String.valueOf(BarcodeFormat.EAN_13));
-        intentIntegrator.initiateScan();
-    }
 
 
     private void showGallery() {
@@ -276,89 +266,70 @@ public class RegisterBookActivity extends Activity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 200) {
-            super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == 200 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 200 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            selectedImageUri = data.getData();
 
-                Log.d("Type:", data.getClass().getName());
-                Bitmap bitmap = null;
-                selectedImageUri = (Uri) data.getData();
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                getBarcodeFromImage(bitmap);
+            // A. uri를 바탕으로 이미지를 Bitmap형태로 변환
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }
-        else {
-            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-            if(result != null) {
-                if(result.getContents() == null) {
-                    Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-                } else {
-                    getBookInfoByBarcode(result.getContents());
-                }
-            } else {
-                super.onActivityResult(requestCode, resultCode, data);
-            }
-        }
-    }
 
-    public void getBarcodeFromImage(Bitmap bookBitmap) {
-        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bookBitmap);
-        BarCodeService barCodeService = new BarCodeService();
-        FirebaseVisionBarcodeDetector detector = FirebaseVision.getInstance().getVisionBarcodeDetector(barCodeService.getOptions());
-        Task<List<FirebaseVisionBarcode>> result = detector.detectInImage(image)
-                .addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionBarcode>>() {
-                    // 바코드 인식 성공시
-                    @Override
-                    public void onSuccess(List<FirebaseVisionBarcode> barcodes) {
-                        for (FirebaseVisionBarcode barcode : barcodes) {
-                            String detectedBarcode = barcode.getRawValue();
+            // B. Bitmap Image를 바탕으로 바코드 인식 수행.
+            FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
+            BarCodeService barCodeService = new BarCodeService();
+            FirebaseVisionBarcodeDetector detector = FirebaseVision.getInstance().getVisionBarcodeDetector(barCodeService.getOptions());
+            Task<List<FirebaseVisionBarcode>> result = detector.detectInImage(image)
+                    .addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionBarcode>>() {
+                        // 바코드 인식 성공시
+                        @Override
+                        public void onSuccess(List<FirebaseVisionBarcode> barcodes) {
+                            for (FirebaseVisionBarcode barcode : barcodes) {
+                                String detectedBarcode = barcode.getRawValue();
+                                Log.d("Barcode Result : ", detectedBarcode);
 
-                            // C. 네이버 API를 통해서 책 정보 받아오기.
-                            getBookInfoByBarcode(detectedBarcode);
+                                // C. 네이버 API를 통해서 책 정보 받아오기.
+                                ApiService call = RetrofitClientXml.getApiService(BaseUrlInterface.NAVER);
+                                Log.d("Barcode Result : ", detectedBarcode);
+                                call.searchBookByBarcode(detectedBarcode).enqueue(new Callback<BookSearchResultVO>() {
+
+                                    @Override
+                                    public void onResponse(Call<BookSearchResultVO> call, Response<BookSearchResultVO> response) {
+                                        Log.d("BookSearchResult Successs", String.valueOf(response.message()));
+                                        String resultBookTitle = response.body().channel.item.getTitle();
+                                        String resultBookWriter = response.body().channel.item.getAuthor();
+                                        String resultImageUrl = response.body().channel.item.getImage();
+
+                                        new ImageLoadTask(resultImageUrl, register_book_image_Button).execute();
+                                        register_book_card_book_title_result_text_view.setText(resultBookTitle);
+                                        register_book_card_book_writer_result_text_view.setText(resultBookWriter);
+                                        register_book_app_compat_button.setEnabled(true);
+
+                                        bookInfo = new HashMap<String, String>();
+                                        bookInfo.put("barcode", detectedBarcode);
+                                        bookInfo.put("bookName", resultBookTitle);
+                                        bookInfo.put("bookWriter", resultBookWriter);
+                                        bookInfo.put("pictureLink", resultImageUrl);
+                                    }
+                                    @Override
+                                    public void onFailure(Call<BookSearchResultVO> call, Throwable t) {
+                                        Log.d("BookSearchResult Successs", String.valueOf(t));
+                                    }
+                                });
+                            }
                         }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Barcode Result : ", "Barcode Fail ");
-                    }
-                });
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("Barcode Result : ", "Barcode Fail ");
+                        }
+                    });
+        }
     }
-
-    private void getBookInfoByBarcode(String barcode) {
-        ApiService call = RetrofitClientXml.getApiService(BaseUrlInterface.NAVER);
-        call.searchBookByBarcode(barcode).enqueue(new Callback<BookSearchResultVO>() {
-
-            @Override
-            public void onResponse(Call<BookSearchResultVO> call, Response<BookSearchResultVO> response) {
-                Log.d("BookSearchResult Successs", String.valueOf(response.message()));
-                String resultBookTitle = response.body().channel.item.getTitle();
-                String resultBookWriter = response.body().channel.item.getAuthor();
-                String resultImageUrl = response.body().channel.item.getImage();
-
-                new ImageLoadTask(resultImageUrl, register_book_image_Button).execute();
-                register_book_card_book_title_result_text_view.setText(resultBookTitle);
-                register_book_card_book_writer_result_text_view.setText(resultBookWriter);
-                register_book_app_compat_button.setEnabled(true);
-
-                bookInfo = new HashMap<String, String>();
-                bookInfo.put("barcode", barcode);
-                bookInfo.put("bookName", resultBookTitle);
-                bookInfo.put("bookWriter", resultBookWriter);
-                bookInfo.put("pictureLink", resultImageUrl);
-            }
-            @Override
-            public void onFailure(Call<BookSearchResultVO> call, Throwable t) {
-                Log.d("BookSearchResult Successs", String.valueOf(t));
-            }
-        });
-    }
-
 
     private void localUpoad() {
         FirebaseStorage storage = FirebaseStorage.getInstance();

@@ -127,7 +127,6 @@ public class HomeFragment extends Fragment implements Runnable{
             return null;
         });
 
-
         
 
         // Home화면에 지갑잔고 출력

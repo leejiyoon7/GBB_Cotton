@@ -128,24 +128,13 @@ public class HomeFragment extends Fragment implements Runnable{
         });
 
 
-
-
-        // Home화면에 UserName 출력
-        firebaseTest.profileGet(memberInfos, (resultList) -> {
-             Log.d("home에서 확인",resultList.get(0).getName());
-            home_my_point_user_name_text_view.setText(resultList.get(0).getName());
-             return null;
-         });
-
-        // Home화면에 보유티겟 수 출력
-        firebaseTest.profileGet(memberInfos, (resultList) -> {
-            Log.d("home에서 확인2",Long.toString(resultList.get(0).getTicket()));
-            home_my_point_food_ticket_text_view.setText("보유식권: " + Long.toString(resultList.get(0).getTicket()) + "장");
-            return null;
-        });
+        
 
         // Home화면에 지갑잔고 출력
         firebaseTest.profileGet(memberInfos, (resultList) -> {
+
+            home_my_point_user_name_text_view.setText(resultList.get(0).getName()); // Home화면에 UserName 출력
+            home_my_point_food_ticket_text_view.setText("보유식권: " + Long.toString(resultList.get(0).getTicket()) + "장"); // Home화면에 보유티겟 수 출력
 
             ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
 

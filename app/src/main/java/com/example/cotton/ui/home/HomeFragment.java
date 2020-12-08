@@ -230,8 +230,7 @@ public class HomeFragment extends Fragment implements Runnable{
             }
 
         });
-
-
+        
 
 //
 //         //여기서는 단어하나로 검색가능

@@ -8,14 +8,16 @@ public class LogForm {
     private String message;
     private String category;
     private String amount;
+    private String date;
 
-    public LogForm(String from, String to, String message, String category, String amount)
+    public LogForm(String from, String to, String message, String category, String amount, String date)
     {
         this.from = from;
         this.to =to;
         this.message = message;
         this.category = category;
         this.amount = amount;
+        this.date = date;
     }
 
     public String getFrom() {
@@ -56,5 +58,13 @@ public class LogForm {
 
     public void setAmount(String amount) {
         this.amount = amount;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

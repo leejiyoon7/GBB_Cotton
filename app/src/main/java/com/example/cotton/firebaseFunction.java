@@ -43,7 +43,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -156,9 +158,14 @@ public class firebaseFunction {
     //로그정보를 파이어베이스에 저장합니다.
     public void logInput(String from, String to, String message, String category, String amount){
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        LogForm logForm = new LogForm(from, to,message,category,amount);
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        long now = System.currentTimeMillis();
+        Date dateNow = new Date(now);
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String formatDate = sdfNow.format(dateNow);
+
+        LogForm logForm = new LogForm(from, to,message,category,amount, formatDate);
 
         db.collection("Log/").document().set(logForm)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -198,7 +205,8 @@ public class firebaseFunction {
                                         (String)logSaveInit.get(i).get("to"),
                                         (String)logSaveInit.get(i).get("message"),
                                         (String)logSaveInit.get(i).get("category"),
-                                        (String)logSaveInit.get(i).get("message")
+                                        (String)logSaveInit.get(i).get("message"),
+                                        (String)logSaveInit.get(i).get("date")
                                 );
                                 logFormList.add(logSaveFormProto);
                             }
@@ -233,7 +241,8 @@ public class firebaseFunction {
                                         (String)logSaveInit.get(i).get("to"),
                                         (String)logSaveInit.get(i).get("message"),
                                         (String)logSaveInit.get(i).get("category"),
-                                        (String)logSaveInit.get(i).get("message")
+                                        (String)logSaveInit.get(i).get("message"),
+                                        (String)logSaveInit.get(i).get("date")
                                 );
                                 logFormList.add(logSaveFormProto);
                             }

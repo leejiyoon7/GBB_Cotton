@@ -367,8 +367,6 @@ public class firebaseFunction {
 
     }
 
-
-
     // 유저가 등록한 책을 user개인정보에 저장합니다.
     public void insertRegisteredBookInfoToUser(String barcode, String bookName, String bookWriter)
     {
@@ -376,6 +374,26 @@ public class firebaseFunction {
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         UserRegisteredBookSaveForm userRegisteredBookSaveForm = new UserRegisteredBookSaveForm(bookName, bookWriter);
         db.collection("users/" + user.getUid() + "/RegisteredBook/").document(barcode).set(userRegisteredBookSaveForm)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("testing", "성공");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
+
+    //유저가 대여한 책을 user개인정보에 저장합니다.
+    public void insertRentedBookInfoToUser(String barcode, String bookName, String bookWriter, String status)
+    {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        UserRentedBookSaveForm userRentedBookSaveForm = new UserRentedBookSaveForm(bookName, bookWriter, status);
+        db.collection("users/" + user.getUid() + "/RentedBook/").document(barcode).set(userRentedBookSaveForm)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void avoid) {

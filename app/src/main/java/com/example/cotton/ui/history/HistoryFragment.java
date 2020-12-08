@@ -151,16 +151,16 @@ public class HistoryFragment extends Fragment {
         //listview에 add
         switch(state){
             case ALL:
-                adapter.addItem(R.drawable.ic_in,"도서거래","C언어 콘서트","2020.12.01","+100GBB","1000GBB");
-                adapter.addItem(R.drawable.ic_in,"충전","포인트 충전","2020.12.02","+500GBB","1500GBB");
-                adapter.addItem(R.drawable.ic_out,"상품구매","식권 x1","2020.12.03","-600GBB","900GBB");
+                adapter.addItem(R.drawable.ic_in,"도서거래","C언어 콘서트","2020.12.01","+100GBB");
+                adapter.addItem(R.drawable.ic_in,"충전","포인트 충전","2020.12.02","+500GBB");
+                adapter.addItem(R.drawable.ic_out,"상품구매","식권 x1","2020.12.03","-600GBB");
                 break;
             case INCOME:
-                adapter.addItem(R.drawable.ic_in,"도서거래","C언어 콘서트","2020.12.01","+100GBB","1000GBB");
-                adapter.addItem(R.drawable.ic_in,"충전","포인트 충전","2020.12.02","+500GBB","1500GBB");
+                adapter.addItem(R.drawable.ic_in,"도서거래","C언어 콘서트","2020.12.01","+100GBB");
+                adapter.addItem(R.drawable.ic_in,"충전","포인트 충전","2020.12.02","+500GBB");
                 break;
             case EXPENDITURE:
-                adapter.addItem(R.drawable.ic_out,"상품구매","식권 x1","2020.12.03","-600GBB","900GBB");
+                adapter.addItem(R.drawable.ic_out,"상품구매","식권 x1","2020.12.03","-600GBB");
                 break;
         }
         adapter.notifyDataSetChanged();//adapter의 변경을 알림

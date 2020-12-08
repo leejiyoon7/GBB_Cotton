@@ -7,7 +7,6 @@ public class HistoryListItem {
     private String historyBookname;
     private String historyDate;
     private String historyVariance;
-    private String historyBalance;
 
     public void setHistoryIcon(int historyIcon) {
         this.historyIcon = historyIcon;
@@ -29,9 +28,6 @@ public class HistoryListItem {
         this.historyVariance = historyVariance;
     }
 
-    public void setHistoryBalance(String historyBalance) {
-        this.historyBalance = historyBalance;
-    }
 
     public int getHistoryIcon() {
         return historyIcon;
@@ -53,7 +49,5 @@ public class HistoryListItem {
         return historyVariance;
     }
 
-    public String getHistoryBalance() {
-        return historyBalance;
-    }
+
 }

@@ -20,7 +20,6 @@ public class HistoryAdapter extends BaseAdapter {
     private TextView historyBookname;
     private TextView historyDate;
     private TextView historyVariance;
-    private TextView historyBalance;
 
     private ArrayList<HistoryListItem> historyItemsList=new ArrayList<>();
 
@@ -52,7 +51,6 @@ public class HistoryAdapter extends BaseAdapter {
         historyBookname=convertView.findViewById(R.id.history_listview_bookname_textView);
         historyDate=convertView.findViewById(R.id.history_listview_date_textView);
         historyVariance=convertView.findViewById(R.id.history_listview_variance_textView);
-        historyBalance=convertView.findViewById(R.id.history_listview_balance_textView);
 
         HistoryListItem historyListItem=historyItemsList.get(position);
         //아이템 내 각 위젯에 데이터 반영
@@ -61,7 +59,6 @@ public class HistoryAdapter extends BaseAdapter {
         historyBookname.setText(historyListItem.getHistoryBookname());
         historyDate.setText(historyListItem.getHistoryDate());
         historyVariance.setText(historyListItem.getHistoryVariance());
-        historyBalance.setText(historyListItem.getHistoryBalance());
 
         return convertView;
     }
@@ -79,7 +76,7 @@ public class HistoryAdapter extends BaseAdapter {
     }
 
     //아이템 데이터 추가를 위한 함수
-    public void addItem(int historyIcon, String historyType, String historyBookname, String historyDate, String historyVariance, String historyBalance){
+    public void addItem(int historyIcon, String historyType, String historyBookname, String historyDate, String historyVariance){
         HistoryListItem item=new HistoryListItem();
 
         item.setHistoryIcon(historyIcon);
@@ -87,7 +84,6 @@ public class HistoryAdapter extends BaseAdapter {
         item.setHistoryBookname(historyBookname);
         item.setHistoryDate(historyDate);
         item.setHistoryVariance(historyVariance);
-        item.setHistoryBalance(historyBalance);
 
         historyItemsList.add(item);
     }

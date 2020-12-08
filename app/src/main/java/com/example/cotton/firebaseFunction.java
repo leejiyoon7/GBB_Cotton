@@ -153,6 +153,29 @@ public class firebaseFunction {
                 });
     }
 
+    //로그정보를 파이어베이스에 저장합니다.
+    public void logInput(String from, String to, String message, String category, String amount){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        logForm logForm = new logForm(from, to,message,category,amount);
+
+        db.collection("Log/").document().set(logForm)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void avoid) {
+                        Log.d("Log testing", "성공!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
+
+
+
     public void countMember(){
         
     }

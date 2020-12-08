@@ -24,6 +24,10 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.cotton.MainActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
+import com.example.cotton.Utils.ApiService;
+import com.example.cotton.Utils.BaseUrlInterface;
+import com.example.cotton.Utils.RetrofitClientJson;
+import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.bookSaveForm;
 import com.example.cotton.firebaseFunction;
 import com.google.android.material.chip.Chip;
@@ -31,9 +35,14 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TradingFragment extends Fragment {
 
@@ -55,6 +64,7 @@ public class TradingFragment extends Fragment {
     String bookTitle;//전공 책 제목
     String bookAuthor;//전공 책 작가
     String userName; //현재 사용자이름
+    String userWallet; //현재 사용자 지갑주소
 
     ArrayList<TradingViewPagerItem> tradingViewPagerItems=new ArrayList<TradingViewPagerItem>();
     List<bookSaveForm> bookSearchResultByMajor;
@@ -112,6 +122,7 @@ public class TradingFragment extends Fragment {
         firebaseFunction firebaseUserCall = new firebaseFunction();
         firebaseUserCall.profileGet(memberInfos, (result)->{
             userName = result.get(0).getName();
+            userWallet = result.get(0).getWallet();
             return null;
         });
 
@@ -397,6 +408,78 @@ public class TradingFragment extends Fragment {
                     firebaseFunction firebaseFunction = new firebaseFunction();
                     firebaseFunction.updateRentMember(barcode, userName);
                 }
+
+                firebaseFunction firebaseFunction = new firebaseFunction();
+
+                firebaseFunction.getUuid(barcode, (result) -> {
+
+                    firebaseFunction.returnUuid(result,(wallet) -> {
+
+                        ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
+
+                        HashMap<String, String> bodyMap2 = new HashMap<String, String>();
+                        bodyMap2.put("valueAmount", "4500000000000000000000"); //가격
+                        bodyMap2.put("receiverAddress", wallet);
+
+                        HashMap<String, Object> bodyMap = new HashMap<String, Object>();
+                        bodyMap.put("from", userWallet); //보내는사람 지갑주소
+                        bodyMap.put("inputs", new HashMap<String, String>(bodyMap2)); //bodyMap2
+
+                        Log.d("성공 : ", "result : " + bodyMap.toString());
+
+                        call.buyFood(bodyMap).enqueue(new Callback<SetBalanceResultVO>() {
+                            @Override
+                            public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
+                                Log.d("성공 : ", "result : " + response.raw());
+                                Log.d("성공 : ", "result : " + response.body().getResult());
+                                Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
+                                Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
+                            }
+
+                            @Override
+                            public void onFailure(Call<SetBalanceResultVO> call, Throwable t) {
+                                Log.d("실패 : ", t.toString());
+                            }
+
+                        });
+
+                        HashMap<String, String> bodyMap4 = new HashMap<String, String>();
+                        bodyMap4.put("valueAmount", "500000000000000000000"); //가격
+                        bodyMap4.put("receiverAddress", "0xfb8e77f5808121c3ecf19d92ffb56b2e3d8db57b");
+
+                        HashMap<String, Object> bodyMap3 = new HashMap<String, Object>();
+                        bodyMap3.put("from", userWallet); //보내는사람 지갑주소
+                        bodyMap3.put("inputs", new HashMap<String, String>(bodyMap4)); //bodyMap2
+
+
+                        call.buyFood(bodyMap3).enqueue(new Callback<SetBalanceResultVO>() {
+                            @Override
+                            public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
+                                Log.d("성공 : ", "result : " + response.raw());
+                                Log.d("성공 : ", "result : " + response.body().getResult());
+                                Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
+                                Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
+                            }
+
+                            @Override
+                            public void onFailure(Call<SetBalanceResultVO> call, Throwable t) {
+                                Log.d("실패 : ", t.toString());
+                            }
+
+                        });
+
+                        return null;
+                    });
+
+                    return null;
+                });
+
+
+
+
+
+
+
 
                 //Toast.makeText(getActivity(),"전공: "+_major+" 책 제목: "+_bookTitle+" 저자: "+_bookAuthor,Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(getActivity(), MainActivity.class);

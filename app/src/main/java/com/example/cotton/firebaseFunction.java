@@ -298,6 +298,40 @@ public class firebaseFunction {
 
     }
 
+    public void returnUuid(String uuid, Function<String, Void> complete) { //회원정보 받아오기
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final ArrayList<Map<String, Object>> diaryM = new ArrayList<Map<String, Object>>();
+        DocumentReference docRef = db.collection("users").document(uuid);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        diaryM.add(document.getData());     //arraylist에 모든정보를 받아와서 저장
+                        memberInfo = new MemberInfo((String) diaryM.get(0).get("name"),
+                                (String) diaryM.get(0).get("phoneNumber"),
+                                (String) diaryM.get(0).get("wallet"),
+                                (Long) diaryM.get(0).get("ticket"),
+                                (String) diaryM.get(0).get("profileLink")); // 모든 정보를 다시 memberinfo에 저장
+                        Log.d("userName", "" + diaryM.get(0).get("name"));
+                        memberInfoList.add(0, memberInfo);  //리스트형식 첫번째 칸에 memberinfo 저장
+                        Log.d("사용자 이름", memberInfoList.get(0).getName());
+                        Log.d("사용자 지갑주소", memberInfoList.get(0).getWallet());
+                        complete.apply(memberInfoList.get(0).getWallet());
+                    } else {
+
+                    }
+                } else {
+
+                }
+            }
+        });
+
+
+    }
+
 
     //대여하기 버튼 클릭했을시 대여자 필드 변경
     public void updateRentMember(String barcode, String name){

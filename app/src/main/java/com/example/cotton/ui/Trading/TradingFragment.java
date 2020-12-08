@@ -56,6 +56,8 @@ public class TradingFragment extends Fragment {
 
     ArrayList<TradingViewPagerItem> tradingViewPagerItems=new ArrayList<TradingViewPagerItem>();
     List<bookSaveForm> bookSearchResultByMajor;
+    List<bookSaveForm> finalFilteredList;
+    int currentViewPagerIndex;
 
     TradingChipItem tradingChipItem;//chipItem class
     TradingMajorItem tradingMajorItem;//MajorItem class
@@ -95,15 +97,13 @@ public class TradingFragment extends Fragment {
         pagerAdapter = new TradingViewPagerAdapter(getChildFragmentManager());
         trading_content_view_pager.setAdapter(pagerAdapter);
         viewPagerSetOnChangePage();
+
         // Chip 초기 설정
         setChipOption(trading_hear_chip_book);
         setChipOption(trading_hear_chip_writer);
 
-
-
-//        searchBook();//search 기능
-
-        majorPickSpinner();//전공 선택 스피너
+        //전공 선택 스피너
+        majorPickSpinner();
 
         return view;
     }
@@ -183,16 +183,25 @@ public class TradingFragment extends Fragment {
         }); //End of: chip.setOnClickListener
     }
 
+    /**
+     * Chip의 닫기 버튼을 누르게 되면
+     * Chip의 검색 텍스트를 모두 삭제.
+     * 키보드를 닫기.
+     * 뷰페이지 업데이트.
+     * @param chip : 대상 Chip 오브젝트
+     */
     public void setChipCloseEventFunc(Chip chip){
         chip.setOnCloseIconClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (chip.equals(trading_hear_chip_book)) {
                     chip.setText("도서명: ");
+                    trading_header_search_view.clearFocus();
                     updateViewPager();
                 }
                 else if (chip.equals(trading_hear_chip_writer)) {
                     chip.setText("저자명: ");
+                    trading_header_search_view.clearFocus();
                     updateViewPager();
                 }
                 hideSearchViewIfChipIsEmpty();
@@ -214,34 +223,34 @@ public class TradingFragment extends Fragment {
                     case 0:
                         major="컴퓨터공학과";
                         tradingMajorItem.setMajor(major);
-                        TradingViewPagerFunc();//뷰 페이저 관련 함수
+                        searchBookFromFirebase();//뷰 페이저 관련 함수
                         break;
                     case 1:
                         major="전자공학과";
                         tradingMajorItem.setMajor(major);
-                        TradingViewPagerFunc();
+                        searchBookFromFirebase();
                         break;
                     case 2:
                         major="전기공학과";
                         tradingMajorItem.setMajor(major);
-                        TradingViewPagerFunc();
+                        searchBookFromFirebase();
                         break;
                     case 3:
                         major="AI.소프트웨어학부";
                         tradingMajorItem.setMajor(major);
-                        TradingViewPagerFunc();
+                        searchBookFromFirebase();
                         break;
                     case 4:
                         major="에너지IT학과";
                         tradingMajorItem.setMajor(major);
-                        TradingViewPagerFunc();
+                        searchBookFromFirebase();
                         break;
                 }
-                firebaseFunction firebaseSearch = new firebaseFunction();
-                firebaseSearch.searchBook(major, (resultList) -> {
-                    Log.d("testing ", major);
-                    return null;
-                });
+//                firebaseFunction firebaseSearch = new firebaseFunction();
+//                firebaseSearch.searchBook(major, (resultList) -> {
+//                    Log.d("testing ", major);
+//                    return null;
+//                });
 
             }
             @Override
@@ -251,8 +260,10 @@ public class TradingFragment extends Fragment {
         });
     }
 
-    //뷰 페이저 관련 함수
-    public void TradingViewPagerFunc(){
+    /**
+     * 전공을 기준으로 파이어베이스에서 책 정보를 받아옴.
+     */
+    public void searchBookFromFirebase(){
         firebaseFunction firebaseSearch = new firebaseFunction();
         firebaseSearch.searchBook(major, (resultList) -> {
             bookSearchResultByMajor = resultList;
@@ -263,7 +274,11 @@ public class TradingFragment extends Fragment {
     }
 
 
-
+    /**
+     * Chip의 검색어를 기준으로 List를 필터링하고 결과를 Set형태로 반환.
+     * @param chip : 대상이 되는 Chip
+     * @return 조건 검색 완료된 bookSaveForm타입의 Set
+     */
     public Set<bookSaveForm> filterResultByChipQuery(Chip chip) {
         // 검색어가 없을 경우 학과 기준 검색결과 반환
         if(chip.getText().length() == 4) {
@@ -288,12 +303,21 @@ public class TradingFragment extends Fragment {
         return filteredSet;
     }
 
+
+    /**
+     * 다음 세가지 검색 결과를 바탕으로 최종 검색 결과 도출
+     * 1. 전공 기준 책 검색 결과
+     * 2. 도서명 기준 책 검색 결과
+     * 3. 저자명 기준 책 검색 결과
+     *
+     * 최종 검색 결과를 통해서 ViewPager 갱신.
+     */
     public void updateViewPager() {
         Set<bookSaveForm> filteredBookNameSet = filterResultByChipQuery(trading_hear_chip_book);
         Set<bookSaveForm> filteredBookWriterSet = filterResultByChipQuery(trading_hear_chip_writer);
         Set<bookSaveForm> finalFilteredSet = filteredBookNameSet;
         finalFilteredSet.retainAll(filteredBookWriterSet);
-        List<bookSaveForm> finalFilteredList = Lists.newArrayList(finalFilteredSet);
+        finalFilteredList = Lists.newArrayList(finalFilteredSet);
 
         pagerAdapter.clearFragmentList();
         if (finalFilteredList.isEmpty()) {
@@ -317,12 +341,17 @@ public class TradingFragment extends Fragment {
         trading_page_indicator_total_page_text_view.setText(String.valueOf(finalFilteredList.size()));
     }
 
+
+    /**
+     * ViewPager가 넘어갈 때 ViewPager 인덱스를 갱신.
+     */
     private void viewPagerSetOnChangePage() {
         trading_content_view_pager.clearOnPageChangeListeners();
         trading_content_view_pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 trading_page_indicator_current_page_text_view.setText(String.valueOf(position + 1));
+                currentViewPagerIndex = position;
             }
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
@@ -343,23 +372,25 @@ public class TradingFragment extends Fragment {
 //        tradingViewPagerItems.add(item);
 //    }
 
-    public void clearCurrentViewPagerFragment() {
-        TradingViewPagerAdapter currentAdapter = (TradingViewPagerAdapter) trading_content_view_pager.getAdapter();
-        currentAdapter.clearFragmentList();
-    }
 
     //대여하기 버튼 클릭 이벤트
     public void tradingRentButtonClickEvent(String _major, String _bookTitle, String _bookAuthor){
-        //구매 버튼 누를 시 MainActivity로 이동
-        trading_rent_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Toast.makeText(getActivity(),"전공: "+_major+" 책 제목: "+_bookTitle+" 저자: "+_bookAuthor,Toast.LENGTH_SHORT).show();
-                Intent intent=new Intent(getActivity(), MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
-        });
+//        //구매 버튼 누를 시 MainActivity로 이동
+//        trading_rent_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                bookSaveForm selectedBookInfo = new bookSaveForm();
+//                selectedBookInfo = finalFilteredList.get(currentViewPagerIndex);
+//                if (selectedBookInfo != null) {
+//                    firebaseFunction firebaseFunction = new firebaseFunction();
+//                    firebaseFunction.updateRentMember(selectedBookInfo.get);
+//                }
+//
+//                Toast.makeText(getActivity(),"전공: "+_major+" 책 제목: "+_bookTitle+" 저자: "+_bookAuthor,Toast.LENGTH_SHORT).show();
+//                Intent intent=new Intent(getActivity(), MainActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(intent);
+//            }
+//        });
     }
 }

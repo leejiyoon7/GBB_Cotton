@@ -97,7 +97,7 @@ public class firebaseFunction {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter);
+        bookSaveForm booksave = new bookSaveForm(pictureLink, major, bookName, bookWriter, barcode);
         //bookSaveForm booksave = new bookSaveForm("pictureLink", "major", "bookName", "bookWriter");
         BookDateSaveForm bookDateSaveForm = new BookDateSaveForm(registerDate, rentCount, "a");
         //BookDateSaveForm bookDateSaveForm = new BookDateSaveForm("registerDate", 10);
@@ -153,8 +153,38 @@ public class firebaseFunction {
                 });
     }
 
-    public void countMember(){
+    public void countMember(String barcode, Function<Integer, Void> complete){
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        db.collection("bookSave/").document(barcode).collection("RegisteredUsers/")
+                .whereEqualTo("rentedMember", "a")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            int count =0;
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("testtetetet", document.getId());
+                                count += 1;
+
+                            }
+                            complete.apply(count);
+                        } else {
+
+                        }
+                    }
+                });
+
+    }
+
+    public void updateRent(String barcode, String name){
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        getUuid(barcode, (result)->{
+            db.collection("bookSave/" + barcode + "/RegisteredUsers/" + result);
+
+            return null;
+        });
     }
 
 
@@ -162,31 +192,33 @@ public class firebaseFunction {
     public void updateRentMember(String barcode, String name){
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         getUuid(barcode, (result) -> {
-             final DocumentReference sfDocRef = db.collection("bookSave/").document(barcode).collection("RegisteredUsers/").document(result);
-             db.runTransaction(new Transaction.Function<Void>() {
-                 @Override
-                 public Void apply(Transaction transaction) throws FirebaseFirestoreException {
-                     DocumentSnapshot snapshot = transaction.get(sfDocRef);
-                     int newRentCount = Integer.parseInt(snapshot.getString("rentCount")) + 1;
-                     transaction.update(sfDocRef, "rentCount", newRentCount);
-                     transaction.update(sfDocRef, "rentedMember", name);
-                     return null;
-                 }
-             }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                 @Override
-                 public void onSuccess(Void aVoid) {
-                     Log.d("", "Transaction success!");
-                 }
-             })
-                     .addOnFailureListener(new OnFailureListener() {
-                         @Override
-                         public void onFailure(@NonNull Exception e) {
-                             Log.w("", "Transaction failure.", e);
-                         }
-                     });
+            final DocumentReference sfDocRef = db.collection("bookSave/" + barcode + "/RegisteredUsers/").document(result);
+            db.runTransaction(new Transaction.Function<Void>() {
+                @Override
+                public Void apply(Transaction transaction) throws FirebaseFirestoreException {
+                    DocumentSnapshot snapshot = transaction.get(sfDocRef);
+//                     Log.d("tagaagag", snapshot.getString("rentCount"));
 
-             return null;
-         });
+                    Long newRentCount = (snapshot.getLong("rentCount")) + 1;
+                    transaction.update(sfDocRef, "rentCount", newRentCount);
+                    transaction.update(sfDocRef, "rentedMember", name);
+                    return null;
+                }
+            }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("", "Transaction success!");
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("", "Transaction failure.", e);
+                        }
+                    });
+
+            return null;
+        });
 
     }
 
@@ -286,7 +318,6 @@ public class firebaseFunction {
         final List<bookSaveForm> bookSaveList = new ArrayList<>();
         db.collection("bookSave")
                 .whereEqualTo("major", word)
-                .whereEqualTo("rentedMember" , "a")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -299,7 +330,9 @@ public class firebaseFunction {
                                 bookSaveForm bookSaveFormProto = new bookSaveForm((String)bookSaveInit.get(i).get("pictureLink"),
                                         (String)bookSaveInit.get(i).get("major"),
                                         (String)bookSaveInit.get(i).get("bookName"),
-                                        (String)bookSaveInit.get(i).get("bookWriter"));
+                                        (String)bookSaveInit.get(i).get("bookWriter"),
+                                        (String)bookSaveInit.get(i).get("barcode"));
+
                                 bookSaveList.add(bookSaveFormProto);
 
                             }
@@ -332,6 +365,7 @@ public class firebaseFunction {
                                 (String) diaryM.get(0).get("wallet"),
                                 (Long) diaryM.get(0).get("ticket"),
                                 (String) diaryM.get(0).get("profileLink")); // 모든 정보를 다시 memberinfo에 저장
+                        Log.d("userName", "" + diaryM.get(0).get("name"));
                         memberInfoList.add(0, memberInfo);  //리스트형식 첫번째 칸에 memberinfo 저장
                         Log.d("사용자 이름", memberInfoList.get(0).getName());
                         Log.d("사용자 지갑주소", memberInfoList.get(0).getWallet());
@@ -445,7 +479,7 @@ public class firebaseFunction {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-       // 먼저 bookListGet으로 모든 정보를 받아온뒤 필터링을 걸어서 해당 필드의 책 이름과 사용자이름 추출해서 변수 두개에 넣으면 작동
+        // 먼저 bookListGet으로 모든 정보를 받아온뒤 필터링을 걸어서 해당 필드의 책 이름과 사용자이름 추출해서 변수 두개에 넣으면 작동
         storageRef.child("bookSave/" + bookName +"_" + userName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {

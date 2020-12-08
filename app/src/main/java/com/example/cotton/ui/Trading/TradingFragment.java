@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.cotton.MainActivity;
+import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.bookSaveForm;
 import com.example.cotton.firebaseFunction;
@@ -53,11 +54,14 @@ public class TradingFragment extends Fragment {
     String major;//전공 value
     String bookTitle;//전공 책 제목
     String bookAuthor;//전공 책 작가
+    String userName; //현재 사용자이름
 
     ArrayList<TradingViewPagerItem> tradingViewPagerItems=new ArrayList<TradingViewPagerItem>();
     List<bookSaveForm> bookSearchResultByMajor;
     List<bookSaveForm> finalFilteredList;
+    List<MemberInfo> memberInfos = new ArrayList<>();;
     int currentViewPagerIndex;
+
 
     TradingChipItem tradingChipItem;//chipItem class
     TradingMajorItem tradingMajorItem;//MajorItem class
@@ -105,6 +109,13 @@ public class TradingFragment extends Fragment {
         //전공 선택 스피너
         majorPickSpinner();
 
+        firebaseFunction firebaseUserCall = new firebaseFunction();
+        firebaseUserCall.profileGet(memberInfos, (result)->{
+            userName = result.get(0).getName();
+            return null;
+        });
+
+        tradingRentButtonClickEvent();
         return view;
     }
 
@@ -374,23 +385,24 @@ public class TradingFragment extends Fragment {
 
 
     //대여하기 버튼 클릭 이벤트
-    public void tradingRentButtonClickEvent(String _major, String _bookTitle, String _bookAuthor){
-//        //구매 버튼 누를 시 MainActivity로 이동
-//        trading_rent_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                bookSaveForm selectedBookInfo = new bookSaveForm();
-//                selectedBookInfo = finalFilteredList.get(currentViewPagerIndex);
-//                if (selectedBookInfo != null) {
-//                    firebaseFunction firebaseFunction = new firebaseFunction();
-//                    firebaseFunction.updateRentMember(selectedBookInfo.get);
-//                }
-//
-//                Toast.makeText(getActivity(),"전공: "+_major+" 책 제목: "+_bookTitle+" 저자: "+_bookAuthor,Toast.LENGTH_SHORT).show();
-//                Intent intent=new Intent(getActivity(), MainActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(intent);
-//            }
-//        });
+    public void tradingRentButtonClickEvent(){
+        //구매 버튼 누를 시 MainActivity로 이동
+        trading_rent_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bookSaveForm selectedBookInfo = new bookSaveForm();
+                selectedBookInfo = finalFilteredList.get(currentViewPagerIndex);
+                String barcode = selectedBookInfo.getBarcode();
+                if (selectedBookInfo != null) {
+                    firebaseFunction firebaseFunction = new firebaseFunction();
+                    firebaseFunction.updateRentMember(barcode, userName);
+                }
+
+                //Toast.makeText(getActivity(),"전공: "+_major+" 책 제목: "+_bookTitle+" 저자: "+_bookAuthor,Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(getActivity(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
     }
 }

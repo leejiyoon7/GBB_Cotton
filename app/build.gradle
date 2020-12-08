@@ -58,9 +58,14 @@ dependencies {
 
     // 바코드 인식을 위한 라이브러리
     implementation 'com.google.android.gms:play-services-vision:20.1.2'
-
     implementation 'com.google.firebase:firebase-ml-vision:24.1.0'
     implementation 'com.google.firebase:firebase-ml-vision-barcode-model:16.1.2'
+
+    implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+
+
+    // simple xml
     compile ('com.squareup.retrofit2:converter-simplexml:2.1.0'){
         exclude group: 'stax', module: 'stax-api'
         exclude group: 'stax', module: 'stax'

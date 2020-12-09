@@ -347,13 +347,11 @@ public class FirebaseFunction {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 String rentedMember = (String) document.get("rentedMember");
-                                if (rentedMember.equals("a")) {
-                                    Log.d("Book Return Error: ", "A");
+                                if (!rentedMember.equals(getMyUID())) {
                                     deleteRentedBook(barcode, complete, failed);
                                 }
                                 else {
                                     bookNotReturnedMsg.apply(null);
-                                    Log.d("Book Return Error: ", "B");
                                 }
                             }
                         }

@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -234,6 +235,75 @@ public class FirebaseFunction {
                     }
                 });
     }
+
+    public void getMyRentedBook(String barcode, String myName, Function<String, Void> complete){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("bookSave/"+barcode+"/RegisteredUsers")
+                .whereEqualTo("rentedMember", myName)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                document.getId();
+                                complete.apply(document.getId());       //내가 빌린책의 바코드와 내이름으로 빌려준사람 uuid 를 받아옴
+                            }
+                        } else {
+
+                        }
+                    }
+                });
+    }
+
+    // 반납하기를 눌렀을때 해당 하는 책의 rentedMember가 a로 변경
+    public void returnBook(String barcode, String myName){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        getMyRentedBook(barcode, myName, (result)->{
+            DocumentReference washingtonRef = db.collection("bookSave/"+barcode+"/RegisteredUsers").document(result);
+            washingtonRef
+                    .update("rentedMember", "a")
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+            return null;
+        });
+    }
+
+    public void deleteBookInfo(String barcode){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users/").document(user.getUid()).collection("RentedBook/")
+                .document(barcode)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("deleteBook", "user정보의 Rentedbook에서 삭제 성공");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("deleteBook", "user정보의 Rentedbook에서 삭제 실패");
+                    }
+                });
+    }
+
+
 
     //ticket구매시 user의 보유티켓개수가 증가합니다.
     public void raiseMyTicketCount(int ticket)

@@ -8,11 +8,11 @@ public class UserRentedBookSaveForm {
     private String bookOwnerUUID;
 
 
-    public UserRentedBookSaveForm(String bookName, String bookWriter, String status, String bookOwnerUUID) {
+    public UserRentedBookSaveForm(String bookName, String bookWriter, String status, String barcode, String bookOwnerUUID) {
         this.bookName = bookName;
         this.bookWriter = bookWriter;
-        this.barcode = barcode;
         this.status = status;
+        this.barcode = barcode;
         this.bookOwnerUUID = bookOwnerUUID;
     }
 

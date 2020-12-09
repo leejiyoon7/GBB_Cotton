@@ -348,10 +348,12 @@ public class FirebaseFunction {
                             if (document.exists()) {
                                 String rentedMember = (String) document.get("rentedMember");
                                 if (rentedMember.equals("a")) {
+                                    Log.d("Book Return Error: ", "A");
                                     deleteRentedBook(barcode, complete, failed);
                                 }
                                 else {
                                     bookNotReturnedMsg.apply(null);
+                                    Log.d("Book Return Error: ", "B");
                                 }
                             }
                         }

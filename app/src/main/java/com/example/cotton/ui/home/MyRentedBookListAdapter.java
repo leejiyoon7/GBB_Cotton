@@ -37,7 +37,7 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
             super(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View view) {
                     int index = getAdapterPosition();
                     if (index != RecyclerView.NO_POSITION) {
                         FirebaseFunction firebaseFunction = new FirebaseFunction();
@@ -49,7 +49,7 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
                         String bookOwnerUID = myRentedBookList.get(index).getList_my_rented_book_owner_uid();
 
                         // BottomSheetDialog 초기화.
-                        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(v.getContext());
+                        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(view.getContext());
                         bottomSheetDialog.setContentView(R.layout.return_book_qrcode_bottom_dialog);
 
                         TextView qrSubmitBtn = bottomSheetDialog.findViewById(R.id.return_book_qr_submit_btn);
@@ -58,15 +58,17 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
                         qrSubmitBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                Log.d("Book Return Exec: ", "책반납완료버튼눌림.");
                                 firebaseFunction.deleteRentedBookIfReturnedSuccessfully(
                                         selectedBookBarcode,
                                         bookOwnerUID,
                                         (value) -> {
+                                            Toast.makeText(v.getContext(), "책이 아직 반납되지 않았습니다.", Toast.LENGTH_SHORT).show();
                                             Log.d("Book Return Error: ", "책이 아직 반납되지 않았습니다.");
                                             return null;
                                         },
                                         (value) -> {
-                                            Toast.makeText(v.getContext(), "책 반납이 완료되었습니다.", Toast.LENGTH_SHORT);
+                                            Toast.makeText(v.getContext(), "책 반납이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                                             Log.d("Book Return Error: ", "책 반납이 완료되었습니다.");
                                             return null;
                                         },

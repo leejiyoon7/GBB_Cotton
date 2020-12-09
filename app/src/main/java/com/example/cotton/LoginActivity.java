@@ -57,7 +57,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         findViewById(R.id.loginButton).setOnClickListener(onClickListener);
         findViewById(R.id.gotoSigninButton).setOnClickListener(onClickListener);
-        findViewById(R.id.btn_google).setOnClickListener(onClickListener);
         findViewById(R.id.passwordReset).setOnClickListener(onClickListener);
         progressBar = findViewById(R.id.login_progress_bar);
 
@@ -79,20 +78,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         finish();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        //구글로그인 버튼 입력시 결과값을 돌려받는곳
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == REQ_SIGN_GOOGLE) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if(result.isSuccess()){ //인증결과가 성공인가
-                GoogleSignInAccount account = result.getSignInAccount(); // account는 구글 로그인 정보를 가지고 있음
-                resultLogin(account); //로그인 결과값 출력 수행하라는 메소드
-            }
-        }
-    }
-
     //각 버튼 온클릭 이벤트
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -105,10 +90,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 case R.id.gotoSigninButton:
                     startSignUpActivity();
                     finish();
-                    break;
-                case R.id.btn_google:
-                    Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                    startActivityForResult(intent, REQ_SIGN_GOOGLE);
                     break;
                 case R.id.passwordReset:
                     startPasswordResetActivity();
@@ -150,26 +131,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
-    //google 로그인 기능 함수
-    private void resultLogin(final GoogleSignInAccount account) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){ //로그인이 성공했으면
-                            startToast("로그인에 성공했습니다.");
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }else { //로그인이 실패했으면
-                            if(task.getException() != null) {
-                                startToast(task.getException().toString());
-                            }
-                        }
-                    }
-                });
-    }
 
     //토스트 메세지 출력
     private void startToast(String msg) {

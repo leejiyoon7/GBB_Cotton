@@ -130,6 +130,8 @@ public class HomeFragment extends Fragment implements Runnable{
             return null;
         });
 
+        //firebaseTest.deleteBookInfo("111");
+
 
         
 

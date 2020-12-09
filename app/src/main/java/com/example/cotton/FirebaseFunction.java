@@ -113,6 +113,28 @@ public class FirebaseFunction {
                 });
     }
 
+    //반납 시 user의 개인정보 안 빌린책 목록에서 책을 삭제합니다.
+    public void deleteBookInfo(String barcode){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users/").document(user.getUid()).collection("RentedBook/")
+                .document("9788968481949")
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("deleteBook", "user정보의 Rentedbook에서 삭제 성공");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("deleteBook", "user정보의 Rentedbook에서 삭제 실패");
+                    }
+                });
+    }
+
+
     //가장 대여횟수가 낮고 대여중이 아닌 책 주인의 uuid 가져오기
     public void getUuid(String barcode, Function<String, Void> complete){
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -318,8 +340,6 @@ public class FirebaseFunction {
                 }
             }
         });
-
-
     }
 
 

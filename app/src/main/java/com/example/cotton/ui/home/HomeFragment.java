@@ -291,7 +291,6 @@ public class HomeFragment extends Fragment implements Runnable{
 
     //대여 도서 목록 +더보기 버튼 클릭
     public void clickRentedViewMoreButtonFunc(){
-
         FirebaseFunction firebaseTest = new FirebaseFunction();
         home_my_rented_book_card_view_more_button.setOnClickListener(new View.OnClickListener() {
             @Override

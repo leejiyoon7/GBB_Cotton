@@ -5,10 +5,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -29,6 +32,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private FirebaseAuth mAuth;
     private GoogleApiClient googleApiClient; // 구글 api 클라이언트 객체
     private static final int REQ_SIGN_GOOGLE = 100; //구글 로그인 결과 코드
+    private VideoView videoHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,43 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         findViewById(R.id.gotoSigninButton).setOnClickListener(onClickListener);
         findViewById(R.id.btn_google).setOnClickListener(onClickListener);
         findViewById(R.id.passwordReset).setOnClickListener(onClickListener);
+
+        try {
+            videoHolder = (VideoView)findViewById(R.id.login_video_view);
+            Uri video = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.login_bg_video);
+            videoHolder.setVideoURI(video);
+
+            videoHolder.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    float videoRatio = mp.getVideoWidth() / (float) mp.getVideoHeight();
+                    float screenRatio = videoHolder.getWidth() / (float)
+                            videoHolder.getHeight();
+                    float scaleX = videoRatio / screenRatio;
+                    if (scaleX >= 1f) {
+                        videoHolder.setScaleX(scaleX);
+                    } else {
+                        videoHolder.setScaleY(1f / scaleX);
+                    }
+                }
+            });
+
+            videoHolder.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                public void onCompletion(MediaPlayer mp) {
+                    videoHolder.start();
+                }
+            });
+            videoHolder.start();
+        } catch (Exception ex) {
+            jump();
+        }
+    }
+
+    private void jump() {
+        if (isFinishing())
+            return;
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 
     @Override

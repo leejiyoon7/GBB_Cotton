@@ -63,6 +63,9 @@ dependencies {
 
     implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
     implementation 'androidx.appcompat:appcompat:1.0.2'
+    
+    // 투명 글씨
+    implementation 'it.gilvegliach.android:transparent-text-textview:1.0.3'
 
 
     // simple xml

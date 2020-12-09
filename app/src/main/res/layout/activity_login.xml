@@ -36,8 +36,8 @@
 
         android:src="@drawable/login_icon"/>
 
-    
-    
+
+
     <LinearLayout
         android:id="@+id/login_form_layout"
         android:layout_width="match_parent"
@@ -127,20 +127,6 @@
         android:background="@color/fui_transparent"
         android:textColor="@color/white"/>
 
-    <com.google.android.gms.common.SignInButton
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="30dp"
-        android:id="@+id/btn_google"
-        app:layout_constraintTop_toBottomOf="@+id/passwordReset"
-        android:visibility="gone"/>
-    
-    
-    
     <ProgressBar
         android:id="@+id/login_progress_bar"
         android:layout_width="wrap_content"

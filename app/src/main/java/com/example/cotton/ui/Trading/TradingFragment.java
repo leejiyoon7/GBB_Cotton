@@ -1,7 +1,6 @@
 package com.example.cotton.ui.Trading;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.cotton.MainActivity;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.Utils.ApiService;
@@ -33,6 +31,7 @@ import com.example.cotton.BookSaveForm;
 import com.example.cotton.FirebaseFunction;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
@@ -413,86 +412,99 @@ public class TradingFragment extends Fragment {
                 String selectedBookName = selectedBookInfo.getBookName();
                 String selectedBookWriter = selectedBookInfo.getBookWriter();
 
+
                 if (selectedBookInfo != null) {
                     FirebaseFunction firebaseFunction = new FirebaseFunction();
-                    firebaseFunction.updateRentMember(barcode);
-                }
+                    firebaseFunction.getRentAvailableBookAmountByBarcode(
+                            barcode,
+                            (rentAvailableBookAmount) -> {
+                                //대여 가능 책이 없을 경우
+                                if (rentAvailableBookAmount == 0) {
+                                    Toast.makeText(getContext(), "대여 가능한 책이 없습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                                // 대여 가능할 경우
+                                else {
+                                    firebaseFunction.updateRentMember(barcode);
 
-                FirebaseFunction firebaseFunction = new FirebaseFunction();
+                                    firebaseFunction.getRentAvailableBookOwnerUID(barcode, (bookOwnerUID) -> {
 
-                firebaseFunction.getUuid(barcode, (result) -> {
+                                        firebaseFunction.getUserWalletByUID(bookOwnerUID,(wallet) -> {
 
-                    firebaseFunction.returnUuid(result,(wallet) -> {
+                                            ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
 
-                        ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
+                                            HashMap<String, String> bodyMap2 = new HashMap<String, String>();
+                                            bodyMap2.put("valueAmount", "4500000000000000000000"); //가격
+                                            bodyMap2.put("receiverAddress", wallet);
 
-                        HashMap<String, String> bodyMap2 = new HashMap<String, String>();
-                        bodyMap2.put("valueAmount", "4500000000000000000000"); //가격
-                        bodyMap2.put("receiverAddress", wallet);
+                                            HashMap<String, Object> bodyMap = new HashMap<String, Object>();
+                                            bodyMap.put("from", userWallet); //보내는사람 지갑주소
+                                            bodyMap.put("inputs", new HashMap<String, String>(bodyMap2)); //bodyMap2
 
-                        HashMap<String, Object> bodyMap = new HashMap<String, Object>();
-                        bodyMap.put("from", userWallet); //보내는사람 지갑주소
-                        bodyMap.put("inputs", new HashMap<String, String>(bodyMap2)); //bodyMap2
+                                            Log.d("성공 : ", "result : " + bodyMap.toString());
 
-                        Log.d("성공 : ", "result : " + bodyMap.toString());
+                                            //대여 성공시 user개인정보 빌린도서 목록에 추가됩니다.
+                                            //상태는 대여성공시 "대여중"으로 초기화됩니다.
+                                            firebaseFunction.insertRentedBookInfoToUser(barcode,selectedBookName, selectedBookWriter, "대여중", bookOwnerUID);
 
-                        //대여 성공시 user개인정보 빌린도서 목록에 추가됩니다.
-                        //상태는 대여성공시 "대여중"으로 초기화됩니다.
-                        firebaseFunction.insertRentedBookInfoToUser(barcode,selectedBookName, selectedBookWriter, "대여중", result);
+                                            call.buyFood(bodyMap).enqueue(new Callback<SetBalanceResultVO>() {
+                                                @Override
+                                                public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
 
-                        call.buyFood(bodyMap).enqueue(new Callback<SetBalanceResultVO>() {
-                            @Override
-                            public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
+                                                    Log.d("성공 : ", "result : " + response.raw());
+                                                    Log.d("성공 : ", "result : " + response.body().getResult());
+                                                    Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
+                                                    Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
+                                                }
 
-                                Log.d("성공 : ", "result : " + response.raw());
-                                Log.d("성공 : ", "result : " + response.body().getResult());
-                                Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
-                                Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
+                                                @Override
+                                                public void onFailure(Call<SetBalanceResultVO> call, Throwable t) {
+                                                    Log.d("실패 : ", t.toString());
+                                                }
+
+                                            });
+
+                                            HashMap<String, String> bodyMap4 = new HashMap<String, String>();
+                                            bodyMap4.put("valueAmount", "500000000000000000000"); //가격
+                                            bodyMap4.put("receiverAddress", "0xfb8e77f5808121c3ecf19d92ffb56b2e3d8db57b");
+
+                                            HashMap<String, Object> bodyMap3 = new HashMap<String, Object>();
+                                            bodyMap3.put("from", userWallet); //보내는사람 지갑주소
+                                            bodyMap3.put("inputs", new HashMap<String, String>(bodyMap4)); //bodyMap2
+
+
+                                            call.buyFood(bodyMap3).enqueue(new Callback<SetBalanceResultVO>() {
+                                                @Override
+                                                public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
+                                                    Log.d("성공 : ", "result : " + response.raw());
+                                                    Log.d("성공 : ", "result : " + response.body().getResult());
+                                                    Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
+                                                    Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<SetBalanceResultVO> call, Throwable t) {
+                                                    Log.d("실패 : ", t.toString());
+                                                }
+
+                                            });
+
+                                            return null;
+                                        });
+
+                                        return null;
+                                    });
+
+                                    FragmentTransaction ft;
+                                    if(tradingFragment.getFragmentManager()!=null){
+                                        ft = tradingFragment.getFragmentManager().beginTransaction();
+                                        ft.detach(tradingFragment).attach(tradingFragment).commit();
+                                        Toast.makeText(getActivity(),"대여가 완료되었습니다.",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                return null;
                             }
+                    ); //End of firebaseFunction.getRentAvailableBookAmountByBarcode()
 
-                            @Override
-                            public void onFailure(Call<SetBalanceResultVO> call, Throwable t) {
-                                Log.d("실패 : ", t.toString());
-                            }
-
-                        });
-
-                        HashMap<String, String> bodyMap4 = new HashMap<String, String>();
-                        bodyMap4.put("valueAmount", "500000000000000000000"); //가격
-                        bodyMap4.put("receiverAddress", "0xfb8e77f5808121c3ecf19d92ffb56b2e3d8db57b");
-
-                        HashMap<String, Object> bodyMap3 = new HashMap<String, Object>();
-                        bodyMap3.put("from", userWallet); //보내는사람 지갑주소
-                        bodyMap3.put("inputs", new HashMap<String, String>(bodyMap4)); //bodyMap2
-
-
-                        call.buyFood(bodyMap3).enqueue(new Callback<SetBalanceResultVO>() {
-                            @Override
-                            public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
-                                Log.d("성공 : ", "result : " + response.raw());
-                                Log.d("성공 : ", "result : " + response.body().getResult());
-                                Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
-                                Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
-                            }
-
-                            @Override
-                            public void onFailure(Call<SetBalanceResultVO> call, Throwable t) {
-                                Log.d("실패 : ", t.toString());
-                            }
-
-                        });
-
-                        return null;
-                    });
-
-                    return null;
-                });
-
-                FragmentTransaction ft;
-                if(tradingFragment.getFragmentManager()!=null){
-                    ft = tradingFragment.getFragmentManager().beginTransaction();
-                    ft.detach(tradingFragment).attach(tradingFragment).commit();
-                    Toast.makeText(getActivity(),"대여가 완료되었습니다.",Toast.LENGTH_SHORT).show();
                 }
             }
         });

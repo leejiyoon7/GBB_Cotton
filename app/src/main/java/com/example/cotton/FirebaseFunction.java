@@ -138,7 +138,7 @@ public class FirebaseFunction {
 
 
     //가장 대여횟수가 낮고 대여중이 아닌 책 주인의 uuid 가져오기
-    public void getUuid(String barcode, Function<String, Void> complete){
+    public void getRentAvailableBookOwnerUID(String barcode, Function<String, Void> complete){
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("bookSave/").document(barcode).collection("RegisteredUsers/")
@@ -389,7 +389,7 @@ public class FirebaseFunction {
     }
 
 
-    public void countMember(String barcode, Function<Integer, Void> complete){
+    public void getRentAvailableBookAmountByBarcode(String barcode, Function<Integer, Void> complete){
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("bookSave/").document(barcode).collection("RegisteredUsers/")
                 .whereEqualTo("rentedMember", "a")
@@ -402,7 +402,6 @@ public class FirebaseFunction {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("testtetetet", document.getId());
                                 count += 1;
-
                             }
                             complete.apply(count);
                         } else {
@@ -413,7 +412,7 @@ public class FirebaseFunction {
 
     }
 
-    public void returnUuid(String uuid, Function<String, Void> complete) { //회원정보 받아오기
+    public void getUserWalletByUID(String uuid, Function<String, Void> complete) { //회원정보 받아오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final ArrayList<Map<String, Object>> diaryM = new ArrayList<Map<String, Object>>();
@@ -450,7 +449,7 @@ public class FirebaseFunction {
     public void updateRentMember(String barcode){
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        getUuid(barcode, (result) -> {
+        getRentAvailableBookOwnerUID(barcode, (result) -> {
             final DocumentReference sfDocRef = db.collection("bookSave/" + barcode + "/RegisteredUsers/").document(result);
             db.runTransaction(new Transaction.Function<Void>() {
                 @Override

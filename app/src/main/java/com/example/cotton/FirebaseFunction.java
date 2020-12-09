@@ -118,7 +118,7 @@ public class FirebaseFunction {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users/").document(user.getUid()).collection("RentedBook/")
-                .document("9788968481949")
+                .document(barcode)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

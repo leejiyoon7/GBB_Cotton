@@ -130,10 +130,6 @@ public class HomeFragment extends Fragment implements Runnable{
             return null;
         });
 
-        //firebaseTest.deleteBookInfo("111");
-
-
-        
 
         // Home화면에 지갑잔고 출력
         firebaseTest.profileGet(memberInfos, (resultList) -> {

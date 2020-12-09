@@ -447,11 +447,11 @@ public class FirebaseFunction {
     }
 
     //유저가 대여한 책을 user개인정보에 저장합니다.
-    public void insertRentedBookInfoToUser(String barcode, String bookName, String bookWriter, String status)
+    public void insertRentedBookInfoToUser(String barcode, String bookName, String bookWriter, String status, String uuid)
     {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        UserRentedBookSaveForm userRentedBookSaveForm = new UserRentedBookSaveForm(bookName, bookWriter, status);
+        UserRentedBookSaveForm userRentedBookSaveForm = new UserRentedBookSaveForm(bookName, bookWriter, status, uuid);
         db.collection("users/" + user.getUid() + "/RentedBook/").document(barcode).set(userRentedBookSaveForm)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -520,7 +520,8 @@ public class FirebaseFunction {
                                 UserRentedBookSaveForm bookSaveFormProto = new UserRentedBookSaveForm(
                                         (String)bookSaveInit.get(i).get("bookName"),
                                         (String)bookSaveInit.get(i).get("bookWriter"),
-                                        (String)bookSaveInit.get(i).get("status"));
+                                        (String)bookSaveInit.get(i).get("status"),
+                                        (String)bookSaveInit.get(i).get("uuid"));
                                 bookSaveList.add(bookSaveFormProto);
                                 Log.d("TTTTTTTT",(String)bookSaveInit.get(i).get("bookName") );
                             }

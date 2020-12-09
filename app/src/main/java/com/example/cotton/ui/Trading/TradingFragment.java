@@ -415,7 +415,7 @@ public class TradingFragment extends Fragment {
 
                 if (selectedBookInfo != null) {
                     FirebaseFunction firebaseFunction = new FirebaseFunction();
-                    firebaseFunction.updateRentMember(barcode, userName);
+                    firebaseFunction.updateRentMember(barcode);
                 }
 
                 FirebaseFunction firebaseFunction = new FirebaseFunction();
@@ -438,7 +438,7 @@ public class TradingFragment extends Fragment {
 
                         //대여 성공시 user개인정보 빌린도서 목록에 추가됩니다.
                         //상태는 대여성공시 "대여중"으로 초기화됩니다.
-                        firebaseFunction.insertRentedBookInfoToUser(barcode,selectedBookName, selectedBookWriter, "대여중");
+                        firebaseFunction.insertRentedBookInfoToUser(barcode,selectedBookName, selectedBookWriter, "대여중", result);
 
                         call.buyFood(bodyMap).enqueue(new Callback<SetBalanceResultVO>() {
                             @Override

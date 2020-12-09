@@ -4,11 +4,13 @@ public class UserRentedBookSaveForm {
     private String bookName;
     private String bookWriter;
     private String status;
+    private String bookOwnerUUID;
 
-    public UserRentedBookSaveForm(String bookName, String bookWriter, String status) {
+    public UserRentedBookSaveForm(String bookName, String bookWriter, String status, String bookOwnerUUID) {
         this.bookName = bookName;
         this.bookWriter = bookWriter;
         this.status = status;
+        this.bookOwnerUUID = bookOwnerUUID;
     }
 
     public String getBookName() {
@@ -33,5 +35,13 @@ public class UserRentedBookSaveForm {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getBookOwnerUUID() {
+        return bookOwnerUUID;
+    }
+
+    public void setBookOwnerUUID(String bookOwnerUUID) {
+        this.bookOwnerUUID = bookOwnerUUID;
     }
 }

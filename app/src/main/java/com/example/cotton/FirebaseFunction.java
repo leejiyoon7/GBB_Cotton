@@ -305,28 +305,6 @@ public class FirebaseFunction {
         });
     }
 
-    public void deleteBookInfo(String barcode){
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users/").document(user.getUid()).collection("RentedBook/")
-                .document(barcode)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("deleteBook", "user정보의 Rentedbook에서 삭제 성공");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("deleteBook", "user정보의 Rentedbook에서 삭제 실패");
-                    }
-                });
-    }
-
-
-
     //ticket구매시 user의 보유티켓개수가 증가합니다.
     public void raiseMyTicketCount(int ticket)
     {

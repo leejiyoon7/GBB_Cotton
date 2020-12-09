@@ -135,6 +135,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                 startMainActivity();
                                 finish();
                             } else {
+                                progressBar.setVisibility(View.GONE);
                                 // If sign in fails, display a message to the user.
                                 if(task.getException() != null) {
                                     startToast(task.getException().toString());
@@ -144,6 +145,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     });
         }
         else {
+            progressBar.setVisibility(View.GONE);
             startToast("이메일 또는 비밀번호를 입력해 주세요.");
         }
     }
@@ -183,6 +185,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     //메인 엑티비티로 이동 함수
     private void startMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 

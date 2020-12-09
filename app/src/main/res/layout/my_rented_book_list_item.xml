@@ -23,27 +23,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toBottomOf="@id/list_my_rented_book_title_text_view"
-        app:layout_constraintLeft_toLeftOf="parent"
-
         android:layout_marginTop="8dp"
-
-
         android:text="도서 작성자"
-        android:textSize="10sp"
-        android:textColor="#999999"/>
+
+        android:textColor="#999999"
+
+
+        android:textSize="11sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_my_rented_book_title_text_view" />
 
     <TextView
         android:id="@+id/list_my_rented_book_status_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-
         android:text="도서 상태"
-        android:textSize="15sp"/>
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintRight_toRightOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

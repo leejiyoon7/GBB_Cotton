@@ -22,17 +22,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="#20000000"/>
+        android:background="#20000000">
+
+
+    </FrameLayout>
 
     
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
 
         app:layout_constraintBottom_toTopOf="@id/login_form_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="36dp"
+        android:layout_marginBottom="100dp"
 
         android:src="@drawable/login_icon"/>
 
@@ -47,22 +50,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="36dp"
-        android:layout_marginEnd="36dp"
-        android:layout_marginTop="80dp">
+        android:layout_marginStart="72dp"
+        android:layout_marginEnd="72dp"
+        android:layout_marginTop="200dp">
 
 
         <EditText
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="10dp"
+            android:layout_height="45dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:background="@drawable/login_edit_text_form"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:ems="10"
             android:hint=" 이메일"
             android:inputType="textEmailAddress" />
@@ -73,12 +75,12 @@
             android:id="@+id/passwordEditText"
             android:background="@drawable/login_edit_text_form"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="10dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:inputType="textPassword"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:hint=" 비밀번호"
@@ -88,9 +90,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_height="45dp"
             android:layout_marginTop="30dp"
             app:cardCornerRadius="50dp"
             app:cardBackgroundColor="@color/fui_transparent"

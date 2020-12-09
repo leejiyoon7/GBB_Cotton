@@ -14,7 +14,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -115,7 +114,7 @@ public class FirebaseFunction {
     }
 
     //반납 시 user의 개인정보 안 빌린책 목록에서 책을 삭제합니다.
-    public void deleteBookInfo(String barcode){
+    public void deleteRentedBook(String barcode, Function<Void, Void> complete, Function<Void, Void> failed){
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users/").document(user.getUid()).collection("RentedBook/")
@@ -125,12 +124,14 @@ public class FirebaseFunction {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("deleteBook", "user정보의 Rentedbook에서 삭제 성공");
+                        complete.apply(null);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d("deleteBook", "user정보의 Rentedbook에서 삭제 실패");
+                        failed.apply(null);
                     }
                 });
     }
@@ -258,7 +259,13 @@ public class FirebaseFunction {
                 });
     }
 
+    /**
+     * 바코드와 나의 UID를 바탕으로 내가 빌린 책 주인의 UID를 가져온다.
+     * @param barcode : 내가 빌린 책의 바코드
+     * @param complete : 완료 시 후속 작업.
+     */
     public void getMyRentedBook(String barcode, Function<String, Void> complete){
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -280,8 +287,14 @@ public class FirebaseFunction {
                 });
     }
 
-    // 반납하기를 눌렀을때 해당 하는 책의 rentedMember가 a로 변경
-    public void returnBook(String barcode){
+
+    /**
+     * 바코드와 나의 UID를 바탕으로 책 주인의 UID를 가져오고,
+     * 이를 통해서 빌린 책을 반환 상태로 변경.
+     * @param barcode : 내가 빌린 책의 바코드
+     * @param complete : 완료 시 후속 작업.
+     */
+    public void returnBook(String barcode, Function<Void, Void> complete){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -292,7 +305,7 @@ public class FirebaseFunction {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-
+                            complete.apply(null);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -303,6 +316,47 @@ public class FirebaseFunction {
                     });
             return null;
         });
+    }
+
+
+
+    /**
+     * 내가 빌린책이 반납 완료 되었는지 체크 후
+     * 반납이 완료되었을 경우, 나의 대여목록에서 해당 책 삭제.
+     * 반납이 안된 경우, 다시 실행 메시지 표시.
+     * @param barcode : 반납 체크할 책의 바코드
+     * @param bookOwnerUid : 반납 체크할 책 주인의 UID
+     * @param bookNotReturnedMsg : 반납이 완료 되지 않았을 때 메시지.
+     * @param complete : 삭제 완료 메시지.
+     * @param failed : 삭제 실패 메시지.
+     */
+    public void deleteRentedBookIfReturnedSuccessfully(String barcode,
+                                                       String bookOwnerUid,
+                                                       Function<Void, Void> bookNotReturnedMsg,
+                                                       Function<Void, Void> complete,
+                                                       Function<Void, Void> failed) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.document("bookSave/" + barcode + "/RegisteredUsers/" + bookOwnerUid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                String rentedMember = (String) document.get("rentedMember");
+                                if (rentedMember.equals("a")) {
+                                    deleteRentedBook(barcode, complete, failed);
+                                }
+                                else {
+                                    bookNotReturnedMsg.apply(null);
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     //ticket구매시 user의 보유티켓개수가 증가합니다.
@@ -451,7 +505,8 @@ public class FirebaseFunction {
     {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        UserRentedBookSaveForm userRentedBookSaveForm = new UserRentedBookSaveForm(bookName, bookWriter, status, uuid);
+
+        UserRentedBookSaveForm userRentedBookSaveForm = new UserRentedBookSaveForm(bookName, bookWriter, status, barcode, uuid);
         db.collection("users/" + user.getUid() + "/RentedBook/").document(barcode).set(userRentedBookSaveForm)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -505,7 +560,6 @@ public class FirebaseFunction {
     public void myRentedBookListGet(Function<List<UserRentedBookSaveForm>, Void> complete) { //모든 책 정보 받아오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final ArrayList<Map<String, Object>> bookSaveInit = new ArrayList<Map<String, Object>>();
         final List<UserRentedBookSaveForm> bookSaveList = new ArrayList<>();
         db.collection("users/"+user.getUid() + "/RentedBook")
                 .get()
@@ -514,20 +568,20 @@ public class FirebaseFunction {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                bookSaveInit.add(document.getData());
-                            }
-                            for (int i=0;i<bookSaveInit.size();i++) {
                                 UserRentedBookSaveForm bookSaveFormProto = new UserRentedBookSaveForm(
-                                        (String)bookSaveInit.get(i).get("bookName"),
-                                        (String)bookSaveInit.get(i).get("bookWriter"),
-                                        (String)bookSaveInit.get(i).get("status"),
-                                        (String)bookSaveInit.get(i).get("uuid"));
+
+                                        (String)document.getData().get("bookName"),
+                                        (String)document.getData().get("bookWriter"),
+                                        (String)document.getData().get("status"),
+                                        (String)document.getId(),
+                                        (String)document.get("bookOwnerUUID"));
+
                                 bookSaveList.add(bookSaveFormProto);
-                                Log.d("TTTTTTTT",(String)bookSaveInit.get(i).get("bookName") );
                             }
+
                             complete.apply(bookSaveList);
                         } else {
-
+                            // do something
                         }
                     }
                 });
@@ -727,5 +781,9 @@ public class FirebaseFunction {
                 .into(image_button); //이미지 버튼 아이디가 들어간다.
     }
 
+    public String getMyUID() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        return user.getUid();
+    }
 
 }

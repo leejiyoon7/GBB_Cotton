@@ -14,11 +14,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cotton.MainActivity;
 import com.example.cotton.Utils.ApiService;
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MemberInfo;
@@ -32,6 +34,9 @@ import com.example.cotton.BookSaveForm;
 import com.example.cotton.FirebaseFunction;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -191,6 +196,17 @@ public class HomeFragment extends Fragment implements Runnable{
             }
         });
 
+        home_profile_image_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
+                intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
+                intentIntegrator.setDesiredBarcodeFormats(String.valueOf(BarcodeFormat.QR_CODE));
+                intentIntegrator.initiateScan();
+                return false;
+            }
+        });
+
         //클릭시 manager 계정에서 10000코인 송금받음
         home_my_point_plus_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -231,35 +247,40 @@ public class HomeFragment extends Fragment implements Runnable{
             }
 
         });
-        
 
-//
-//         //여기서는 단어하나로 검색가능
-//         firebaseTest.serchBook("4");
-
-
-//         firebaseTest.profileGet(memberInfos, (resultList) -> {  // 맴버 정보 가져오기 / get(0).get 으로 모든정보가져올수있음
-//                                                                 // 해당 정보 이용시 여기 안에다 코딩해야함
-//             Log.d("home에서 확인",resultList.get(0).getName());
-//             return null;
-//         });
-
-        /*
-        firebaseTest.bookListGet(bookSaveFormList, (resultList) -> { // 모든 책정보 가져오기 / for문을 size로 돌리면 모든 책정보 가져올수 있음
-             Log.d("home에서 확인",resultList.get(0).getBookName());
-             Log.d("home에서 확인",resultList.get(1).getBookName());
-
-             return null;
-         });
-
-
-        */
 
         clickRentedViewMoreButtonFunc();//대여 도서 목록 +더보기 버튼 클릭
-
         clickRegisteredViewMoreButtonFunc();//나의 도서 목록 +더보기 버튼 클릭
 
         return view;
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                String qrStringInfo = result.getContents();
+                int slashIndex = qrStringInfo.indexOf("/");
+                String bookBarcode = qrStringInfo.substring(0, slashIndex);
+                String bookOwner = qrStringInfo.substring(slashIndex + 1);
+
+                FirebaseFunction firebaseFunction = new FirebaseFunction();
+                firebaseFunction.returnBook(
+                        bookBarcode,
+                        bookOwner,
+                        (value) -> {
+                            Toast.makeText(getContext(), "반납이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                            return null;
+                        }
+                );
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     public void goToHomeFragmentFunc(){

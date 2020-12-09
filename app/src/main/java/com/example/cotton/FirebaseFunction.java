@@ -262,15 +262,15 @@ public class FirebaseFunction {
     /**
      * 바코드와 나의 UID를 바탕으로 내가 빌린 책 주인의 UID를 가져온다.
      * @param barcode : 내가 빌린 책의 바코드
+     * @param borrowerUID : 대여자의 UID
      * @param complete : 완료 시 후속 작업.
      */
-    public void getMyRentedBook(String barcode, Function<String, Void> complete){
+    public void getMyRentedBook(String barcode, String borrowerUID, Function<String, Void> complete){
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("bookSave/"+barcode+"/RegisteredUsers")
-                .whereEqualTo("rentedMember", user.getUid())
+                .whereEqualTo("rentedMember", borrowerUID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -292,13 +292,14 @@ public class FirebaseFunction {
      * 바코드와 나의 UID를 바탕으로 책 주인의 UID를 가져오고,
      * 이를 통해서 빌린 책을 반환 상태로 변경.
      * @param barcode : 내가 빌린 책의 바코드
+     * @param borrowerUID : 대여자의 UID
      * @param complete : 완료 시 후속 작업.
      */
-    public void returnBook(String barcode, Function<Void, Void> complete){
+    public void returnBook(String barcode, String borrowerUID, Function<Void, Void> complete){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        getMyRentedBook(barcode,(result)->{
+        getMyRentedBook(barcode, borrowerUID, (result)->{
             DocumentReference washingtonRef = db.collection("bookSave/"+barcode+"/RegisteredUsers").document(result);
             washingtonRef
                     .update("rentedMember", "a")

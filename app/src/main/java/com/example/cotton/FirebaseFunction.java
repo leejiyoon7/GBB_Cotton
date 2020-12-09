@@ -262,15 +262,15 @@ public class FirebaseFunction {
     /**
      * 바코드와 나의 UID를 바탕으로 내가 빌린 책 주인의 UID를 가져온다.
      * @param barcode : 내가 빌린 책의 바코드
-     * @param myUID : 나의 UID
      * @param complete : 완료 시 후속 작업.
      */
-    public void getMyRentedBookOwnerUid(String barcode, String myUID, Function<String, Void> complete){
+    public void getMyRentedBook(String barcode, Function<String, Void> complete){
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("bookSave/"+barcode+"/RegisteredUsers")
-                .whereEqualTo("rentedMember", myUID)
+                .whereEqualTo("rentedMember", user.getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -287,20 +287,20 @@ public class FirebaseFunction {
                 });
     }
 
+
     /**
      * 바코드와 나의 UID를 바탕으로 책 주인의 UID를 가져오고,
      * 이를 통해서 빌린 책을 반환 상태로 변경.
      * @param barcode : 내가 빌린 책의 바코드
-     * @param myUID : 나의 UID
      * @param complete : 완료 시 후속 작업.
      */
-    public void returnBook(String barcode, String myUID, Function<Void, Void> complete){
+    public void returnBook(String barcode, Function<Void, Void> complete){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        getMyRentedBookOwnerUid(barcode, myUID, (bookOwnerUid)->{
-            DocumentReference bookOwnerDoc = db.collection("bookSave/"+barcode+"/RegisteredUsers").document(bookOwnerUid);
-            bookOwnerDoc
+        getMyRentedBook(barcode,(result)->{
+            DocumentReference washingtonRef = db.collection("bookSave/"+barcode+"/RegisteredUsers").document(result);
+            washingtonRef
                     .update("rentedMember", "a")
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -446,8 +446,9 @@ public class FirebaseFunction {
 
 
     //대여하기 버튼 클릭했을시 대여자 필드 변경
-    public void updateRentMember(String barcode, String name){
+    public void updateRentMember(String barcode){
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         getUuid(barcode, (result) -> {
             final DocumentReference sfDocRef = db.collection("bookSave/" + barcode + "/RegisteredUsers/").document(result);
             db.runTransaction(new Transaction.Function<Void>() {
@@ -458,7 +459,7 @@ public class FirebaseFunction {
 
                     Long newRentCount = (snapshot.getLong("rentCount")) + 1;
                     transaction.update(sfDocRef, "rentCount", newRentCount);
-                    transaction.update(sfDocRef, "rentedMember", name);
+                    transaction.update(sfDocRef, "rentedMember", user.getUid());
                     return null;
                 }
             }).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -500,11 +501,12 @@ public class FirebaseFunction {
     }
 
     //유저가 대여한 책을 user개인정보에 저장합니다.
-    public void insertRentedBookInfoToUser(String barcode, String bookName, String bookWriter, String status)
+    public void insertRentedBookInfoToUser(String barcode, String bookName, String bookWriter, String status, String uuid)
     {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        UserRentedBookSaveForm userRentedBookSaveForm = new UserRentedBookSaveForm(bookName, bookWriter, status, barcode);
+
+        UserRentedBookSaveForm userRentedBookSaveForm = new UserRentedBookSaveForm(bookName, bookWriter, status, barcode, uuid);
         db.collection("users/" + user.getUid() + "/RentedBook/").document(barcode).set(userRentedBookSaveForm)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -567,11 +569,13 @@ public class FirebaseFunction {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 UserRentedBookSaveForm bookSaveFormProto = new UserRentedBookSaveForm(
+
                                         (String)document.getData().get("bookName"),
                                         (String)document.getData().get("bookWriter"),
                                         (String)document.getData().get("status"),
                                         (String)document.getId(),
                                         (String)document.get("bookOwnerUUID"));
+
                                 bookSaveList.add(bookSaveFormProto);
                             }
 

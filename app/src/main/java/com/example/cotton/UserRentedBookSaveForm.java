@@ -5,18 +5,14 @@ public class UserRentedBookSaveForm {
     private String bookWriter;
     private String status;
     private String barcode;
-
-
-
-
-
     private String bookOwnerUUID;
 
-    public UserRentedBookSaveForm(String bookName, String bookWriter, String status, String barcode, String bookOwnerUUID) {
+
+    public UserRentedBookSaveForm(String bookName, String bookWriter, String status, String bookOwnerUUID) {
         this.bookName = bookName;
         this.bookWriter = bookWriter;
-        this.status = status;
         this.barcode = barcode;
+        this.status = status;
         this.bookOwnerUUID = bookOwnerUUID;
     }
 
@@ -53,6 +49,5 @@ public class UserRentedBookSaveForm {
     }
 
     public String getBookOwnerUUID() { return bookOwnerUUID; }
-
     public void setBookOwnerUUID(String bookOwnerUUID) { this.bookOwnerUUID = bookOwnerUUID; }
 }

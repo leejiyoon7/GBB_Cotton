@@ -23,13 +23,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toBottomOf="@id/list_my_registered_book_title_text_view"
-        app:layout_constraintLeft_toLeftOf="parent"
-
         android:layout_marginTop="8dp"
-
-
         android:text="도서 작성자"
-        android:textSize="10sp"
-        android:textColor="#999999"/>
+
+        android:textColor="#999999"
+
+
+        android:textSize="11sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_my_registered_book_title_text_view" />
 </androidx.constraintlayout.widget.ConstraintLayout>

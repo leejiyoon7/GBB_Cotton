@@ -37,7 +37,7 @@ public class PasswordResetActivity extends AppCompatActivity {
 
     //비밀번호 재설정 함수
     private void send() {
-        String email = ((EditText)findViewById(R.id.emailEditText)).getText().toString();
+        String email = ((EditText)findViewById(R.id.passwordCheckEditText)).getText().toString();
 
         if(email.length()>0) {
             FirebaseAuth auth = FirebaseAuth.getInstance();

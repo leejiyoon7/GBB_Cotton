@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -33,6 +34,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient googleApiClient; // 구글 api 클라이언트 객체
     private static final int REQ_SIGN_GOOGLE = 100; //구글 로그인 결과 코드
     private VideoView videoHolder;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,36 +59,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         findViewById(R.id.gotoSigninButton).setOnClickListener(onClickListener);
         findViewById(R.id.btn_google).setOnClickListener(onClickListener);
         findViewById(R.id.passwordReset).setOnClickListener(onClickListener);
+        progressBar = findViewById(R.id.login_progress_bar);
 
-        try {
-            videoHolder = (VideoView)findViewById(R.id.login_video_view);
-            Uri video = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.login_bg_video);
-            videoHolder.setVideoURI(video);
+        startVideo();
+    }
 
-            videoHolder.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    float videoRatio = mp.getVideoWidth() / (float) mp.getVideoHeight();
-                    float screenRatio = videoHolder.getWidth() / (float)
-                            videoHolder.getHeight();
-                    float scaleX = videoRatio / screenRatio;
-                    if (scaleX >= 1f) {
-                        videoHolder.setScaleX(scaleX);
-                    } else {
-                        videoHolder.setScaleY(1f / scaleX);
-                    }
-                }
-            });
 
-            videoHolder.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                public void onCompletion(MediaPlayer mp) {
-                    videoHolder.start();
-                }
-            });
-            videoHolder.start();
-        } catch (Exception ex) {
-            jump();
-        }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        startVideo();
+
     }
 
     private void jump() {
@@ -116,6 +99,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.loginButton:
+                    progressBar.setVisibility(View.VISIBLE);
                     login();
                     break;
                 case R.id.gotoSigninButton:
@@ -146,6 +130,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                progressBar.setVisibility(View.GONE);
                                 startToast("로그인에 성공했습니다.");
                                 startMainActivity();
                                 finish();
@@ -210,5 +195,38 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+
+    private void startVideo() {
+        try {
+            videoHolder = (VideoView)findViewById(R.id.login_video_view);
+            Uri video = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.login_bg_video);
+            videoHolder.setVideoURI(video);
+
+            videoHolder.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    float videoRatio = mp.getVideoWidth() / (float) mp.getVideoHeight();
+                    float screenRatio = videoHolder.getWidth() / (float)
+                            videoHolder.getHeight();
+                    float scaleX = videoRatio / screenRatio;
+                    if (scaleX >= 1f) {
+                        videoHolder.setScaleX(scaleX);
+                    } else {
+                        videoHolder.setScaleY(1f / scaleX);
+                    }
+                }
+            });
+
+            videoHolder.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                public void onCompletion(MediaPlayer mp) {
+                    videoHolder.start();
+                }
+            });
+            videoHolder.start();
+        } catch (Exception ex) {
+            jump();
+        }
     }
 }

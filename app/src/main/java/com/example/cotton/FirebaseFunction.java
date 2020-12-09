@@ -258,12 +258,12 @@ public class FirebaseFunction {
                 });
     }
 
-    public void getMyRentedBook(String barcode, String myName, Function<String, Void> complete){
+    public void getMyRentedBook(String barcode, Function<String, Void> complete){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("bookSave/"+barcode+"/RegisteredUsers")
-                .whereEqualTo("rentedMember", myName)
+                .whereEqualTo("rentedMember", user.getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -281,11 +281,11 @@ public class FirebaseFunction {
     }
 
     // 반납하기를 눌렀을때 해당 하는 책의 rentedMember가 a로 변경
-    public void returnBook(String barcode, String myName){
+    public void returnBook(String barcode){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        getMyRentedBook(barcode, myName, (result)->{
+        getMyRentedBook(barcode,(result)->{
             DocumentReference washingtonRef = db.collection("bookSave/"+barcode+"/RegisteredUsers").document(result);
             washingtonRef
                     .update("rentedMember", "a")
@@ -392,8 +392,9 @@ public class FirebaseFunction {
 
 
     //대여하기 버튼 클릭했을시 대여자 필드 변경
-    public void updateRentMember(String barcode, String name){
+    public void updateRentMember(String barcode){
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         getUuid(barcode, (result) -> {
             final DocumentReference sfDocRef = db.collection("bookSave/" + barcode + "/RegisteredUsers/").document(result);
             db.runTransaction(new Transaction.Function<Void>() {
@@ -404,7 +405,7 @@ public class FirebaseFunction {
 
                     Long newRentCount = (snapshot.getLong("rentCount")) + 1;
                     transaction.update(sfDocRef, "rentCount", newRentCount);
-                    transaction.update(sfDocRef, "rentedMember", name);
+                    transaction.update(sfDocRef, "rentedMember", user.getUid());
                     return null;
                 }
             }).addOnSuccessListener(new OnSuccessListener<Void>() {

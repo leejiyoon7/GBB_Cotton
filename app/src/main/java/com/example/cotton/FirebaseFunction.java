@@ -203,7 +203,7 @@ public class FirebaseFunction {
                                         (String)logSaveInit.get(i).get("to"),
                                         (String)logSaveInit.get(i).get("message"),
                                         (String)logSaveInit.get(i).get("category"),
-                                        (String)logSaveInit.get(i).get("message"),
+                                        (String)logSaveInit.get(i).get("amount"),
                                         (String)logSaveInit.get(i).get("date")
                                 );
                                 logFormList.add(logSaveFormProto);
@@ -242,7 +242,7 @@ public class FirebaseFunction {
                                         (String)logSaveInit.get(i).get("to"),
                                         (String)logSaveInit.get(i).get("message"),
                                         (String)logSaveInit.get(i).get("category"),
-                                        (String)logSaveInit.get(i).get("message"),
+                                        (String)logSaveInit.get(i).get("amount"),
                                         (String)logSaveInit.get(i).get("date")
                                 );
                                 logFormList.add(logSaveFormProto);
@@ -285,7 +285,7 @@ public class FirebaseFunction {
                                         (String)logSaveInit.get(i).get("to"),
                                         (String)logSaveInit.get(i).get("message"),
                                         (String)logSaveInit.get(i).get("category"),
-                                        (String)logSaveInit.get(i).get("message"),
+                                        (String)logSaveInit.get(i).get("amount"),
                                         (String)logSaveInit.get(i).get("date")
                                 );
 
@@ -314,15 +314,15 @@ public class FirebaseFunction {
                                         (String)logSaveInit2.get(i).get("to"),
                                         (String)logSaveInit2.get(i).get("message"),
                                         (String)logSaveInit2.get(i).get("category"),
-                                        (String)logSaveInit2.get(i).get("message"),
+                                        (String)logSaveInit2.get(i).get("amount"),
                                         (String)logSaveInit2.get(i).get("date")
                                 );
                                 logFormList.add(logSaveFormProto);
                             }
-                            Log.d("로그태스트", logFormList.get(0).getTo());
-                            Log.d("로그태스트", logFormList.get(0).getFrom());
-                            Log.d("로그태스트", logFormList.get(1).getTo());
-                            Log.d("로그태스트", logFormList.get(1).getFrom());
+                            for (int i=0;i<logSaveInit2.size();i++) {
+                                Log.d("로그태스트", logFormList.get(i).getTo());
+                                Log.d("로그태스트", logFormList.get(i).getFrom());
+                            }
                             complete.apply(logFormList);
                         } else {
                         }

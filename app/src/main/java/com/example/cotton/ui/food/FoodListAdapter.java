@@ -154,7 +154,7 @@ public class FoodListAdapter extends BaseAdapter{
         firebaseInput.logInput(FirebaseAuth.getInstance().getCurrentUser().getUid(),
                 "Gachon Univercity",
                 ticketCount,
-                "상품 구매",
+                "상품구매",
                 amount);
     }
     //foodFragment 갱신 함수

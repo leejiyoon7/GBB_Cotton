@@ -14,8 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
-        android:clickable="false"
-        android:buttonTint="#FEB426"/>
+        android:clickable="false"/>
 
     <TextView
         android:id="@+id/list_my_rented_book_title_text_view"

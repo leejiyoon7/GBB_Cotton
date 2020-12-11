@@ -82,6 +82,8 @@ public class HomeFragment extends Fragment implements Runnable{
 
     HomeFragment homeFragment;
 
+    FirebaseFunction firebaseInput;//firebase log input
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //인플레이션
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -108,6 +110,8 @@ public class HomeFragment extends Fragment implements Runnable{
 
         FirebaseFunction firebaseFunction = new FirebaseFunction();
         UID = firebaseFunction.getMyUID();
+
+        firebaseInput=new FirebaseFunction();
 
         //대여 도서 목록 RecyclerView 설정 method
         showMyRentedBookListFunc();
@@ -281,6 +285,12 @@ public class HomeFragment extends Fragment implements Runnable{
                                 }
 
                             });
+                            //충전시 로그 저장(Register log)
+                            firebaseInput.logInput("Gachon Univercity",
+                                    FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                    "포인트 충전",
+                                    "충전",
+                                    selectedText+"GBB");
 
                             return null;
                         });

@@ -53,7 +53,7 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements Runnable{
 
-   // Button btnLogout;
+    // Button btnLogout;
     List<MemberInfo> memberInfos = new ArrayList<>();
     List<BookSaveForm> bookSaveFormList= new ArrayList<>();
     List<UserRegisteredBookSaveForm> testList = new ArrayList<>();
@@ -216,42 +216,63 @@ public class HomeFragment extends Fragment implements Runnable{
         home_my_point_plus_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final List<String> ListItems = new ArrayList<>();
+                ListItems.add("5000");
+                ListItems.add("10000");
+                ListItems.add("20000");
+                ListItems.add("30000");
+                final CharSequence[] items =  ListItems.toArray(new String[ ListItems.size()]);
 
-                firebaseTest.profileGet(memberInfos, (resultList) -> {
-                    ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                    HashMap<String, String> bodyMap2 = new HashMap<String, String>();
-                    bodyMap2.put("valueAmount", "10000000000000000000000"); //가격
-                    bodyMap2.put("receiverAddress", resultList.get(0).getWallet());
+                builder.setTitle("충전 금액 선택");
 
-                    HashMap<String, Object> bodyMap = new HashMap<String, Object>();
-                    bodyMap.put("from", "0xfb8e77f5808121c3ecf19d92ffb56b2e3d8db57b"); //보내는사람 지갑주소
-                    bodyMap.put("inputs", new HashMap<String, String>(bodyMap2)); //bodyMap2
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int pos) {
+                        String selectedText = items[pos].toString();
 
-                    Log.d("성공 : ", "result : " + bodyMap.toString());
+                        firebaseTest.profileGet(memberInfos, (resultList) -> {
+                            ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
 
-                    call.buyFood(bodyMap).enqueue(new Callback<SetBalanceResultVO>() {
-                        @Override
-                        public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
-                            Log.d("성공 : ", "result : " + response.raw());
-                            Log.d("성공 : ", "result : " + response.body().getResult());
-                            Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
-                            Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
-                        }
+                            HashMap<String, String> bodyMap2 = new HashMap<String, String>();
+                            bodyMap2.put("valueAmount", selectedText + "000000000000000000"); //가격
+                            bodyMap2.put("receiverAddress", resultList.get(0).getWallet());
 
-                        @Override
-                        public void onFailure(Call<SetBalanceResultVO> call, Throwable t) {
-                            Log.d("실패 : ", t.toString());
-                        }
+                            HashMap<String, Object> bodyMap = new HashMap<String, Object>();
+                            bodyMap.put("from", "0xfb8e77f5808121c3ecf19d92ffb56b2e3d8db57b"); //보내는사람 지갑주소
+                            bodyMap.put("inputs", new HashMap<String, String>(bodyMap2)); //bodyMap2
 
-                    });
+                            Log.d("성공 : ", "result : " + bodyMap.toString());
 
-                    return null;
+                            call.buyFood(bodyMap).enqueue(new Callback<SetBalanceResultVO>() {
+                                @Override
+                                public void onResponse(Call<SetBalanceResultVO> call, Response<SetBalanceResultVO> response) {
+                                    Log.d("성공 : ", "result : " + response.raw());
+                                    Log.d("성공 : ", "result : " + response.body().getResult());
+                                    Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
+                                    Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
+                                }
+
+                                @Override
+                                public void onFailure(Call<SetBalanceResultVO> call, Throwable t) {
+                                    Log.d("실패 : ", t.toString());
+                                }
+
+                            });
+
+                            return null;
+                        });
+                        Toast.makeText(getContext(), selectedText+"GBB가 충전되었습니다", Toast.LENGTH_SHORT).show();
+                    }
                 });
-                goToHomeFragmentFunc();
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
             }
 
         });
+
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -325,7 +346,6 @@ public class HomeFragment extends Fragment implements Runnable{
     public void goToHomeFragmentFunc(){
         Thread thread=new Thread(this);
         thread.start();
-        Toast.makeText(getActivity(),"10000GBB가 충전되었습니다.",Toast.LENGTH_SHORT).show();
     }
 
     //지갑잔고 받아오기

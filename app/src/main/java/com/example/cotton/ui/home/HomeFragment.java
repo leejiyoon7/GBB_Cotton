@@ -33,10 +33,14 @@ import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.BookSaveForm;
 import com.example.cotton.FirebaseFunction;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,6 +75,7 @@ public class HomeFragment extends Fragment implements Runnable{
 
     double money;
     String UID;
+    String returnBookBarcode;
 
     HomeFragment homeFragment;
 
@@ -94,7 +99,7 @@ public class HomeFragment extends Fragment implements Runnable{
         home_my_rented_book_recycler_view.setNestedScrollingEnabled(false);
         home_my_registered_book_recycler_view.setNestedScrollingEnabled(false);
 
-        homeFragment=new HomeFragment();
+        homeFragment= this;
 
         FirebaseFunction firebaseFunction = new FirebaseFunction();
         UID = firebaseFunction.getMyUID();
@@ -204,10 +209,21 @@ public class HomeFragment extends Fragment implements Runnable{
             @Override
             public boolean onLongClick(View v) {
                 if(UID.equals("jAa5lxn1IFQw9uZRu9VXk43MrlI3")) {
-                    IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
-                    intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
-                    intentIntegrator.setDesiredBarcodeFormats(String.valueOf(BarcodeFormat.QR_CODE));
-                    intentIntegrator.initiateScan();
+                    returnBookBarcode = "";
+                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(homeFragment.getContext());
+                    bottomSheetDialog.setContentView(R.layout.bottom_dialog_admin_scan_book);
+                    TextView scanReturnBookBtn = bottomSheetDialog.findViewById(R.id.admin_scan_book_btn);
+                    scanReturnBookBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(homeFragment);
+                            intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
+                            intentIntegrator.setDesiredBarcodeFormats(BarcodeFormat.EAN_13.toString());
+                            intentIntegrator.initiateScan();
+                            bottomSheetDialog.dismiss();
+                        }
+                    });
+                    bottomSheetDialog.show();
                 }
                 else {
                     Toast.makeText(getContext(), "관리자 권한이 없습니다.", Toast.LENGTH_LONG).show();
@@ -267,28 +283,55 @@ public class HomeFragment extends Fragment implements Runnable{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("bookScanCode = ", returnBookBarcode);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
-                Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_LONG).show();
-            } else {
-                String qrStringInfo = result.getContents();
-                int slashIndex = qrStringInfo.indexOf("/");
-                String bookBarcode = qrStringInfo.substring(0, slashIndex);
-                String bookOwner = qrStringInfo.substring(slashIndex + 1);
-
-                FirebaseFunction firebaseFunction = new FirebaseFunction();
-                firebaseFunction.returnBook(
-                        bookBarcode,
-                        bookOwner,
-                        (value) -> {
-                            Toast.makeText(getContext(), "반납이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                            return null;
+                Toast.makeText(HomeFragment.this.getContext(), "Cancelled", Toast.LENGTH_LONG).show();
+            } else { // 성공
+                if (returnBookBarcode.equals("")) {
+                    returnBookBarcode = result.getContents();
+                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(HomeFragment.this.getContext());
+                    bottomSheetDialog.setContentView(R.layout.bottom_dialog_admin_scan_borrower_qr);
+                    TextView scanBorrowerQrBtn = bottomSheetDialog.findViewById(R.id.admin_scan_borrower_qr_btn);
+                    scanBorrowerQrBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
+                            intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
+                            intentIntegrator.setDesiredBarcodeFormats(String.valueOf(BarcodeFormat.QR_CODE));
+                            intentIntegrator.initiateScan();
+                            bottomSheetDialog.dismiss();
                         }
-                );
+                    });
+                    bottomSheetDialog.show();
+                }
+                else {
+                    String qrStringInfo = result.getContents();
+                    int slashIndex = qrStringInfo.indexOf("/");
+                    String bookBarcode = qrStringInfo.substring(0, slashIndex);
+                    String bookOwner = qrStringInfo.substring(slashIndex + 1);
+
+                    if (returnBookBarcode.equals(bookBarcode)) {
+                        FirebaseFunction firebaseFunction = new FirebaseFunction();
+                        firebaseFunction.returnBook(
+                                bookBarcode,
+                                bookOwner,
+                                (value) -> {
+                                    Toast.makeText(getContext(), "반납이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                                    return null;
+                                }
+                        );
+                    }
+                    else {
+                        Toast.makeText(getContext(), "반납할 책의 정보가 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         } else {
+            Log.d("ResultCode 1000 = ", "CodeFail");
             super.onActivityResult(requestCode, resultCode, data);
+
         }
     }
 

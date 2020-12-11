@@ -255,6 +255,81 @@ public class FirebaseFunction {
     }
 
     /**
+     * 로그정보를 파이어베이스에서 받아옵니다. (From/To 합본)
+     * @param complete
+     */
+    public void logAllOutput(Function<List<LogForm>, Void> complete)
+    {
+        int saveSize = 0;
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final List<LogForm> logFormList = new ArrayList<>();
+        final ArrayList<Map<String, Object>> logSaveInit = new ArrayList<Map<String, Object>>();
+        final ArrayList<Map<String, Object>> logSaveInit2 = new ArrayList<Map<String, Object>>();
+
+        db.collection("Log/")
+                .whereEqualTo("from", user.getUid()) // 필터링 조건은 변경가능합니다.
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                logSaveInit.add(document.getData());
+                            }
+                            for (int i=0;i<logSaveInit.size();i++) {
+
+                                LogForm logSaveFormProto = new LogForm(
+                                        (String)logSaveInit.get(i).get("from"),
+                                        (String)logSaveInit.get(i).get("to"),
+                                        (String)logSaveInit.get(i).get("message"),
+                                        (String)logSaveInit.get(i).get("category"),
+                                        (String)logSaveInit.get(i).get("message"),
+                                        (String)logSaveInit.get(i).get("date")
+                                );
+
+                                logFormList.add(logSaveFormProto);
+                                //Log.d("로그태스트", logFormList.get(0).getFrom());
+                            }
+                            //complete.apply(logFormList);
+                        } else {
+                        }
+                    }
+                });
+
+        db.collection("Log/")
+                .whereEqualTo("to" , user.getUid()) // 필터링 조건은 변경가능합니다.
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                logSaveInit2.add(document.getData());
+                            }
+                            for (int i=0;i<logSaveInit2.size();i++) {
+                                LogForm logSaveFormProto = new LogForm(
+                                        (String)logSaveInit2.get(i).get("from"),
+                                        (String)logSaveInit2.get(i).get("to"),
+                                        (String)logSaveInit2.get(i).get("message"),
+                                        (String)logSaveInit2.get(i).get("category"),
+                                        (String)logSaveInit2.get(i).get("message"),
+                                        (String)logSaveInit2.get(i).get("date")
+                                );
+                                logFormList.add(logSaveFormProto);
+                            }
+                            Log.d("로그태스트", logFormList.get(0).getTo());
+                            Log.d("로그태스트", logFormList.get(0).getFrom());
+                            Log.d("로그태스트", logFormList.get(1).getTo());
+                            Log.d("로그태스트", logFormList.get(1).getFrom());
+                            complete.apply(logFormList);
+                        } else {
+                        }
+                    }
+                });
+    }
+
+    /**
      * 바코드와 나의 UID를 바탕으로 내가 빌린 책 주인의 UID를 가져온다.
      * @param barcode : 내가 빌린 책의 바코드
      * @param borrowerUID : 대여자의 UID

@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.loader.content.CursorLoader;
 
+import com.example.cotton.LogForm;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.FirebaseFunction;
@@ -90,6 +91,12 @@ public class HistoryFragment extends Fragment {
 //                localUpoad("책이름","전공","저자"); //이렇게 변수 3개넣고 사진넣으면 책 저장됨
 //            }
 //        });
+
+
+        FirebaseFunction fb = new FirebaseFunction();
+        fb.logAllOutput((result)->{
+            return null;
+        });
 
 
         return view;

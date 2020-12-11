@@ -93,12 +93,6 @@ public class HistoryFragment extends Fragment {
 //        });
 
 
-        FirebaseFunction fb = new FirebaseFunction();
-        fb.logAllOutput((result)->{
-            return null;
-        });
-
-
         return view;
     }
 

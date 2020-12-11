@@ -412,7 +412,7 @@ public class TradingFragment extends Fragment {
                                 }
                                 // 대여 가능할 경우
                                 else {
-                                    firebaseFunction.updateRentMember(barcode, false);
+                                    firebaseFunction.updateRentMember(barcode);
 
                                     firebaseFunction.getRentAvailableBookOwnerUID(barcode, (bookOwnerUID) -> {
 

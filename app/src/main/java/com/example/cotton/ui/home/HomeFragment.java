@@ -405,7 +405,7 @@ public class HomeFragment extends Fragment implements Runnable{
 
         FirebaseFunction firebaseTest = new FirebaseFunction();
 
-        firebaseTest.myRentedBookListGet((myRentedBookList) -> {
+        firebaseTest.myRentedBookListGet(firebaseTest.getMyUID(), (myRentedBookList) -> {
             // null check
             if(myRentedBookList.size()>0){
                 myRentedBookListAdapter = new MyRentedBookListAdapter() ;
@@ -435,7 +435,7 @@ public class HomeFragment extends Fragment implements Runnable{
                 switch (home_my_rented_book_card_view_more_button.getText().toString()){
 
                     case "+ 더보기":
-                        firebaseTest.myRentedBookListGet((resultList) -> {
+                        firebaseTest.myRentedBookListGet(firebaseTest.getMyUID(), (resultList) -> {
                             if(resultList.size()>3){
                                 myRentedBookListAdapter = new MyRentedBookListAdapter() ;
                                 home_my_rented_book_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));

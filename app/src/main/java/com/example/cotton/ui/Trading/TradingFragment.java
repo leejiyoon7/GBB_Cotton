@@ -387,17 +387,6 @@ public class TradingFragment extends Fragment {
         });
     }
 
-    //아이템 데이터 추가를 위한 함수
-//    public void addItem(String _major, int _bookImg, String _bookTitle, String _bookAuthor){
-//        TradingViewPagerItem item=new TradingViewPagerItem();
-//
-//        item.setMajor(_major);
-//        item.setRegisteredBookImage(_bookImg);
-//        item.setRegisteredBookTitle(_bookTitle);
-//        item.setRegisteredBookAuthor(_bookAuthor);
-//
-//        tradingViewPagerItems.add(item);
-//    }
 
 
     //대여하기 버튼 클릭 이벤트
@@ -412,7 +401,6 @@ public class TradingFragment extends Fragment {
                 String selectedBookName = selectedBookInfo.getBookName();
                 String selectedBookWriter = selectedBookInfo.getBookWriter();
 
-
                 if (selectedBookInfo != null) {
                     FirebaseFunction firebaseFunction = new FirebaseFunction();
                     firebaseFunction.getRentAvailableBookAmountByBarcode(
@@ -424,7 +412,7 @@ public class TradingFragment extends Fragment {
                                 }
                                 // 대여 가능할 경우
                                 else {
-                                    firebaseFunction.updateRentMember(barcode);
+                                    firebaseFunction.updateRentMember(barcode, false);
 
                                     firebaseFunction.getRentAvailableBookOwnerUID(barcode, (bookOwnerUID) -> {
 
@@ -444,7 +432,7 @@ public class TradingFragment extends Fragment {
 
                                             //대여 성공시 user개인정보 빌린도서 목록에 추가됩니다.
                                             //상태는 대여성공시 "대여중"으로 초기화됩니다.
-                                            firebaseFunction.insertRentedBookInfoToUser(barcode,selectedBookName, selectedBookWriter, "대여중", bookOwnerUID);
+                                            firebaseFunction.insertRentedBookInfoToUser(barcode,selectedBookName, selectedBookWriter, "대여신청", bookOwnerUID);
 
                                             call.buyFood(bodyMap).enqueue(new Callback<SetBalanceResultVO>() {
                                                 @Override
@@ -455,7 +443,6 @@ public class TradingFragment extends Fragment {
                                                     Log.d("성공 : ", "TxId : " + response.body().getDataFoodBuy().getTxId());
                                                     Log.d("성공 : ", "ReqTs : " + response.body().getDataFoodBuy().getReqTs());
                                                 }
-
                                                 @Override
                                                 public void onFailure(Call<SetBalanceResultVO> call, Throwable t) {
                                                     Log.d("실패 : ", t.toString());

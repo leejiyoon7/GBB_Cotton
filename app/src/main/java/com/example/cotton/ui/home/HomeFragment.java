@@ -3,6 +3,7 @@ package com.example.cotton.ui.home;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,18 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.cotton.MainActivity;
 import com.example.cotton.Utils.ApiService;
 import com.example.cotton.LoginActivity;
 import com.example.cotton.MemberInfo;
@@ -33,15 +33,14 @@ import com.example.cotton.UserRegisteredBookSaveForm;
 import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.BookSaveForm;
 import com.example.cotton.FirebaseFunction;
+import com.example.cotton.ui.home.allowBorrow.AllowBorrowActivity;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
-import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
-import org.w3c.dom.Text;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,6 +78,7 @@ public class HomeFragment extends Fragment implements Runnable{
     double money;
     String UID;
     String returnBookBarcode;
+    String borrowerUID;
 
     HomeFragment homeFragment;
 
@@ -121,7 +121,7 @@ public class HomeFragment extends Fragment implements Runnable{
         firebaseTest.profileImageDownload(home_profile_image_button, this.getContext());
 
 
-        home_register_book_btn=view.findViewById(R.id.home_register_book_btn);
+        home_register_book_btn=view.findViewById(R.id.allow_borrow_complete_btn);
 
         home_register_book_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,24 +131,6 @@ public class HomeFragment extends Fragment implements Runnable{
             }
         });
 
-        /*
-        // 책 저장 방식입니다.
-        // 인자 값으로 (String 바코드, String 책제목, String 이미지링크, String 저자, String 학과, String 등록날짜, int 빌려준 횟수(0으로 초기화해서 사용해주세요.) )
-        firebaseFunction firebaseInput = new firebaseFunction();
-        firebaseInput.insertBookInfo2("9788959522057", "ARTHAS: RISE OF THE LICH KING", "pictureLink", "크리스티 골든", "흑마법전공", "2020-12-06", 10);
-        */
-
-
-// 필요없는 코드로 추정.
-//        firebaseTest.myRegisteredBookListGet((resultList) -> { //resultList안에 너가 원하는 모든게 있단다.
-//                                                               //resultList.get(i).getBookName();
-//            return null;
-//        });
-//
-//        firebaseTest.myRentedBookListGet((resultList) -> {
-//            return null;
-//        });
-
 
         // Home화면에 지갑잔고 출력
         getCoin();
@@ -157,31 +139,64 @@ public class HomeFragment extends Fragment implements Runnable{
         home_profile_image_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                // QR코드 정보 준비
+                String myUID = firebaseFunction.getMyUID();
 
-                builder.setTitle("로그아웃").setMessage("\n로그아웃 하시겠습니까?\n");
+                // BottomSheetDialog 초기화.
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(view.getContext());
+                bottomSheetDialog.setContentView(R.layout.bottom_dialog_qrcode);
 
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+                TextView closeBtn = bottomSheetDialog.findViewById(R.id.qr_submit_btn);
+                TextView logoutBtn = bottomSheetDialog.findViewById(R.id.qr_logout_btn);
+                ImageView qrImageView = bottomSheetDialog.findViewById(R.id.qr_image_view);
+
+                closeBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        FirebaseAuth.getInstance().signOut();
-                        Intent intent=new Intent(getActivity(), LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
                     }
                 });
 
-                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener(){
+                logoutBtn.setVisibility(View.VISIBLE);
+                logoutBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        Toast.makeText(getContext(), "로그아웃 취소", Toast.LENGTH_SHORT).show();
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("로그아웃").setMessage("\n로그아웃 하시겠습니까?\n");
+
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                FirebaseAuth.getInstance().signOut();
+                                Intent intent=new Intent(getActivity(), LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                            }
+                        });
+
+                        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                Toast.makeText(getContext(), "로그아웃 취소", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        bottomSheetDialog.dismiss();
+                        alertDialog.show();
                     }
                 });
 
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                try {
+                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                    Bitmap bitmap = barcodeEncoder.encodeBitmap(myUID, BarcodeFormat.QR_CODE, 500, 500);
+                    ImageView imageViewQrCode = qrImageView;
+                    imageViewQrCode.setImageBitmap(bitmap);
+                } catch(Exception e) {
+
+                }
+                bottomSheetDialog.show();
             }
         });
 
@@ -190,16 +205,23 @@ public class HomeFragment extends Fragment implements Runnable{
             public boolean onLongClick(View v) {
                 if(UID.equals("jAa5lxn1IFQw9uZRu9VXk43MrlI3")) {
                     returnBookBarcode = "";
+                    borrowerUID = "";
+
                     BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(homeFragment.getContext());
-                    bottomSheetDialog.setContentView(R.layout.bottom_dialog_admin_scan_book);
-                    TextView scanReturnBookBtn = bottomSheetDialog.findViewById(R.id.admin_scan_book_btn);
-                    scanReturnBookBtn.setOnClickListener(new View.OnClickListener() {
+                    bottomSheetDialog.setContentView(R.layout.bottom_dialog_select_return_or_borrow);
+                    TextView caseBorrowBtn = bottomSheetDialog.findViewById(R.id.return_or_borrow_borrow_btn);
+                    TextView caseReturnBtn = bottomSheetDialog.findViewById(R.id.return_or_borrow_return_btn);
+                    caseBorrowBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(homeFragment);
-                            intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
-                            intentIntegrator.setDesiredBarcodeFormats(BarcodeFormat.EAN_13.toString());
-                            intentIntegrator.initiateScan();
+                            showUserQrScanBottomDialog();
+                            bottomSheetDialog.dismiss();
+                        }
+                    });
+                    caseReturnBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showReturnBottomDialog();
                             bottomSheetDialog.dismiss();
                         }
                     });
@@ -291,51 +313,54 @@ public class HomeFragment extends Fragment implements Runnable{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("bookScanCode = ", returnBookBarcode);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
         if(result != null) {
             if(result.getContents() == null) {
-                Toast.makeText(HomeFragment.this.getContext(), "Cancelled", Toast.LENGTH_LONG).show();
-            } else { // 성공
-                if (returnBookBarcode.equals("")) {
-                    returnBookBarcode = result.getContents();
-                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(HomeFragment.this.getContext());
-                    bottomSheetDialog.setContentView(R.layout.bottom_dialog_admin_scan_borrower_qr);
-                    TextView scanBorrowerQrBtn = bottomSheetDialog.findViewById(R.id.admin_scan_borrower_qr_btn);
-                    scanBorrowerQrBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
-                            intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
-                            intentIntegrator.setDesiredBarcodeFormats(String.valueOf(BarcodeFormat.QR_CODE));
-                            intentIntegrator.initiateScan();
-                            bottomSheetDialog.dismiss();
-                        }
-                    });
-                    bottomSheetDialog.show();
-                }
-                else {
-                    String qrStringInfo = result.getContents();
-                    int slashIndex = qrStringInfo.indexOf("/");
-                    String bookBarcode = qrStringInfo.substring(0, slashIndex);
-                    String bookOwner = qrStringInfo.substring(slashIndex + 1);
-
-                    if (returnBookBarcode.equals(bookBarcode)) {
-                        FirebaseFunction firebaseFunction = new FirebaseFunction();
-                        firebaseFunction.returnBook(
-                                bookBarcode,
-                                bookOwner,
-                                (value) -> {
-                                    Toast.makeText(getContext(), "반납이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                    return null;
-                                }
-                        );
-                    }
-                    else {
-                        Toast.makeText(getContext(), "반납할 책의 정보가 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                }
+                Toast.makeText(HomeFragment.this.getContext(), "바코드 인식 취소 됨.", Toast.LENGTH_LONG).show();
             }
+            else { // 바코드 스캔 성공
+                // 대여의 경우
+                if(result.getContents().length() == 28) {
+                    Log.d("Borrow case:", result.getContents());
+                    // 대여자의 빌린 도서 목록으로 접속하여 도서를 받아온다음
+                    // 새로운 액티비티를 열어서 리사이클러뷰로 뿌려준다.
+                    // Monireu
+                    Intent intent = new Intent(getActivity(), AllowBorrowActivity.class);
+                    intent.putExtra("borrowerUID", result.getContents());
+                    startActivityForResult(intent, 100);
+                }
+                // 반납의 경우
+                else {
+                    // 책 바코드 정보가 비어있을경우 책 바코드 정보에 값을 넣고, 유저캔 QR코드 스캔
+                    if (returnBookBarcode.equals("")) {
+                        returnBookBarcode = result.getContents();
+                        showUserQrScanBottomDialog();
+                    }
+                    // 책 바코드 정보가 있을 경우 책 반납절차 실행
+                    else {
+                        String qrStringInfo = result.getContents();
+                        int slashIndex = qrStringInfo.indexOf("/");
+                        String bookBarcode = qrStringInfo.substring(0, slashIndex);
+                        String bookOwner = qrStringInfo.substring(slashIndex + 1);
+
+                        if (returnBookBarcode.equals(bookBarcode)) {
+                            FirebaseFunction firebaseFunction = new FirebaseFunction();
+                            firebaseFunction.returnBook(
+                                    bookBarcode,
+                                    bookOwner,
+                                    (value) -> {
+                                        Toast.makeText(getContext(), "반납이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                                        return null;
+                                    }
+                            );
+                        }
+                        else {
+                            Toast.makeText(getContext(), "반납할 책의 정보가 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    }// End of: if (returnBookBarcode.equals(""))
+                } // End of: if(result.getContents().length() == 28)
+            } // End of: if(result.getContents() == null)
         } else {
             Log.d("ResultCode 1000 = ", "CodeFail");
             super.onActivityResult(requestCode, resultCode, data);
@@ -379,33 +404,12 @@ public class HomeFragment extends Fragment implements Runnable{
         });
     }
 
-    //대여 도서 목록 RecyclerView 설정
-    /*
+
     public void showMyRentedBookListFunc(){
 
         FirebaseFunction firebaseTest = new FirebaseFunction();
 
-        firebaseTest.myRentedBookListGet((resultList) -> {
-            if(resultList.size()>0){
-                myRentedBookListAdapter = new MyRentedBookListAdapter() ;
-                home_my_rented_book_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
-                //adapter 달기
-                home_my_rented_book_recycler_view.setAdapter(myRentedBookListAdapter);
-                for(int i=0;i<3;i++){
-                    myRentedBookListAdapter.addItem(resultList.get(i).getBookName(),resultList.get(i).getBookWriter(),resultList.get(i).getStatus());
-                }
-                myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
-            }
-            return null;
-        });
-
-    }
-    */
-    public void showMyRentedBookListFunc(){
-
-        FirebaseFunction firebaseTest = new FirebaseFunction();
-
-        firebaseTest.myRentedBookListGet((myRentedBookList) -> {
+        firebaseTest.myRentedBookListGet(firebaseTest.getMyUID(), (myRentedBookList) -> {
             // null check
             if(myRentedBookList.size()>0){
                 myRentedBookListAdapter = new MyRentedBookListAdapter() ;
@@ -416,7 +420,13 @@ public class HomeFragment extends Fragment implements Runnable{
                 int num = myRentedBookList.size();
                 if(num>3) num=3;
                 for(int i=0;i<num;i++){
-                    myRentedBookListAdapter.addItem(myRentedBookList.get(i).getBookName(),myRentedBookList.get(i).getBookWriter(),myRentedBookList.get(i).getStatus(), myRentedBookList.get(i).getBarcode(), myRentedBookList.get(i).getBookOwnerUUID());
+                    myRentedBookListAdapter.addItem(
+                            myRentedBookList.get(i).getBookName(),
+                            myRentedBookList.get(i).getBookWriter(),
+                            myRentedBookList.get(i).getStatus(),
+                            myRentedBookList.get(i).getBarcode(),
+                            myRentedBookList.get(i).getBookOwnerUUID()
+                    );
                 }
                 myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             }
@@ -435,7 +445,7 @@ public class HomeFragment extends Fragment implements Runnable{
                 switch (home_my_rented_book_card_view_more_button.getText().toString()){
 
                     case "+ 더보기":
-                        firebaseTest.myRentedBookListGet((resultList) -> {
+                        firebaseTest.myRentedBookListGet(firebaseTest.getMyUID(), (resultList) -> {
                             if(resultList.size()>3){
                                 myRentedBookListAdapter = new MyRentedBookListAdapter() ;
                                 home_my_rented_book_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -461,27 +471,7 @@ public class HomeFragment extends Fragment implements Runnable{
         });
     }
 
-    //나의 도서 목록 RecyclerView 설정
-    /*
-    public void showMyRegisteredBookFunc(){
-        FirebaseFunction firebaseTest = new FirebaseFunction();
-        firebaseTest.myRegisteredBookListGet((resultList) -> { //resultList안에 너가 원하는 모든게 있단다.
-            if(resultList.size()>0){
-                myRegisteredBookListAdapter = new MyRegisteredBookListAdapter() ;
 
-                home_my_registered_book_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
-                //adapter 달기
-                home_my_registered_book_recycler_view.setAdapter(myRegisteredBookListAdapter);
-
-                for(int i=0;i<3;i++) {
-                    myRegisteredBookListAdapter.addItem(resultList.get(i).getBookName(), resultList.get(i).getBookWriter());
-                }
-                myRegisteredBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
-            }
-            return null;
-        });
-    }
-    */
     public void showMyRegisteredBookFunc(){
         FirebaseFunction firebaseTest = new FirebaseFunction();
         firebaseTest.myRegisteredBookListGet((resultList) -> { //resultList안에 너가 원하는 모든게 있단다.
@@ -541,6 +531,42 @@ public class HomeFragment extends Fragment implements Runnable{
                 }
             }
         });
+    }
+
+
+    private void showReturnBottomDialog() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(homeFragment.getContext());
+        bottomSheetDialog.setContentView(R.layout.bottom_dialog_admin_scan_book);
+        TextView scanReturnBookBtn = bottomSheetDialog.findViewById(R.id.admin_scan_book_btn);
+        scanReturnBookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(homeFragment);
+                intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
+                intentIntegrator.setDesiredBarcodeFormats(BarcodeFormat.EAN_13.toString());
+                intentIntegrator.initiateScan();
+                bottomSheetDialog.dismiss();
+            }
+        });
+        bottomSheetDialog.show();
+    }
+
+    private void showUserQrScanBottomDialog() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(HomeFragment.this.getContext());
+        bottomSheetDialog.setContentView(R.layout.bottom_dialog_admin_scan_user_qr);
+        TextView scanBorrowerQrBtn = bottomSheetDialog.findViewById(R.id.admin_scan_borrower_qr_btn);
+        scanBorrowerQrBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
+
+                intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
+                intentIntegrator.setDesiredBarcodeFormats(String.valueOf(BarcodeFormat.QR_CODE));
+                intentIntegrator.initiateScan();
+                bottomSheetDialog.dismiss();
+            }
+        });
+        bottomSheetDialog.show();
     }
 
 

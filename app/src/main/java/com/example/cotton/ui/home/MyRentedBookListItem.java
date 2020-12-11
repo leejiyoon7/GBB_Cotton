@@ -9,12 +9,6 @@ public class MyRentedBookListItem {
 
 
 
-
-
-
-
-
-
     public void setList_my_rented_book_title(String list_my_rented_book_title) {
         this.list_my_rented_book_title = list_my_rented_book_title;
     }
@@ -40,12 +34,10 @@ public class MyRentedBookListItem {
     }
 
     public String getList_my_rented_book_status() {
-        return list_my_rented_book_writer;
-    }
-
-    public String getList_my_rented_book_writer() {
         return list_my_rented_book_status;
     }
+
+    public String getList_my_rented_book_writer() { return list_my_rented_book_writer; }
 
     public String getList_my_rented_book_barcode() { return list_my_rented_book_barcode; }
 

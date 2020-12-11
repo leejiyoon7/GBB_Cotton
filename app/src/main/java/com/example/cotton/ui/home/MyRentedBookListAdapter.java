@@ -32,6 +32,11 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
         TextView list_my_rented_book_status_text_view;//도서 상태
         ViewHolder(View itemView){
             super(itemView);
+
+            list_my_rented_book_title_text_view=itemView.findViewById(R.id.list_my_rented_book_title_text_view);
+            list_my_rented_book_writer_text_view=itemView.findViewById(R.id.list_my_rented_book_writer_text_view);
+            list_my_rented_book_status_text_view=itemView.findViewById(R.id.list_my_rented_book_status_text_view);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -47,10 +52,10 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
 
                         // BottomSheetDialog 초기화.
                         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(view.getContext());
-                        bottomSheetDialog.setContentView(R.layout.bottom_dialog_return_book_qrcode);
+                        bottomSheetDialog.setContentView(R.layout.bottom_dialog_qrcode);
 
-                        TextView qrSubmitBtn = bottomSheetDialog.findViewById(R.id.return_book_qr_submit_btn);
-                        ImageView qrImageView = bottomSheetDialog.findViewById(R.id.return_book_qr_image_view);
+                        TextView qrSubmitBtn = bottomSheetDialog.findViewById(R.id.qr_submit_btn);
+                        ImageView qrImageView = bottomSheetDialog.findViewById(R.id.qr_image_view);
 
                         qrSubmitBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -90,17 +95,13 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
                     }
                 }
             });
-
-            list_my_rented_book_title_text_view=itemView.findViewById(R.id.list_my_rented_book_title_text_view);
-            list_my_rented_book_writer_text_view=itemView.findViewById(R.id.list_my_rented_book_writer_text_view);
-            list_my_rented_book_status_text_view=itemView.findViewById(R.id.list_my_rented_book_status_text_view);
         }
     }
 
-    // 생성자에서 데이터 리스트 객체를 전달받음.
-    MyRentedBookListAdapter(){
-
-    }
+//    // 생성자에서 데이터 리스트 객체를 전달받음.
+//    MyRentedBookListAdapter(){
+//
+//    }
 
     // onCreateViewHolder() - 아이템 뷰를 위한 뷰홀더 객체 생성하여 리턴.
     @NonNull

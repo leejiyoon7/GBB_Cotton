@@ -532,8 +532,9 @@ public class FirebaseFunction {
     /**
      * 대여하기 버튼 클릭했을시 대여자 필드 변경
      * @param barcode 대여하려는 책의 바코드정보(String)
+     * @param isRentAllowed 대여신청일 경우 False, 대여승인일 경우 True
      */
-    public void updateRentMember(String barcode){
+    public void updateRentMember(String barcode, Boolean isRentAllowed){
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         getRentAvailableBookOwnerUID(barcode, (result) -> {
@@ -546,7 +547,12 @@ public class FirebaseFunction {
 
                     Long newRentCount = (snapshot.getLong("rentCount")) + 1;
                     transaction.update(sfDocRef, "rentCount", newRentCount);
-                    transaction.update(sfDocRef, "rentedMember", user.getUid());
+                    if (isRentAllowed) {
+                        transaction.update(sfDocRef, "rentedMember", user.getUid());
+                    }
+                    else {
+                        transaction.update(sfDocRef, "rentedMember", user.getUid()+"(reserve)");
+                    }
                     return null;
                 }
             }).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -658,14 +664,15 @@ public class FirebaseFunction {
     }
 
     /**
-     * 현재 로그인된 유저가 대여한 책에 관한 정보를 받아옵니다.
+     * 유저가 대여한 책에 관한 정보를 받아옵니다.
+     * @param userUID 대여책 정보를 가져올 User UID
      * @param complete
      */
-    public void myRentedBookListGet(Function<List<UserRentedBookSaveForm>, Void> complete) { //모든 책 정보 받아오기
+    public void myRentedBookListGet(String userUID, Function<List<UserRentedBookSaveForm>, Void> complete) { //모든 책 정보 받아오기
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final List<UserRentedBookSaveForm> bookSaveList = new ArrayList<>();
-        db.collection("users/"+user.getUid() + "/RentedBook")
+        db.collection("users/"+ userUID + "/RentedBook")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

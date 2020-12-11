@@ -10,7 +10,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="QR코드를 관리자에게 보여주세요."
+        android:text="사용자의 QR코드를 스캔합니다."
         android:textStyle="bold"/>
 
     <View
@@ -20,23 +20,15 @@
         android:layout_marginTop="10dp"
         android:background="@color/colorAccent" />
 
-    <ImageView
-        android:id="@+id/return_book_qr_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"/>
-
 
     <TextView
-        android:id="@+id/return_book_qr_submit_btn"
+        android:id="@+id/admin_scan_borrower_qr_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
-        android:text="완료"
+        android:text="스캔시작"
         android:textAlignment="center"/>
 
 </LinearLayout>

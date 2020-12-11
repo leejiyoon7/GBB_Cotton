@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.loader.content.CursorLoader;
 
+import com.example.cotton.LogForm;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.FirebaseFunction;

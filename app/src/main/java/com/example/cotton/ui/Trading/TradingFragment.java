@@ -33,6 +33,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,6 +78,8 @@ public class TradingFragment extends Fragment {
     TradingMajorItem tradingMajorItem;//MajorItem class
     AppCompatButton trading_rent_button;//대여 버튼
     TradingViewPagerAdapter pagerAdapter;
+
+    FirebaseFunction firebaseInput;//firebase log input
 
     TradingFragment tradingFragment;
 
@@ -129,7 +132,8 @@ public class TradingFragment extends Fragment {
             return null;
         });
 
-
+        //firebase log input
+        firebaseInput=new FirebaseFunction();
 
         tradingRentButtonClickEvent();
         return view;
@@ -412,7 +416,7 @@ public class TradingFragment extends Fragment {
                                 }
                                 // 대여 가능할 경우
                                 else {
-                                    firebaseFunction.updateRentMember(barcode);
+                                    firebaseFunction.updateRentMember(barcode, false);
 
                                     firebaseFunction.getRentAvailableBookOwnerUID(barcode, (bookOwnerUID) -> {
 
@@ -474,6 +478,13 @@ public class TradingFragment extends Fragment {
                                                 }
 
                                             });
+
+                                            //책 대여시 로그 저장(Renter log)
+                                            firebaseInput.logInput(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                                    bookOwnerUID,
+                                                    selectedBookName,
+                                                    "도서거래",
+                                                    "5000GBB");
 
                                             return null;
                                         });

@@ -121,25 +121,25 @@ public class FoodListAdapter extends BaseAdapter{
                     case 600:
                         getWallet(view.getId());
                         increaseTicket(1);
-                        foodLogInputFunc("1장","600GBB");
+                        foodLogInputFunc("식권 X1","600GBB");
                         Toast.makeText(context,"600GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 1200:
                         getWallet(view.getId());
                         increaseTicket(2);
-                        foodLogInputFunc("2장","1200GBB");
+                        foodLogInputFunc("식권 X2","1200GBB");
                         Toast.makeText(context,"1200GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 3000:
                         getWallet(view.getId());
                         increaseTicket(5);
-                        foodLogInputFunc("5장","3000GBB");
+                        foodLogInputFunc("식권 X5","3000GBB");
                         Toast.makeText(context,"3000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 6000:
                         getWallet(view.getId());
                         increaseTicket(10);
-                        foodLogInputFunc("10장","6000GBB");
+                        foodLogInputFunc("식권 X10","6000GBB");
                         Toast.makeText(context,"6000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                 }
@@ -154,7 +154,7 @@ public class FoodListAdapter extends BaseAdapter{
         firebaseInput.logInput(FirebaseAuth.getInstance().getCurrentUser().getUid(),
                 "Gachon Univercity",
                 ticketCount,
-                "식권 구매",
+                "상품 구매",
                 amount);
     }
     //foodFragment 갱신 함수

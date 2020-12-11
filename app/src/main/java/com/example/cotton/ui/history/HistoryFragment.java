@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.loader.content.CursorLoader;
 
+import com.example.cotton.BookSaveForm;
 import com.example.cotton.LogForm;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
@@ -34,6 +35,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import co.ceryle.segmentedbutton.SegmentedButtonGroup;
@@ -54,21 +57,22 @@ public class HistoryFragment extends Fragment {
     String pictureLink;
     private static final String TAG_TEXT = "text";
     Uri selectedImageUri;
-    Button test_btn;
     ImageView bookImg;
     List<MemberInfo> memberInfos = new ArrayList<>();
+    List<LogForm> logFormList;
+    DateCompare dateCompare;
+
+    FirebaseFunction firebaseFunction;//firebase log output
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
-        history_search_view=view.findViewById(R.id.history_search_view);
+        firebaseFunction=new FirebaseFunction();//firebase log output
+
         segmentedButtonGroup = (SegmentedButtonGroup)view.findViewById(R.id.segmentedButtonGroup);
 
         transactional_information_list=view.findViewById(R.id.transactional_information_listView);//listview 참조
-
-        //editText 부분 검색함에 따라 실시간으로 변화있게 구현 예정
-        historySearchEditTextEvent();
 
         //segmentButtonGroup 버튼 클릭 이벤트(position)별, 추후 구현 예정
         segmentButtonClickEvent();
@@ -93,27 +97,10 @@ public class HistoryFragment extends Fragment {
 //            }
 //        });
 
-
+        dateCompare=new DateCompare();
         return view;
     }
 
-    //editText 검색 이벤트(12.05 기능 미구현 상태로 놔두기로 했음)
-    public void historySearchEditTextEvent(){
-
-        history_search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                Toast.makeText(getActivity(), "검색 버튼 미구현", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-
-                return false;
-            }
-        });
-    }
 
     //segmentButtonGroup 버튼 클릭 이벤트(position)별, 추후 구현 예정
     public void segmentButtonClickEvent(){
@@ -122,15 +109,12 @@ public class HistoryFragment extends Fragment {
             public void onClickedButton(int position) {
                 switch (position) {
                     case 0:
-                        Toast.makeText(getActivity(), " 전체 버튼 눌림", Toast.LENGTH_SHORT).show();
                         showHistoryListFunc(ALL);
                         break;
                     case 1:
-                        Toast.makeText(getActivity(), " 수입 버튼 눌림", Toast.LENGTH_SHORT).show();
                         showHistoryListFunc(INCOME);
                         break;
                     case 2:
-                        Toast.makeText(getActivity(), " 지출 버튼 눌림", Toast.LENGTH_SHORT).show();
                         showHistoryListFunc(EXPENDITURE);
                         break;
                 }
@@ -150,16 +134,66 @@ public class HistoryFragment extends Fragment {
         //listview에 add
         switch(state){
             case ALL:
-                adapter.addItem(R.drawable.ic_in,"도서거래","C언어 콘서트","2020.12.01","+100GBB");
-                adapter.addItem(R.drawable.ic_in,"충전","포인트 충전","2020.12.02","+500GBB");
-                adapter.addItem(R.drawable.ic_out,"상품구매","식권 x1","2020.12.03","-600GBB");
+                firebaseFunction.logAllOutput(logForms -> {
+                    logFormList=logForms;
+                    Collections.sort(logFormList, dateCompare);
+                    for(int i=0;i<logFormList.size();i++){
+
+                        //지출 UID가 현재 로그인한 UID와 같다면
+                        if(logFormList.get(i).getFrom().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+
+                            adapter.addItem(R.drawable.ic_out,
+                                    logFormList.get(i).getCategory(),
+                                    logFormList.get(i).getMessage(),
+                                    logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
+                                    "- "+logFormList.get(i).getAmount());
+                        }
+                        //수입 UID가 현재 로그인한 UID와 같다면
+                        else if(logFormList.get(i).getTo().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+
+                            adapter.addItem(R.drawable.ic_in,
+                                    logFormList.get(i).getCategory(),
+                                    logFormList.get(i).getMessage(),
+                                    logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
+                                    "+ "+logFormList.get(i).getAmount());
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                    return null;
+                });
+
                 break;
             case INCOME:
-                adapter.addItem(R.drawable.ic_in,"도서거래","C언어 콘서트","2020.12.01","+100GBB");
-                adapter.addItem(R.drawable.ic_in,"충전","포인트 충전","2020.12.02","+500GBB");
+                firebaseFunction.logToOutput(logForms -> {
+                    logFormList=logForms;
+                    Collections.sort(logFormList, dateCompare);
+
+                    for(int i=0;i<logFormList.size();i++){
+                        adapter.addItem(R.drawable.ic_in,
+                                logFormList.get(i).getCategory(),
+                                logFormList.get(i).getMessage(),
+                                logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
+                                "+ "+logFormList.get(i).getAmount());
+                    }
+                    adapter.notifyDataSetChanged();
+                    return null;
+                });
                 break;
             case EXPENDITURE:
-                adapter.addItem(R.drawable.ic_out,"상품구매","식권 x1","2020.12.03","-600GBB");
+                firebaseFunction.logFromOutput(logForms -> {
+                    logFormList=logForms;
+                    Collections.sort(logFormList, dateCompare);
+
+                    for(int i=0;i<logFormList.size();i++){
+                        adapter.addItem(R.drawable.ic_out,
+                                logFormList.get(i).getCategory(),
+                                logFormList.get(i).getMessage(),
+                                logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
+                                "- "+logFormList.get(i).getAmount());
+                    }
+                    adapter.notifyDataSetChanged();
+                    return null;
+                });
                 break;
         }
         adapter.notifyDataSetChanged();//adapter의 변경을 알림

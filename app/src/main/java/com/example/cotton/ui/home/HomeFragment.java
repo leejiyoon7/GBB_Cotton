@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cotton.MainActivity;
 import com.example.cotton.Utils.ApiService;
@@ -69,6 +70,8 @@ public class HomeFragment extends Fragment implements Runnable{
 
     Button home_register_book_btn;//도서등록 버튼
 
+    SwipeRefreshLayout swipeRefreshLayout;
+
     double money;
     String UID;
 
@@ -95,6 +98,8 @@ public class HomeFragment extends Fragment implements Runnable{
         home_my_registered_book_recycler_view.setNestedScrollingEnabled(false);
 
         homeFragment=new HomeFragment();
+
+        swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
 
         FirebaseFunction firebaseFunction = new FirebaseFunction();
         UID = firebaseFunction.getMyUID();
@@ -141,32 +146,7 @@ public class HomeFragment extends Fragment implements Runnable{
 
 
         // Home화면에 지갑잔고 출력
-        firebaseTest.profileGet(memberInfos, (resultList) -> {
-
-            home_my_point_user_name_text_view.setText(resultList.get(0).getName()); // Home화면에 UserName 출력
-            home_my_point_food_ticket_text_view.setText("보유식권: " + Long.toString(resultList.get(0).getTicket()) + "장"); // Home화면에 보유티겟 수 출력
-
-            ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
-
-            call.getMoney(resultList.get(0).getWallet()).enqueue(new Callback<GetBalanceResultVO>() {
-                @Override
-                public void onResponse(Call<GetBalanceResultVO> call, Response<GetBalanceResultVO> response) {
-                    Log.d("성공 : ", "result : " + response.body().getResult());
-                    Log.d("성공 : ", "address : " + response.body().getDataBalance().getBalance());
-                    money = Double.parseDouble(response.body().getDataBalance().getBalance());
-                    money = (money*0.000000000000000001);
-                    home_my_point_amount_text_view.setText((String.valueOf((int)money)));
-                }
-
-                @Override
-                public void onFailure(Call<GetBalanceResultVO> call, Throwable t) {
-                    Log.d("실패 : ", t.toString());
-                }
-
-            });
-
-            return null;
-        });
+        getCoin();
 
         //로그아웃 버튼 구현
         home_profile_image_button.setOnClickListener(new View.OnClickListener() {
@@ -212,7 +192,7 @@ public class HomeFragment extends Fragment implements Runnable{
                 else {
                     Toast.makeText(getContext(), "관리자 권한이 없습니다.", Toast.LENGTH_LONG).show();
                 }
-                return false;
+                return true;
             }
         });
 
@@ -257,6 +237,13 @@ public class HomeFragment extends Fragment implements Runnable{
 
         });
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+
 
         clickRentedViewMoreButtonFunc();//대여 도서 목록 +더보기 버튼 클릭
         clickRegisteredViewMoreButtonFunc();//나의 도서 목록 +더보기 버튼 클릭
@@ -296,6 +283,37 @@ public class HomeFragment extends Fragment implements Runnable{
         Thread thread=new Thread(this);
         thread.start();
         Toast.makeText(getActivity(),"10000GBB가 충전되었습니다.",Toast.LENGTH_SHORT).show();
+    }
+
+    //지갑잔고 받아오기
+    public void getCoin(){
+        FirebaseFunction firebaseTest = new FirebaseFunction();
+        firebaseTest.profileGet(memberInfos, (resultList) -> {
+
+            home_my_point_user_name_text_view.setText(resultList.get(0).getName()); // Home화면에 UserName 출력
+            home_my_point_food_ticket_text_view.setText("보유식권: " + Long.toString(resultList.get(0).getTicket()) + "장"); // Home화면에 보유티겟 수 출력
+
+            ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
+
+            call.getMoney(resultList.get(0).getWallet()).enqueue(new Callback<GetBalanceResultVO>() {
+                @Override
+                public void onResponse(Call<GetBalanceResultVO> call, Response<GetBalanceResultVO> response) {
+                    Log.d("성공 : ", "result : " + response.body().getResult());
+                    Log.d("성공 : ", "address : " + response.body().getDataBalance().getBalance());
+                    money = Double.parseDouble(response.body().getDataBalance().getBalance());
+                    money = (money*0.000000000000000001);
+                    home_my_point_amount_text_view.setText((String.valueOf((int)money)));
+                }
+
+                @Override
+                public void onFailure(Call<GetBalanceResultVO> call, Throwable t) {
+                    Log.d("실패 : ", t.toString());
+                }
+
+            });
+
+            return null;
+        });
     }
 
     //대여 도서 목록 RecyclerView 설정
@@ -462,11 +480,6 @@ public class HomeFragment extends Fragment implements Runnable{
         });
     }
 
-    public void searchMoney(String wallet){
-
-
-
-    }
 
     @Override
     public void run() {
@@ -477,5 +490,10 @@ public class HomeFragment extends Fragment implements Runnable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void refresh () {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.detach(this).attach(this).commit();
     }
 }

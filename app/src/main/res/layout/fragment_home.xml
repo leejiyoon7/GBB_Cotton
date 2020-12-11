@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <ScrollView
         android:id="@+id/home_scroll_view"
         android:layout_width="match_parent"
@@ -349,6 +354,8 @@
 
 
     </ScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 <!--    <Button-->
 <!--        android:id="@+id/btn_logout"-->

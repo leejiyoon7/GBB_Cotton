@@ -6,8 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cotton.FirebaseFunction;
 import com.example.cotton.R;
-import com.example.cotton.ui.food.FoodListItem;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -50,7 +47,7 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
 
                         // BottomSheetDialog 초기화.
                         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(view.getContext());
-                        bottomSheetDialog.setContentView(R.layout.return_book_qrcode_bottom_dialog);
+                        bottomSheetDialog.setContentView(R.layout.bottom_dialog_return_book_qrcode);
 
                         TextView qrSubmitBtn = bottomSheetDialog.findViewById(R.id.return_book_qr_submit_btn);
                         ImageView qrImageView = bottomSheetDialog.findViewById(R.id.return_book_qr_image_view);

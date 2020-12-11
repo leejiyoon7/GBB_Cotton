@@ -128,7 +128,7 @@ public class RegisterBookActivity extends Activity {
             @Override
             public void onClick(View view) {
                 final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(RegisterBookActivity.this);
-                bottomSheetDialog.setContentView(R.layout.camera_or_album_bottom_dialog);
+                bottomSheetDialog.setContentView(R.layout.bottom_dialog_camera_or_album);
 
                 TextView cameraTextView = bottomSheetDialog.findViewById(R.id.camera_or_album_camer);
                 TextView albumTextView = bottomSheetDialog.findViewById(R.id.camera_or_album_album);

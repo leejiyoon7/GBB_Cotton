@@ -150,6 +150,7 @@ public class FirebaseFunction {
      * @param category 토큰거래 항목 (ex.도서거래, 티켓구매 등등...)
      * @param amount 거래한 토큰의 양
      */
+
     public void logInput(String from, String to, String message, String category, String amount){
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 

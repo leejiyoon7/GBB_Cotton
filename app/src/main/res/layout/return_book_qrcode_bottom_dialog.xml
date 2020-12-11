@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="QR코드를 관리자에게 보여주세요."
+        android:textStyle="bold"/>
+
+    <View
+        android:layout_width="50dp"
+        android:layout_height="0.3dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorAccent" />
+
+    <ImageView
+        android:id="@+id/return_book_qr_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"/>
+
+
+    <TextView
+        android:id="@+id/return_book_qr_submit_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:text="완료"
+        android:textAlignment="center"/>
+
+</LinearLayout>

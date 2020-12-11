@@ -21,6 +21,7 @@ import com.example.cotton.Utils.BaseUrlInterface;
 import com.example.cotton.Utils.RetrofitClientJson;
 import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.FirebaseFunction;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ public class FoodListAdapter extends BaseAdapter{
     Context context;
     FoodFragment foodFragment;
     Fragment fragment;
+    FirebaseFunction firebaseInput;
 
     private ArrayList<FoodListItem> foodItemsList=new ArrayList<FoodListItem>();
 
@@ -73,6 +75,8 @@ public class FoodListAdapter extends BaseAdapter{
         btn_buy=convertView.findViewById(R.id.btn_buy);
 
         foodFragment=new FoodFragment();
+
+        firebaseInput=new FirebaseFunction();//firebasefunction 할당
 
         FoodListItem foodListItem=foodItemsList.get(position);
         //아이템 내 각 위젯에 데이터 반영
@@ -117,21 +121,25 @@ public class FoodListAdapter extends BaseAdapter{
                     case 600:
                         getWallet(view.getId());
                         increaseTicket(1);
+                        foodLogInputFunc("1장","600GBB");
                         Toast.makeText(context,"600GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 1200:
                         getWallet(view.getId());
                         increaseTicket(2);
+                        foodLogInputFunc("2장","1200GBB");
                         Toast.makeText(context,"1200GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 3000:
                         getWallet(view.getId());
                         increaseTicket(5);
+                        foodLogInputFunc("5장","3000GBB");
                         Toast.makeText(context,"3000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                     case 6000:
                         getWallet(view.getId());
                         increaseTicket(10);
+                        foodLogInputFunc("10장","6000GBB");
                         Toast.makeText(context,"6000GBB 식권 구매 완료하였습니다.",Toast.LENGTH_SHORT).show();
                         break;
                 }
@@ -140,6 +148,14 @@ public class FoodListAdapter extends BaseAdapter{
 
             }
         });
+    }
+    //로그 input 함수
+    public void foodLogInputFunc(String ticketCount, String amount){
+        firebaseInput.logInput(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                "Gachon Univercity",
+                ticketCount,
+                "식권 구매",
+                amount);
     }
     //foodFragment 갱신 함수
     public void foodFragmentRenewFunc(){

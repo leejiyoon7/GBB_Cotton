@@ -70,6 +70,7 @@ public class HomeFragment extends Fragment implements Runnable{
     Button home_register_book_btn;//도서등록 버튼
 
     double money;
+    String UID;
 
     HomeFragment homeFragment;
 
@@ -94,6 +95,9 @@ public class HomeFragment extends Fragment implements Runnable{
         home_my_registered_book_recycler_view.setNestedScrollingEnabled(false);
 
         homeFragment=new HomeFragment();
+
+        FirebaseFunction firebaseFunction = new FirebaseFunction();
+        UID = firebaseFunction.getMyUID();
 
         //대여 도서 목록 RecyclerView 설정 method
         showMyRentedBookListFunc();
@@ -199,10 +203,15 @@ public class HomeFragment extends Fragment implements Runnable{
         home_profile_image_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
-                intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
-                intentIntegrator.setDesiredBarcodeFormats(String.valueOf(BarcodeFormat.QR_CODE));
-                intentIntegrator.initiateScan();
+                if(UID.equals("jAa5lxn1IFQw9uZRu9VXk43MrlI3")) {
+                    IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
+                    intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
+                    intentIntegrator.setDesiredBarcodeFormats(String.valueOf(BarcodeFormat.QR_CODE));
+                    intentIntegrator.initiateScan();
+                }
+                else {
+                    Toast.makeText(getContext(), "관리자 권한이 없습니다.", Toast.LENGTH_LONG).show();
+                }
                 return false;
             }
         });

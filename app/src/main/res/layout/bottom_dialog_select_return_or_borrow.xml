@@ -10,7 +10,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="반납자의 QR코드를 스캔합니다."
+        android:text="기능 선택"
         android:textStyle="bold"/>
 
     <View
@@ -20,15 +20,25 @@
         android:layout_marginTop="10dp"
         android:background="@color/colorAccent" />
 
-
     <TextView
-        android:id="@+id/admin_scan_borrower_qr_btn"
+        android:id="@+id/return_or_borrow_borrow_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
-        android:text="스캔시작"
+        android:text="도서 대여"
+        android:textAlignment="center"/>
+
+
+    <TextView
+        android:id="@+id/return_or_borrow_return_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:text="도서 반납"
         android:textAlignment="center"/>
 
 </LinearLayout>

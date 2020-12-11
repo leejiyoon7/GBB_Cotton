@@ -3,21 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.cotton">
 
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_cotton"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_cotton_round"
-        android:hardwareAccelerated="true"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Cotton">
+        android:theme="@style/Theme.Cotton"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".ui.home.allowBorrow.AllowBorrow"></activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".MemberInitActivity" />
         <activity android:name=".PasswordResetActivity" />
@@ -25,10 +27,9 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".ui.home.register.RegisterBookActivity" />
         <activity
-            android:theme="@android:style/Theme.NoTitleBar"
             android:name=".LoadingActivity"
             android:label="@string/app_name"
-            >
+            android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,7 +40,6 @@
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="barcode" />
-        <!-- To use multiple models: android:value="barcode,model2" -->
     </application>
 
 </manifest>

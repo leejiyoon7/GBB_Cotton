@@ -42,6 +42,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class HistoryFragment extends Fragment {
 
+
     SearchView history_search_view;//거래내역 검색 searchview
     SegmentedButtonGroup segmentedButtonGroup;//segmentButtonGroup 생성
     ListView transactional_information_list;//도서거래 ListView

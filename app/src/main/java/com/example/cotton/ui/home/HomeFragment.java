@@ -33,6 +33,7 @@ import com.example.cotton.UserRegisteredBookSaveForm;
 import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.BookSaveForm;
 import com.example.cotton.FirebaseFunction;
+import com.example.cotton.ui.home.ReturnBook.ReturnBookActivity;
 import com.example.cotton.ui.home.allowBorrow.AllowBorrowActivity;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -218,14 +219,14 @@ public class HomeFragment extends Fragment implements Runnable{
                     caseBorrowBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showUserQrScanBottomDialog();
+                            showBorrowQrScanBottomDialog();
                             bottomSheetDialog.dismiss();
                         }
                     });
                     caseReturnBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showReturnBottomDialog();
+                            showReturnQrScanBottomDialog();
                             bottomSheetDialog.dismiss();
                         }
                     });
@@ -323,59 +324,31 @@ public class HomeFragment extends Fragment implements Runnable{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-
-        if(result != null) {
-            if(result.getContents() == null) {
-                Toast.makeText(HomeFragment.this.getContext(), "바코드 인식 취소 됨.", Toast.LENGTH_LONG).show();
-            }
-            else { // 바코드 스캔 성공
-                // 대여의 경우
-                if(result.getContents().length() == 28) {
-                    Log.d("Borrow case:", result.getContents());
-                    // 대여자의 빌린 도서 목록으로 접속하여 도서를 받아온다음
-                    // 새로운 액티비티를 열어서 리사이클러뷰로 뿌려준다.
-                    // Monireu
-                    Intent intent = new Intent(getActivity(), AllowBorrowActivity.class);
-                    intent.putExtra("borrowerUID", result.getContents());
-                    startActivityForResult(intent, 100);
+        Log.d("Borrow case:", String.valueOf(requestCode));
+        IntentResult result = IntentIntegrator.parseActivityResult(IntentIntegrator.REQUEST_CODE, resultCode, data);
+            if(result != null) {
+                if(result.getContents() == null) {
+                    Toast.makeText(HomeFragment.this.getContext(), "바코드 인식 취소 됨.", Toast.LENGTH_LONG).show();
                 }
-                // 반납의 경우
-                else {
-                    // 책 바코드 정보가 비어있을경우 책 바코드 정보에 값을 넣고, 유저캔 QR코드 스캔
-                    if (returnBookBarcode.equals("")) {
-                        returnBookBarcode = result.getContents();
-                        showUserQrScanBottomDialog();
+                else { // 바코드 스캔 성공
+
+                    switch (requestCode) {
+                        case 1001:
+                            Log.d("Borrow case result:", result.getContents());
+                            Intent intent1 = new Intent(getActivity(), AllowBorrowActivity.class);
+                            intent1.putExtra("borrowerUID", result.getContents());
+                            startActivityForResult(intent1, 100);
+                            break;
+                        case 1002:
+                            Intent intent2 = new Intent(getActivity(), ReturnBookActivity.class);
+                            intent2.putExtra("borrowerUID", result.getContents());
+                            startActivityForResult(intent2, 100);
+                            break;
                     }
-                    // 책 바코드 정보가 있을 경우 책 반납절차 실행
-                    else {
-                        String qrStringInfo = result.getContents();
-                        int slashIndex = qrStringInfo.indexOf("/");
-                        String bookBarcode = qrStringInfo.substring(0, slashIndex);
-                        String bookOwner = qrStringInfo.substring(slashIndex + 1);
-
-                        if (returnBookBarcode.equals(bookBarcode)) {
-                            FirebaseFunction firebaseFunction = new FirebaseFunction();
-                            firebaseFunction.returnBook(
-                                    bookBarcode,
-                                    bookOwner,
-                                    (value) -> {
-                                        Toast.makeText(getContext(), "반납이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                        return null;
-                                    }
-                            );
-                        }
-                        else {
-                            Toast.makeText(getContext(), "반납할 책의 정보가 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                    }// End of: if (returnBookBarcode.equals(""))
-                } // End of: if(result.getContents().length() == 28)
-            } // End of: if(result.getContents() == null)
-        } else {
-            Log.d("ResultCode 1000 = ", "CodeFail");
-            super.onActivityResult(requestCode, resultCode, data);
-
-        }
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+            }
     }
 
     public void goToHomeFragmentFunc(){
@@ -544,24 +517,8 @@ public class HomeFragment extends Fragment implements Runnable{
     }
 
 
-    private void showReturnBottomDialog() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(homeFragment.getContext());
-        bottomSheetDialog.setContentView(R.layout.bottom_dialog_admin_scan_book);
-        TextView scanReturnBookBtn = bottomSheetDialog.findViewById(R.id.admin_scan_book_btn);
-        scanReturnBookBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(homeFragment);
-                intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
-                intentIntegrator.setDesiredBarcodeFormats(BarcodeFormat.EAN_13.toString());
-                intentIntegrator.initiateScan();
-                bottomSheetDialog.dismiss();
-            }
-        });
-        bottomSheetDialog.show();
-    }
 
-    private void showUserQrScanBottomDialog() {
+    private void showBorrowQrScanBottomDialog() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(HomeFragment.this.getContext());
         bottomSheetDialog.setContentView(R.layout.bottom_dialog_admin_scan_user_qr);
         TextView scanBorrowerQrBtn = bottomSheetDialog.findViewById(R.id.admin_scan_borrower_qr_btn);
@@ -569,7 +526,25 @@ public class HomeFragment extends Fragment implements Runnable{
             @Override
             public void onClick(View v) {
                 IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
+                intentIntegrator.setRequestCode(0x3E9);
+                intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
+                intentIntegrator.setDesiredBarcodeFormats(String.valueOf(BarcodeFormat.QR_CODE));
+                intentIntegrator.initiateScan();
+                bottomSheetDialog.dismiss();
+            }
+        });
+        bottomSheetDialog.show();
+    }
 
+    private void showReturnQrScanBottomDialog() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(HomeFragment.this.getContext());
+        bottomSheetDialog.setContentView(R.layout.bottom_dialog_admin_scan_user_qr);
+        TextView scanBorrowerQrBtn = bottomSheetDialog.findViewById(R.id.admin_scan_borrower_qr_btn);
+        scanBorrowerQrBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
+                intentIntegrator.setRequestCode(0x3EA);
                 intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
                 intentIntegrator.setDesiredBarcodeFormats(String.valueOf(BarcodeFormat.QR_CODE));
                 intentIntegrator.initiateScan();

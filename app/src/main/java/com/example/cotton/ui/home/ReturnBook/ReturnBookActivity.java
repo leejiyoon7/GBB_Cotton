@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -32,7 +33,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class ReturnBookActivity extends AppCompatActivity {
+public class ReturnBookActivity extends Activity {
 
 
     TextView headerTitle;

@@ -36,65 +36,6 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
             list_my_rented_book_title_text_view=itemView.findViewById(R.id.list_my_rented_book_title_text_view);
             list_my_rented_book_writer_text_view=itemView.findViewById(R.id.list_my_rented_book_writer_text_view);
             list_my_rented_book_status_text_view=itemView.findViewById(R.id.list_my_rented_book_status_text_view);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int index = getAdapterPosition();
-                    if (index != RecyclerView.NO_POSITION) {
-                        FirebaseFunction firebaseFunction = new FirebaseFunction();
-
-                        // QR코드 정보 준비
-                        String selectedBookBarcode = myRentedBookList.get(index).getList_my_rented_book_barcode();
-                        String myUID = firebaseFunction.getMyUID();
-                        String qrInfoString = selectedBookBarcode + "/" + myUID;
-                        String bookOwnerUID = myRentedBookList.get(index).getList_my_rented_book_owner_uid();
-
-                        // BottomSheetDialog 초기화.
-                        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(view.getContext());
-                        bottomSheetDialog.setContentView(R.layout.bottom_dialog_qrcode);
-
-                        TextView qrSubmitBtn = bottomSheetDialog.findViewById(R.id.qr_submit_btn);
-                        ImageView qrImageView = bottomSheetDialog.findViewById(R.id.qr_image_view);
-
-                        qrSubmitBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Log.d("Book Return Exec: ", "책반납완료버튼눌림.");
-                                firebaseFunction.deleteRentedBookIfReturnedSuccessfully(
-                                        selectedBookBarcode,
-                                        bookOwnerUID,
-                                        (value) -> {
-                                            Toast.makeText(v.getContext(), "책이 아직 반납되지 않았습니다.", Toast.LENGTH_SHORT).show();
-                                            Log.d("Book Return Error: ", "책이 아직 반납되지 않았습니다.");
-                                            return null;
-                                        },
-                                        (value) -> {
-                                            Toast.makeText(v.getContext(), "책 반납이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                            Log.d("Book Return Error: ", "책 반납이 완료되었습니다.");
-                                            return null;
-                                        },
-                                        (value) -> {
-                                            Log.d("Book Return Error: ", "책 반납에 실패했습니다.");
-                                            return null;
-                                        }
-                                );
-                                bottomSheetDialog.dismiss();
-                            }
-                        });
-
-                        try {
-                            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                            Bitmap bitmap = barcodeEncoder.encodeBitmap(qrInfoString, BarcodeFormat.QR_CODE, 500, 500);
-                            ImageView imageViewQrCode = qrImageView;
-                            imageViewQrCode.setImageBitmap(bitmap);
-                        } catch(Exception e) {
-
-                        }
-                        bottomSheetDialog.show();
-                    }
-                }
-            });
         }
     }
 

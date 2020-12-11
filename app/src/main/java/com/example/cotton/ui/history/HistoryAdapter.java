@@ -75,8 +75,27 @@ public class HistoryAdapter extends BaseAdapter {
         return historyItemsList.get(position);
     }
 
+
+
+    public String getHistoryType(int position){
+        return historyItemsList.get(position).getHistoryType();
+    }
+    public String getHistoryBookname(int position){
+        return historyItemsList.get(position).getHistoryBookname();
+    }
+    public String getHistoryDate(int position){
+        return historyItemsList.get(position).getHistoryDate();
+    }
+    public String getHistoryDateDetail(int position){
+        return historyItemsList.get(position).getHistoryDateDetail();
+    }
+    public String getHistoryVariance(int position){
+        return historyItemsList.get(position).getHistoryVariance();
+    }
+
+
     //아이템 데이터 추가를 위한 함수
-    public void addItem(int historyIcon, String historyType, String historyBookname, String historyDate, String historyVariance){
+    public void addItem(int historyIcon, String historyType, String historyBookname, String historyDate, String historyVariance,String historyDateDetail){
         HistoryListItem item=new HistoryListItem();
 
         item.setHistoryIcon(historyIcon);
@@ -84,6 +103,7 @@ public class HistoryAdapter extends BaseAdapter {
         item.setHistoryBookname(historyBookname);
         item.setHistoryDate(historyDate);
         item.setHistoryVariance(historyVariance);
+        item.setHistoryDateDetail(historyDateDetail);
 
         historyItemsList.add(item);
     }

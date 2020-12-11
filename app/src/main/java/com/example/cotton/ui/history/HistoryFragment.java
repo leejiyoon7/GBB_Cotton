@@ -9,10 +9,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,9 +26,11 @@ import com.example.cotton.LogForm;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.FirebaseFunction;
+import com.example.cotton.ui.home.HomeFragment;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -146,7 +150,8 @@ public class HistoryFragment extends Fragment {
                                     logFormList.get(i).getCategory(),
                                     logFormList.get(i).getMessage(),
                                     logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
-                                    "- "+logFormList.get(i).getAmount());
+                                    "- "+logFormList.get(i).getAmount(),
+                                    logFormList.get(i).getDate().replaceAll("/","."));
                         }
                         //수입 UID가 현재 로그인한 UID와 같다면
                         else if(logFormList.get(i).getTo().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
@@ -155,10 +160,12 @@ public class HistoryFragment extends Fragment {
                                     logFormList.get(i).getCategory(),
                                     logFormList.get(i).getMessage(),
                                     logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
-                                    "+ "+logFormList.get(i).getAmount());
+                                    "+ "+logFormList.get(i).getAmount(),
+                                    logFormList.get(i).getDate().replaceAll("/","."));
                         }
+                        adapter.notifyDataSetChanged();
                     }
-                    adapter.notifyDataSetChanged();
+
                     return null;
                 });
 
@@ -173,7 +180,8 @@ public class HistoryFragment extends Fragment {
                                 logFormList.get(i).getCategory(),
                                 logFormList.get(i).getMessage(),
                                 logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
-                                "+ "+logFormList.get(i).getAmount());
+                                "+ "+logFormList.get(i).getAmount(),
+                                logFormList.get(i).getDate().replaceAll("/","."));
                     }
                     adapter.notifyDataSetChanged();
                     return null;
@@ -189,14 +197,42 @@ public class HistoryFragment extends Fragment {
                                 logFormList.get(i).getCategory(),
                                 logFormList.get(i).getMessage(),
                                 logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
-                                "- "+logFormList.get(i).getAmount());
+                                "- "+logFormList.get(i).getAmount(),
+                                logFormList.get(i).getDate().replaceAll("/","."));
                     }
                     adapter.notifyDataSetChanged();
                     return null;
                 });
                 break;
         }
-        adapter.notifyDataSetChanged();//adapter의 변경을 알림
+
+        transactional_information_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                // BottomSheetDialog 초기화.
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(HistoryFragment.this.getActivity());
+                bottomSheetDialog.setContentView(R.layout.bottom_trading_details);
+
+                String bookName=adapter.getHistoryBookname(position);
+                String dateDetail=adapter.getHistoryDateDetail(position);
+                String type=adapter.getHistoryType(position);
+                String variance=adapter.getHistoryVariance(position);
+
+                TextView history_type=bottomSheetDialog.findViewById(R.id.history_type);
+                TextView history_bookname=bottomSheetDialog.findViewById(R.id.history_bookname);
+                TextView history_date=bottomSheetDialog.findViewById(R.id.history_date);
+                TextView history_variance=bottomSheetDialog.findViewById(R.id.history_variance);
+
+                history_type.setText("상품 종류: "+type);
+                history_bookname.setText("상품명: "+bookName);
+                history_date.setText("거래 시간: "+dateDetail);
+                history_variance.setText("수입/지출: "+variance);
+
+                bottomSheetDialog.show();
+
+            }
+        });
     }
 
 

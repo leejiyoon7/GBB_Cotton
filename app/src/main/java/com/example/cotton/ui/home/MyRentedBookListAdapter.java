@@ -52,10 +52,10 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
 
                         // BottomSheetDialog 초기화.
                         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(view.getContext());
-                        bottomSheetDialog.setContentView(R.layout.bottom_dialog_return_book_qrcode);
+                        bottomSheetDialog.setContentView(R.layout.bottom_dialog_qrcode);
 
-                        TextView qrSubmitBtn = bottomSheetDialog.findViewById(R.id.return_book_qr_submit_btn);
-                        ImageView qrImageView = bottomSheetDialog.findViewById(R.id.return_book_qr_image_view);
+                        TextView qrSubmitBtn = bottomSheetDialog.findViewById(R.id.qr_submit_btn);
+                        ImageView qrImageView = bottomSheetDialog.findViewById(R.id.qr_image_view);
 
                         qrSubmitBtn.setOnClickListener(new View.OnClickListener() {
                             @Override

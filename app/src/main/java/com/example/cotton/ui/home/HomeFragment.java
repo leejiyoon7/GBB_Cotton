@@ -3,6 +3,7 @@ package com.example.cotton.ui.home;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,31 +139,64 @@ public class HomeFragment extends Fragment implements Runnable{
         home_profile_image_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                // QR코드 정보 준비
+                String myUID = firebaseFunction.getMyUID();
 
-                builder.setTitle("로그아웃").setMessage("\n로그아웃 하시겠습니까?\n");
+                // BottomSheetDialog 초기화.
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(view.getContext());
+                bottomSheetDialog.setContentView(R.layout.bottom_dialog_qrcode);
 
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+                TextView closeBtn = bottomSheetDialog.findViewById(R.id.qr_submit_btn);
+                TextView logoutBtn = bottomSheetDialog.findViewById(R.id.qr_logout_btn);
+                ImageView qrImageView = bottomSheetDialog.findViewById(R.id.qr_image_view);
+
+                closeBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        FirebaseAuth.getInstance().signOut();
-                        Intent intent=new Intent(getActivity(), LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
                     }
                 });
 
-                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener(){
+                logoutBtn.setVisibility(View.VISIBLE);
+                logoutBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        Toast.makeText(getContext(), "로그아웃 취소", Toast.LENGTH_SHORT).show();
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("로그아웃").setMessage("\n로그아웃 하시겠습니까?\n");
+
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                FirebaseAuth.getInstance().signOut();
+                                Intent intent=new Intent(getActivity(), LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                            }
+                        });
+
+                        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                Toast.makeText(getContext(), "로그아웃 취소", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        bottomSheetDialog.dismiss();
+                        alertDialog.show();
                     }
                 });
 
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                try {
+                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                    Bitmap bitmap = barcodeEncoder.encodeBitmap(myUID, BarcodeFormat.QR_CODE, 500, 500);
+                    ImageView imageViewQrCode = qrImageView;
+                    imageViewQrCode.setImageBitmap(bitmap);
+                } catch(Exception e) {
+
+                }
+                bottomSheetDialog.show();
             }
         });
 
@@ -179,7 +215,6 @@ public class HomeFragment extends Fragment implements Runnable{
                         @Override
                         public void onClick(View v) {
                             showUserQrScanBottomDialog();
-//                            showTestPage();
                             bottomSheetDialog.dismiss();
                         }
                     });
@@ -367,12 +402,6 @@ public class HomeFragment extends Fragment implements Runnable{
 
             return null;
         });
-    }
-
-    public void showTestPage() {
-        Intent intent = new Intent(getActivity(), AllowBorrowActivity.class);
-        intent.putExtra("borrowerUID", "0yvx4xvTcoOUdEmKcZJIKiYSses1");
-        startActivity(intent);
     }
 
 

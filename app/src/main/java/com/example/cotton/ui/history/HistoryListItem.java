@@ -6,6 +6,7 @@ public class HistoryListItem {
     private String historyType;
     private String historyBookname;
     private String historyDate;
+    private String historyDateDetail;
     private String historyVariance;
 
     public void setHistoryIcon(int historyIcon) {
@@ -22,6 +23,10 @@ public class HistoryListItem {
 
     public void setHistoryDate(String historyDate) {
         this.historyDate = historyDate;
+    }
+
+    public void setHistoryDateDetail(String historyDateDetail) {
+        this.historyDateDetail = historyDateDetail;
     }
 
     public void setHistoryVariance(String historyVariance) {
@@ -43,6 +48,10 @@ public class HistoryListItem {
 
     public String getHistoryDate() {
         return historyDate;
+    }
+
+    public String getHistoryDateDetail() {
+        return historyDateDetail;
     }
 
     public String getHistoryVariance() {

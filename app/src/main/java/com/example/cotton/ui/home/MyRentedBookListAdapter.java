@@ -97,10 +97,10 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
         }
     }
 
-    // 생성자에서 데이터 리스트 객체를 전달받음.
-    MyRentedBookListAdapter(){
-
-    }
+//    // 생성자에서 데이터 리스트 객체를 전달받음.
+//    MyRentedBookListAdapter(){
+//
+//    }
 
     // onCreateViewHolder() - 아이템 뷰를 위한 뷰홀더 객체 생성하여 리턴.
     @NonNull

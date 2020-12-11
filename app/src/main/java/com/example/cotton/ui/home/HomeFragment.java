@@ -31,6 +31,7 @@ import com.example.cotton.UserRegisteredBookSaveForm;
 import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.BookSaveForm;
 import com.example.cotton.FirebaseFunction;
+import com.example.cotton.ui.home.allowBorrow.AllowBorrowActivity;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
@@ -117,7 +118,7 @@ public class HomeFragment extends Fragment implements Runnable{
         firebaseTest.profileImageDownload(home_profile_image_button, this.getContext());
 
 
-        home_register_book_btn=view.findViewById(R.id.home_register_book_btn);
+        home_register_book_btn=view.findViewById(R.id.allow_borrow_complete_btn);
 
         home_register_book_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,24 +127,6 @@ public class HomeFragment extends Fragment implements Runnable{
                 startActivity(intent);
             }
         });
-
-        /*
-        // 책 저장 방식입니다.
-        // 인자 값으로 (String 바코드, String 책제목, String 이미지링크, String 저자, String 학과, String 등록날짜, int 빌려준 횟수(0으로 초기화해서 사용해주세요.) )
-        firebaseFunction firebaseInput = new firebaseFunction();
-        firebaseInput.insertBookInfo2("9788959522057", "ARTHAS: RISE OF THE LICH KING", "pictureLink", "크리스티 골든", "흑마법전공", "2020-12-06", 10);
-        */
-
-
-// 필요없는 코드로 추정.
-//        firebaseTest.myRegisteredBookListGet((resultList) -> { //resultList안에 너가 원하는 모든게 있단다.
-//                                                               //resultList.get(i).getBookName();
-//            return null;
-//        });
-//
-//        firebaseTest.myRentedBookListGet((resultList) -> {
-//            return null;
-//        });
 
 
         // Home화면에 지갑잔고 출력
@@ -308,6 +291,9 @@ public class HomeFragment extends Fragment implements Runnable{
                     // 대여자의 빌린 도서 목록으로 접속하여 도서를 받아온다음
                     // 새로운 액티비티를 열어서 리사이클러뷰로 뿌려준다.
                     // Monireu
+                    Intent intent = new Intent(getActivity(), AllowBorrowActivity.class);
+                    intent.putExtra("borrowerUID", result.getContents());
+                    startActivityForResult(intent, 100);
                 }
                 // 반납의 경우
                 else {
@@ -537,7 +523,9 @@ public class HomeFragment extends Fragment implements Runnable{
         scanBorrowerQrBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
+
                 intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리
                 intentIntegrator.setDesiredBarcodeFormats(String.valueOf(BarcodeFormat.QR_CODE));
                 intentIntegrator.initiateScan();

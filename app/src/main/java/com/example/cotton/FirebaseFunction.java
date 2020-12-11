@@ -552,7 +552,6 @@ public class FirebaseFunction {
                     else {
                         transaction.update(sfDocRef, "rentedMember", user.getUid()+"(reserve)");
                     }
-
                     return null;
                 }
             }).addOnSuccessListener(new OnSuccessListener<Void>() {

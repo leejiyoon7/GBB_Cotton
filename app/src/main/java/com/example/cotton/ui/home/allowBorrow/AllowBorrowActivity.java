@@ -1,32 +1,37 @@
 package com.example.cotton.ui.home.allowBorrow;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cotton.FirebaseFunction;
 import com.example.cotton.R;
-import com.example.cotton.ui.home.HomeFragment;
-import com.example.cotton.ui.home.MyRentedBookListAdapter;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 
 public class AllowBorrowActivity extends AppCompatActivity {
 
 
     TextView headerTitle;
-    Button selectBtn;
     Button selectAllBtn;
     RecyclerView recyclerView;
     Button completeBtn;
-    MyRentedBookListAdapter myRentedBookListAdapter;//대여 도서 목록 adapter
+    UserRentedBookListAdapter userRentedBookListAdapter;//대여 도서 목록 adapter
+
+    String borrowerUID;
+    int selectButtonStatus;
 
 
     @Override
@@ -35,28 +40,18 @@ public class AllowBorrowActivity extends AppCompatActivity {
         setContentView(R.layout.activity_allow_borrow);
 
         headerTitle = findViewById(R.id.allow_borrow_header_title_text_view);
-        selectBtn = findViewById(R.id.allow_borrow_select_each_btn);
         selectAllBtn = findViewById(R.id.allow_borrow_select_all_btn);
         recyclerView = findViewById(R.id.allow_borrow_recycler_view);
         completeBtn = findViewById(R.id.allow_borrow_complete_btn);
+        selectButtonStatus = SelectButtonStatusInterface.DISABLED;
+
+        Intent intent = getIntent();
+        borrowerUID = intent.getStringExtra("borrowerUID");
+        showMyRentedBookListFunc(borrowerUID);
+        setSelectAllBtnInit();
+        setCompleteBtnInit();
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(this, "바코드 인식 취소 됨.", Toast.LENGTH_LONG).show();
-            } else { // 바코드 스캔 성공
-                String borrowerUID = data.getStringExtra("borrowerUID");
-                showMyRentedBookListFunc(borrowerUID);
-            }
-        }
-        else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
 
     public void showMyRentedBookListFunc(String borrowerUID) {
 
@@ -65,14 +60,15 @@ public class AllowBorrowActivity extends AppCompatActivity {
         firebaseTest.myRentedBookListGet(borrowerUID, (myRentedBookList) -> {
             // null check
             if (myRentedBookList.size() > 0) {
-                myRentedBookListAdapter = new MyRentedBookListAdapter();
+                userRentedBookListAdapter = new UserRentedBookListAdapter();
+                userRentedBookListAdapter.delegate = this;
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
                 //adapter 달기
-                recyclerView.setAdapter(myRentedBookListAdapter);
+                recyclerView.setAdapter(userRentedBookListAdapter);
 
                 int num = myRentedBookList.size();
                 for (int i = 0; i < num; i++) {
-                    myRentedBookListAdapter.addItem(
+                    userRentedBookListAdapter.addItem(
                             myRentedBookList.get(i).getBookName(),
                             myRentedBookList.get(i).getBookWriter(),
                             myRentedBookList.get(i).getStatus(),
@@ -80,9 +76,88 @@ public class AllowBorrowActivity extends AppCompatActivity {
                             myRentedBookList.get(i).getBookOwnerUUID()
                     );
                 }
-                myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
+                userRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             }
+            changeSelectBtnStatus();
             return null;
         });
+    }
+
+    private void setSelectAllBtnInit() {
+        selectAllBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (selectButtonStatus) {
+                    case SelectButtonStatusInterface.SELECT_ALL:
+                        userRentedBookListAdapter.selectAll();
+                        break;
+                    case SelectButtonStatusInterface.DELETE_ALL:
+                        userRentedBookListAdapter.deleteAll();
+                        break;
+                }
+                changeSelectBtnStatus();
+            }
+        });
+    }
+
+
+    private void setCompleteBtnInit() {
+        completeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                WriteBatch batch = db.batch();
+
+                userRentedBookListAdapter.userRentedBookSelectedList.forEach(bookInfo -> {
+                    String bookBarcode = bookInfo.getList_my_rented_book_barcode();
+                    String bookOwnerUID = bookInfo.getList_my_rented_book_owner_uid();
+
+                    DocumentReference bookSaveRef = db
+                            .collection("bookSave")
+                            .document(bookBarcode)
+                            .collection("RegisteredUsers")
+                            .document(bookOwnerUID);
+                    batch.update(bookSaveRef, "rentedMember", borrowerUID);
+
+
+                    DocumentReference usersRef = db
+                            .collection("users")
+                            .document(borrowerUID)
+                            .collection("RentedBook")
+                            .document(bookBarcode);
+                    batch.update(usersRef, "status", "대여중");
+                    });
+
+                batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(AllowBorrowActivity.this, "대여 승인이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+            }
+        });
+    }
+
+
+
+    public void changeSelectBtnStatus() {
+        int originalListSize = userRentedBookListAdapter.userRentedBookList.size();
+        int selectedListSize = userRentedBookListAdapter.userRentedBookSelectedList.size();
+        if (originalListSize == 0 && selectedListSize == 0) {
+            selectButtonStatus = SelectButtonStatusInterface.DISABLED;
+            selectAllBtn.setText("전체선택");
+            selectAllBtn.setEnabled(false);
+        }
+        else if(originalListSize == selectedListSize) {
+            selectButtonStatus = SelectButtonStatusInterface.DELETE_ALL;
+            selectAllBtn.setText("전체해제");
+            selectAllBtn.setEnabled(true);
+        }
+        else {
+            selectButtonStatus = SelectButtonStatusInterface.SELECT_ALL;
+            selectAllBtn.setText("전체선택");
+            selectAllBtn.setEnabled(true);
+        }
     }
 }

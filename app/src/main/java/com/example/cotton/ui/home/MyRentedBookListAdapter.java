@@ -32,6 +32,11 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
         TextView list_my_rented_book_status_text_view;//도서 상태
         ViewHolder(View itemView){
             super(itemView);
+
+            list_my_rented_book_title_text_view=itemView.findViewById(R.id.list_my_rented_book_title_text_view);
+            list_my_rented_book_writer_text_view=itemView.findViewById(R.id.list_my_rented_book_writer_text_view);
+            list_my_rented_book_status_text_view=itemView.findViewById(R.id.list_my_rented_book_status_text_view);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -90,10 +95,6 @@ public class MyRentedBookListAdapter extends RecyclerView.Adapter<MyRentedBookLi
                     }
                 }
             });
-
-            list_my_rented_book_title_text_view=itemView.findViewById(R.id.list_my_rented_book_title_text_view);
-            list_my_rented_book_writer_text_view=itemView.findViewById(R.id.list_my_rented_book_writer_text_view);
-            list_my_rented_book_status_text_view=itemView.findViewById(R.id.list_my_rented_book_status_text_view);
         }
     }
 

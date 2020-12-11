@@ -44,26 +44,17 @@
         app:layout_constraintEnd_toEndOf="parent"
 
         android:letterSpacing="0.15"
-        android:text="COTTON의 대여목록"
+        android:text="대여 신청 목록"
         android:textAlignment="center"
         android:textSize="15sp"
         android:textStyle="bold" />
 
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/allow_borrow_select_each_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/allow_borrow_header_layout"
-        android:background="@color/fui_transparent"
-        android:text="선택"/>
-
-    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/allow_borrow_select_all_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/allow_borrow_header_layout"
         android:background="@color/fui_transparent"
         android:text="전체선택"/>

@@ -179,6 +179,7 @@ public class HomeFragment extends Fragment implements Runnable{
                         @Override
                         public void onClick(View v) {
                             showUserQrScanBottomDialog();
+//                            showTestPage();
                             bottomSheetDialog.dismiss();
                         }
                     });
@@ -277,7 +278,6 @@ public class HomeFragment extends Fragment implements Runnable{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("bookScanCode = ", returnBookBarcode);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
         if(result != null) {
@@ -367,6 +367,12 @@ public class HomeFragment extends Fragment implements Runnable{
 
             return null;
         });
+    }
+
+    public void showTestPage() {
+        Intent intent = new Intent(getActivity(), AllowBorrowActivity.class);
+        intent.putExtra("borrowerUID", "0yvx4xvTcoOUdEmKcZJIKiYSses1");
+        startActivity(intent);
     }
 
 
@@ -523,7 +529,6 @@ public class HomeFragment extends Fragment implements Runnable{
         scanBorrowerQrBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 IntentIntegrator intentIntegrator = IntentIntegrator.forSupportFragment(HomeFragment.this);
 
                 intentIntegrator.setBeepEnabled(true);//바코드 인식시 소리

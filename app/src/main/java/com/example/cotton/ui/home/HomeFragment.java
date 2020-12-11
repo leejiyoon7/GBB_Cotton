@@ -33,6 +33,7 @@ import com.example.cotton.UserRegisteredBookSaveForm;
 import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.BookSaveForm;
 import com.example.cotton.FirebaseFunction;
+import com.example.cotton.ui.home.ReturnBook.ReturnBookActivity;
 import com.example.cotton.ui.home.allowBorrow.AllowBorrowActivity;
 import com.example.cotton.ui.home.register.RegisterBookActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -336,7 +337,11 @@ public class HomeFragment extends Fragment implements Runnable{
                     // 대여자의 빌린 도서 목록으로 접속하여 도서를 받아온다음
                     // 새로운 액티비티를 열어서 리사이클러뷰로 뿌려준다.
                     // Monireu
-                    Intent intent = new Intent(getActivity(), AllowBorrowActivity.class);
+//                    Intent intent = new Intent(getActivity(), AllowBorrowActivity.class);
+//                    intent.putExtra("borrowerUID", result.getContents());
+//                    startActivityForResult(intent, 100);
+
+                    Intent intent = new Intent(getActivity(), ReturnBookActivity.class);
                     intent.putExtra("borrowerUID", result.getContents());
                     startActivityForResult(intent, 100);
                 }

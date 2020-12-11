@@ -19,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Cotton"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.home.allowBorrow.AllowBorrowActivity"></activity>
+        <activity android:name=".ui.home.ReturnBook.ReturnBookActivity"></activity>
+        <activity android:name=".ui.home.allowBorrow.AllowBorrowActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".MemberInitActivity" />
         <activity android:name=".PasswordResetActivity" />
@@ -40,7 +41,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"

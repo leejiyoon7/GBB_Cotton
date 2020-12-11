@@ -532,9 +532,8 @@ public class FirebaseFunction {
     /**
      * 대여하기 버튼 클릭했을시 대여자 필드 변경
      * @param barcode 대여하려는 책의 바코드정보(String)
-     * @param isRentAllowed 대여신청일 경우 False, 대여승인일 경우 True
      */
-    public void updateRentMember(String barcode, Boolean isRentAllowed){
+    public void updateRentMember(String barcode){
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         getRentAvailableBookOwnerUID(barcode, (result) -> {
@@ -547,12 +546,9 @@ public class FirebaseFunction {
 
                     Long newRentCount = (snapshot.getLong("rentCount")) + 1;
                     transaction.update(sfDocRef, "rentCount", newRentCount);
-                    if (isRentAllowed) {
-                        transaction.update(sfDocRef, "rentedMember", user.getUid());
-                    }
-                    else {
-                        transaction.update(sfDocRef, "rentedMember", user.getUid()+"(reserve)");
-                    }
+
+                    transaction.update(sfDocRef, "rentedMember", user.getUid());
+
                     return null;
                 }
             }).addOnSuccessListener(new OnSuccessListener<Void>() {

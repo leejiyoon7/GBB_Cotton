@@ -158,12 +158,10 @@ public class HistoryFragment extends Fragment {
                                     "+ "+logFormList.get(i).getAmount(),
                                     logFormList.get(i).getDate().replaceAll("/","."));
                         }
-                        adapter.notifyDataSetChanged();
                     }
-
+                    adapter.notifyDataSetChanged();
                     return null;
                 });
-
                 break;
             case INCOME:
                 firebaseFunction.logToOutput(logForms -> {
@@ -182,6 +180,7 @@ public class HistoryFragment extends Fragment {
                     return null;
                 });
                 break;
+
             case EXPENDITURE:
                 firebaseFunction.logFromOutput(logForms -> {
                     logFormList=logForms;
@@ -229,6 +228,7 @@ public class HistoryFragment extends Fragment {
             }
         });
     }
+
 
 
 

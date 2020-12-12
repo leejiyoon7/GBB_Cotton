@@ -498,7 +498,7 @@ public class FirebaseFunction {
      * @param uuid 토큰을 받을 사람의 UUID정보 (String)
      * @param complete
      */
-    public void getUserWalletByUID(String uuid, Function<String, Void> complete) { //회원정보 받아오기
+    public void getUserInfoByUID(String uuid, Function<MemberInfo, Void> complete) { //회원정보 받아오기
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final ArrayList<Map<String, Object>> diaryM = new ArrayList<Map<String, Object>>();
         DocumentReference docRef = db.collection("users").document(uuid);
@@ -513,12 +513,13 @@ public class FirebaseFunction {
                                 (String) diaryM.get(0).get("phoneNumber"),
                                 (String) diaryM.get(0).get("wallet"),
                                 (Long) diaryM.get(0).get("ticket"),
-                                (String) diaryM.get(0).get("profileLink")); // 모든 정보를 다시 memberinfo에 저장
+                                (String) diaryM.get(0).get("profileLink"),
+                                (String) diaryM.get(0).get("token")); // 모든 정보를 다시 memberinfo에 저장
                         Log.d("userName", "" + diaryM.get(0).get("name"));
                         memberInfoList.add(0, memberInfo);  //리스트형식 첫번째 칸에 memberinfo 저장
                         Log.d("사용자 이름", memberInfoList.get(0).getName());
                         Log.d("사용자 지갑주소", memberInfoList.get(0).getWallet());
-                        complete.apply(memberInfoList.get(0).getWallet());
+                        complete.apply(memberInfo);
                     } else {
 
                     }
@@ -756,7 +757,8 @@ public class FirebaseFunction {
                                 (String) diaryM.get(0).get("phoneNumber"),
                                 (String) diaryM.get(0).get("wallet"),
                                 (Long) diaryM.get(0).get("ticket"),
-                                (String) diaryM.get(0).get("profileLink")); // 모든 정보를 다시 memberinfo에 저장
+                                (String) diaryM.get(0).get("profileLink"),
+                                (String) diaryM.get(0).get("token")); // 모든 정보를 다시 memberinfo에 저장
                         Log.d("userName", "" + diaryM.get(0).get("name"));
                         memberInfoList.add(0, memberInfo);  //리스트형식 첫번째 칸에 memberinfo 저장
                         Log.d("사용자 이름", memberInfoList.get(0).getName());
@@ -790,7 +792,7 @@ public class FirebaseFunction {
             // Access a Cloud Firestore instance from your Activity
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            MemberInfo memberInfo = new MemberInfo(name, phoneNumber, walletAdress, ticket, profileLink);
+            MemberInfo memberInfo = new MemberInfo(name, phoneNumber, walletAdress, ticket, profileLink, "");
             db.collection("users").document(user.getUid()).set(memberInfo)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override

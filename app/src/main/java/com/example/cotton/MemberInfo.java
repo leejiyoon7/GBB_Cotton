@@ -6,16 +6,16 @@ public class MemberInfo {
     private String wallet;
     private long ticket;
     private String profileLink;
+    private String token;
 
-    public MemberInfo() {
-    }
 
-    public MemberInfo(String name, String phoneNumber, String wallet, long ticket, String profileLink) {
+    public MemberInfo(String name, String phoneNumber, String wallet, long ticket, String profileLink, String token) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.wallet = wallet;
         this.ticket = ticket;
         this.profileLink = profileLink;
+        this.token = token;
     }
 
     public long getTicket() {
@@ -57,5 +57,9 @@ public class MemberInfo {
     public void setProfileLink(String profileLink) {
         this.profileLink = profileLink;
     }
+
+    public String getToken() { return token; }
+
+    public void setToken(String token) { this.token = token; }
 }
 

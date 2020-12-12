@@ -26,14 +26,16 @@ import com.example.cotton.R;
 import com.example.cotton.Utils.ApiService;
 import com.example.cotton.Utils.BaseUrlInterface;
 import com.example.cotton.Utils.RetrofitClientJson;
+import com.example.cotton.ValueObject.CloudMessaging.CloudMessageModel;
+import com.example.cotton.ValueObject.CloudMessaging.NotificationModel;
 import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.BookSaveForm;
 import com.example.cotton.FirebaseFunction;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.okhttp.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,6 +138,13 @@ public class TradingFragment extends Fragment {
         firebaseInput=new FirebaseFunction();
 
         tradingRentButtonClickEvent();
+
+
+        sendNotificationToUser(
+                "d4wrMCX0QkaXZOPBKIOsFb:APA91bFZYXcELDpfybngGgedSNHKIV-6ow7vP6ihcIb09P9zoHVyLuyohHInGp-R1QwUIB3Z2VT3vr9T7Wn0HNIe898WJiE-AXDRyO4nIIll8_LlyYyN7WpKm0vT2qEf31BdW_HdRhqv",
+                "titleTest",
+                "msgTest");
+
         return view;
     }
 
@@ -391,6 +400,24 @@ public class TradingFragment extends Fragment {
         });
     }
 
+    private void sendNotificationToUser(String token, String title, String msg) {
+        CloudMessageModel model = new CloudMessageModel(token, new NotificationModel(msg, title));
+        ApiService apiService =  RetrofitClientJson.getApiService(BaseUrlInterface.FCM);
+        retrofit2.Call<ResponseBody> responseBodyCall = apiService.sendNotification(model);
+
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                Log.d("sendNotificationToUser","성공");
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
+                Log.d("sendNotificationToUser", "실패");
+            }
+        });
+    }
+
 
 
     //대여하기 버튼 클릭 이벤트
@@ -420,13 +447,13 @@ public class TradingFragment extends Fragment {
 
                                     firebaseFunction.getRentAvailableBookOwnerUID(barcode, (bookOwnerUID) -> {
 
-                                        firebaseFunction.getUserWalletByUID(bookOwnerUID,(wallet) -> {
+                                        firebaseFunction.getUserInfoByUID(bookOwnerUID,(memberInfo) -> {
 
                                             ApiService call = RetrofitClientJson.getApiService(BaseUrlInterface.LUNIVERSE);
 
                                             HashMap<String, String> bodyMap2 = new HashMap<String, String>();
                                             bodyMap2.put("valueAmount", "4500000000000000000000"); //가격
-                                            bodyMap2.put("receiverAddress", wallet);
+                                            bodyMap2.put("receiverAddress", memberInfo.getWallet());
 
                                             HashMap<String, Object> bodyMap = new HashMap<String, Object>();
                                             bodyMap.put("from", userWallet); //보내는사람 지갑주소
@@ -478,6 +505,11 @@ public class TradingFragment extends Fragment {
                                                 }
 
                                             });
+
+
+                                            //푸시 알림
+                                            sendNotificationToUser(memberInfo.getToken(), "수수료 획득", "등록한 책이 대여되어 ??원의 수수료를 획득했습니다.");
+
 
                                             //책 대여시 로그 저장(Renter log)
                                             firebaseInput.logInput(FirebaseAuth.getInstance().getCurrentUser().getUid(),

@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //로그인 액티비티로 넘어감
+    //회원정보 등록 액티비티로 넘어감
     private void memberInitActivity() {
         Intent intent = new Intent(this, MemberInitActivity.class);
         startActivity(intent);

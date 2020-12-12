@@ -153,6 +153,7 @@ public class MemberInitActivity extends AppCompatActivity {
                     FirebaseFunction firebaseFunction = new FirebaseFunction();
                     firebaseFunction.getMyDeviceToken((token)->{
                         firebaseFunction.profileUpdate(name, phoneNumber, walletAdress, 0, profileLink, token);
+                        startMainActivity();
                         finish();
                         return null;
                     });
@@ -162,6 +163,12 @@ public class MemberInitActivity extends AppCompatActivity {
     }
 
 
+    //메인 엑티비티로 이동 함수
+    private void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
 
     private void startToast(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();

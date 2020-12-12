@@ -6,60 +6,120 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/profileImg"
-        android:layout_width="145dp"
-        android:layout_height="145dp"
-        android:layout_marginTop="140dp"
-        android:background="#2DFFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+    <VideoView
+        android:id="@+id/login_video_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_gallery" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <EditText
-        android:id="@+id/nameEditText"
+    <FrameLayout
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="#20000000"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="60dp"
-        android:background="@android:color/transparent"
-        android:ems="10"
-        android:hint="이름"
-        android:inputType="textPersonName"
+        android:layout_marginTop="100dp"
+        android:text="회원정보 등록"
+        android:textColor="@color/white"
+        android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileImg" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/phoneNumberEditText"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="200dp"
+        android:layout_height="0dp"
+        app:cardBackgroundColor="#F0F1F5"
+
+
+        app:cardCornerRadius="15dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintBottom_toTopOf="@+id/login_form_layout"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+        <ImageButton
+            android:id="@+id/profileImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/fui_transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/add_book_image" />
+
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/login_form_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
-        android:background="@android:color/transparent"
-        android:ems="10"
-        android:hint="전화번호"
-        android:inputType="phone"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="300dp"
+        android:layout_marginEnd="72dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/checkButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:text="저장"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText" />
+
+        <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/login_edit_text_form"
+            android:ems="10"
+            android:hint=" 이름"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="15sp" />
+
+
+        <EditText
+            android:id="@+id/phoneNumberEditText"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_edit_text_form"
+            android:ems="10"
+            android:hint=" 전화번호"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="15sp" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/checkButton"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="30dp"
+            app:cardBackgroundColor="@color/fui_transparent"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/login_btn" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

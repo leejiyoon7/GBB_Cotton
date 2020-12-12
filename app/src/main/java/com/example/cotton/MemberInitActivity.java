@@ -6,14 +6,17 @@ import androidx.loader.content.CursorLoader;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.example.cotton.Utils.ApiService;
 import com.example.cotton.Utils.BaseUrlInterface;
@@ -40,8 +43,9 @@ public class MemberInitActivity extends AppCompatActivity {
     String profileLink;
     private static final String TAG_TEXT = "text";
     Uri selectedImageUri;
-    ImageView profileImg;
+    ImageButton profileImg;
     String walletAdress;
+    private VideoView videoHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,7 @@ public class MemberInitActivity extends AppCompatActivity {
         findViewById(R.id.profileImg).setOnClickListener(onClickListener);
         profileImg = findViewById(R.id.profileImg);
 
-
+        startVideo();
     }
 
     //회원정보 입력 버튼 온클릭
@@ -161,5 +165,44 @@ public class MemberInitActivity extends AppCompatActivity {
 
     private void startToast(String msg) {
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
+    }
+
+    private void jump() {
+        if (isFinishing())
+            return;
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
+    }
+
+    private void startVideo() {
+        try {
+            videoHolder = (VideoView)findViewById(R.id.login_video_view);
+            Uri video = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.login_bg_video);
+            videoHolder.setVideoURI(video);
+
+            videoHolder.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    float videoRatio = mp.getVideoWidth() / (float) mp.getVideoHeight();
+                    float screenRatio = videoHolder.getWidth() / (float)
+                            videoHolder.getHeight();
+                    float scaleX = videoRatio / screenRatio;
+                    if (scaleX >= 1f) {
+                        videoHolder.setScaleX(scaleX);
+                    } else {
+                        videoHolder.setScaleY(1f / scaleX);
+                    }
+                }
+            });
+
+            videoHolder.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                public void onCompletion(MediaPlayer mp) {
+                    videoHolder.start();
+                }
+            });
+            videoHolder.start();
+        } catch (Exception ex) {
+            jump();
+        }
     }
 }

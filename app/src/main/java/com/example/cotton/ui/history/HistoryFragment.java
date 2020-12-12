@@ -1,10 +1,7 @@
 package com.example.cotton.ui.history;
 
-import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,34 +13,20 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.loader.content.CursorLoader;
 
-import com.example.cotton.BookSaveForm;
 import com.example.cotton.LogForm;
 import com.example.cotton.MemberInfo;
 import com.example.cotton.R;
 import com.example.cotton.FirebaseFunction;
-import com.example.cotton.ui.home.HomeFragment;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import co.ceryle.segmentedbutton.SegmentedButtonGroup;
-
-import static android.app.Activity.RESULT_OK;
 
 public class HistoryFragment extends Fragment {
 
@@ -61,9 +44,13 @@ public class HistoryFragment extends Fragment {
     List<MemberInfo> memberInfos = new ArrayList<>();
     List<LogForm> logFormList;
     DateCompare dateCompare;
-    FloatingActionButton floatingActionButton;
+    FloatingActionButton sort_action_button;
 
     FirebaseFunction firebaseFunction;//firebase log output
+
+    HistoryState historyState;
+
+    static int clickCount=0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -75,22 +62,48 @@ public class HistoryFragment extends Fragment {
 
         transactional_information_list=view.findViewById(R.id.transactional_information_listView);//listview 참조
 
-        floatingActionButton = view.findViewById(R.id.floatingActionButton);
+        sort_action_button = view.findViewById(R.id.sort_action_button);
 
+        historyState=new HistoryState();
+
+        dateCompare=new DateCompare();
 
         //플로팅 버튼 온클릭 함수
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        sort_action_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("플로팅 버튼","클릭");
+                if(clickCount%2==0){
+                    dateCompare.setState(1);
+                }
+                else{
+                    dateCompare.setState(-1);
+                }
+                Log.d("KDJ1","dateCompare.getState(): "+dateCompare.getState());
+                Log.d("KDJ1","clickCount: "+clickCount);
+                Log.d("KDJ1","historyState.getState(): "+historyState.getState());
+               switch(historyState.getState()){
+                   case 0:
+                       showHistoryListFunc(ALL);
+                       historyState.setState(ALL);
+                       break;
+                   case 1:
+                       showHistoryListFunc(INCOME);
+                       historyState.setState(INCOME);
+                       break;
+                   case 2:
+                       showHistoryListFunc(EXPENDITURE);
+                       historyState.setState(EXPENDITURE);
+                       break;
+               }
+                clickCount++;
             }
         });
+
 
         //segmentButtonGroup 버튼 클릭 이벤트(position)별, 추후 구현 예정
         segmentButtonClickEvent();
 
-        //거래내역 Listview 설정
-        showHistoryListFunc(ALL);
+        //거래내역 list 위아래 sorting
 
 //        test_btn=root.findViewById(R.id.test_btn);
 //        bookImg=root.findViewById(R.id.bookImg);
@@ -109,31 +122,35 @@ public class HistoryFragment extends Fragment {
 //            }
 //        });
 
-        dateCompare=new DateCompare();
+
         return view;
     }
 
 
     //segmentButtonGroup 버튼 클릭 이벤트(position)별, 추후 구현 예정
     public void segmentButtonClickEvent(){
+        segmentedButtonGroup.setPosition(0, 0);
         segmentedButtonGroup.setOnClickedButtonListener(new SegmentedButtonGroup.OnClickedButtonListener() {
             @Override
             public void onClickedButton(int position) {
                 switch (position) {
                     case 0:
                         showHistoryListFunc(ALL);
+                        historyState.setState(ALL);
                         break;
                     case 1:
                         showHistoryListFunc(INCOME);
+                        historyState.setState(INCOME);
                         break;
                     case 2:
                         showHistoryListFunc(EXPENDITURE);
+                        historyState.setState(EXPENDITURE);
                         break;
                 }
             }
         });
 
-        segmentedButtonGroup.setPosition(0, 0);
+
     }
 
     //segmentButtonGroup에 따라 거래내역 Listview 설정, 추후 firebase에서 동적으로 받아와서 Variance에 따라 구분하여 조건 분기할 예정
@@ -146,6 +163,7 @@ public class HistoryFragment extends Fragment {
         //listview에 add
         switch(state){
             case ALL:
+                Log.d("Case","Case: "+state);
                 firebaseFunction.logAllOutput(logForms -> {
                     logFormList=logForms;
                     Collections.sort(logFormList, dateCompare);
@@ -160,6 +178,7 @@ public class HistoryFragment extends Fragment {
                                     logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
                                     "- "+logFormList.get(i).getAmount(),
                                     logFormList.get(i).getDate().replaceAll("/","."));
+                            adapter.notifyDataSetChanged();
                         }
                         //수입 UID가 현재 로그인한 UID와 같다면
                         else if(logFormList.get(i).getTo().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
@@ -170,13 +189,14 @@ public class HistoryFragment extends Fragment {
                                     logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
                                     "+ "+logFormList.get(i).getAmount(),
                                     logFormList.get(i).getDate().replaceAll("/","."));
+                            adapter.notifyDataSetChanged();
                         }
                     }
-                    adapter.notifyDataSetChanged();
                     return null;
                 });
                 break;
             case INCOME:
+                Log.d("Case","Case: "+state);
                 firebaseFunction.logToOutput(logForms -> {
                     logFormList=logForms;
                     Collections.sort(logFormList, dateCompare);
@@ -195,6 +215,7 @@ public class HistoryFragment extends Fragment {
                 break;
 
             case EXPENDITURE:
+                Log.d("Case","Case: "+state);
                 firebaseFunction.logFromOutput(logForms -> {
                     logFormList=logForms;
                     Collections.sort(logFormList, dateCompare);

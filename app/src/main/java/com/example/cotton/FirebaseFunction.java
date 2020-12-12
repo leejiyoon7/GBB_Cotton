@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -836,6 +837,44 @@ public class FirebaseFunction {
     }
 
 
+    public void registerMyDeviceToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.d("uploadMyDeviceToken", "failed");
+                            return;
+                        }
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        updateMyDeviceToken(token);
+
+                    }
+                });
+    }
+
+
+    public void updateMyDeviceToken(String token) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(getMyUID())
+                .update("token", token)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("UploadMyDeviceToken", "success");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("UploadMyDeviceToken", e.getMessage());
+                    }
+                });
+    }
+
+
     /**
      * 파이어베이스에서 저장된 책 이미지 가져오기.
      * @param book_image_button 책 이미지를 출력할 공간.
@@ -887,4 +926,8 @@ public class FirebaseFunction {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         return user.getUid();
     }
+
+
+
+
 }

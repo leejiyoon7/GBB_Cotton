@@ -27,6 +27,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -111,6 +112,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                FirebaseFunction firebaseFunction = new FirebaseFunction();
+                                firebaseFunction.registerMyDeviceToken();
                                 progressBar.setVisibility(View.GONE);
                                 startToast("로그인에 성공했습니다.");
                                 startMainActivity();

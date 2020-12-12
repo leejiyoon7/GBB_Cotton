@@ -118,7 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/login_btn" />
+                android:src="@drawable/register_btn_ic" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 

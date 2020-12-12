@@ -401,7 +401,13 @@ public class HomeFragment extends Fragment implements Runnable{
                 home_my_rented_book_recycler_view.setAdapter(myRentedBookListAdapter);
 
                 int num = myRentedBookList.size();
-                if(num>3) num=3;
+                if(num>3){
+                    num=3;
+
+                }
+                else{
+                    home_my_registered_book_card_view_more_button.setVisibility(View.INVISIBLE);
+                }
                 for(int i=0;i<num;i++){
                     myRentedBookListAdapter.addItem(
                             myRentedBookList.get(i).getBookName(),
@@ -411,6 +417,10 @@ public class HomeFragment extends Fragment implements Runnable{
                             myRentedBookList.get(i).getBookOwnerUUID()
                     );
                 }
+                myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
+            }
+            else {
+                myRentedBookListAdapter.addItem("책 정보가 존재하지 않습니다 ","","","","");
                 myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             }
             return null;
@@ -466,11 +476,20 @@ public class HomeFragment extends Fragment implements Runnable{
                 home_my_registered_book_recycler_view.setAdapter(myRegisteredBookListAdapter);
 
                 int num = resultList.size();
-                if(num>3) num=3;
+                if(num>3){
+                    num=3;
+
+                }
+                else{
+                    home_my_registered_book_card_view_more_button.setVisibility(View.INVISIBLE);
+                }
                 for(int i=0;i<num;i++){
                     myRegisteredBookListAdapter.addItem(resultList.get(i).getBookName(), resultList.get(i).getBookWriter());
                 }
                 myRegisteredBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
+            }
+            else {
+                myRegisteredBookListAdapter.addItem("책 정보가 존재하지 않습니다 ","");
             }
             return null;
         });
@@ -488,6 +507,7 @@ public class HomeFragment extends Fragment implements Runnable{
                     case "+ 더보기":
                         firebaseTest.myRegisteredBookListGet((resultList) -> { //resultList안에 너가 원하는 모든게 있단다.
                             if(resultList.size()>3){
+                                home_my_registered_book_card_view_more_button.setVisibility(View.VISIBLE);
                                 myRegisteredBookListAdapter = new MyRegisteredBookListAdapter() ;
 
                                 home_my_registered_book_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));

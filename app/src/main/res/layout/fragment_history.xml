@@ -105,7 +105,9 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
                 android:divider="@android:color/transparent"
-                android:dividerHeight="10dp"/>
+                android:dividerHeight="10dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="12dp"/>
 
         </LinearLayout>
 

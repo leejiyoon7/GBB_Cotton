@@ -168,23 +168,18 @@ public class RegisterBookActivity extends Activity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 switch(position){
                     case 0:
-                        Toast.makeText(RegisterBookActivity.this,"컴퓨터공학과 선택",Toast.LENGTH_SHORT).show();
                         major="컴퓨터공학과";
                         break;
                     case 1:
-                        Toast.makeText(RegisterBookActivity.this,"전자공학과 선택",Toast.LENGTH_SHORT).show();
                         major="전자공학과";
                         break;
                     case 2:
-                        Toast.makeText(RegisterBookActivity.this,"전기공학과 선택",Toast.LENGTH_SHORT).show();
                         major="전기공학과";
                         break;
                     case 3:
-                        Toast.makeText(RegisterBookActivity.this,"AI.소프트웨어학부 선택",Toast.LENGTH_SHORT).show();
                         major="AI.소프트웨어학부";
                         break;
                     case 4:
-                        Toast.makeText(RegisterBookActivity.this,"에너지IT학과",Toast.LENGTH_SHORT).show();
                         major="에너지IT학과";
                         break;
                 }
@@ -204,7 +199,6 @@ public class RegisterBookActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if(register_book_card_book_title_result_text_view.getText().length()!=0 && register_book_card_book_writer_result_text_view.getText().length()!=0){
-                    Toast.makeText(RegisterBookActivity.this,"전공: "+major+" 도서 제목: "+ register_book_card_book_title_result_text_view.getText().toString()+" 도서 저자: "+ register_book_card_book_writer_result_text_view.getText().toString(),Toast.LENGTH_SHORT).show();
                     localUpoad();
 
                     //저장 방식은 localUpload에 명시되어 있습니다.

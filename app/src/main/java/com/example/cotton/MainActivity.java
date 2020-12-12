@@ -72,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
             startLoginActivity();
             finish();
         } else { //로그인 상태일 때
+            FirebaseFunction firebaseFunction = new FirebaseFunction();
+            firebaseFunction.getMyDeviceToken((token) -> {
+                firebaseFunction.updateMyDeviceToken(token);
+                return null;
+            });
+
             DocumentReference docRef = db.collection("users").document(user.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override

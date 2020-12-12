@@ -1,9 +1,11 @@
 package com.example.cotton.Utils;
 
+import com.example.cotton.ValueObject.CloudMessaging.CloudMessageModel;
 import com.example.cotton.ValueObject.CreateWallet.CreateWalletResultVO;
 import com.example.cotton.ValueObject.GetBalance.GetBalanceResultVO;
 import com.example.cotton.ValueObject.SetBalance.SetBalanceResultVO;
 import com.example.cotton.ValueObject.BookSearchByBarcode.BookSearchResultVO;
+import com.squareup.okhttp.ResponseBody;
 
 import java.util.HashMap;
 
@@ -51,5 +53,15 @@ public interface ApiService {
             "X-Naver-Client-Secret: NuY6KgaU2t"
     })
     Call<BookSearchResultVO> searchBookByBarcode(@Query("d_isbn") String wallet);
+
+
+
+
+    /*FCM*/
+    @Headers({"Authorization: key=" + "AAAAlrWGH_8:APA91bEBMLAtQ2Lvb7cSOpUIBUG9_YLEr-kCnrEFT_dKrivallGYrlB0V4qU6Jj7psFMCH9XhiRWkYe3L1IQcUBO_boUm5kgWWf6jRQutJ3V4uAbT-IerdiTHZQKrf7117en98Taj-mc",
+            "Content-Type:application/json"
+    })
+    @POST("fcm/send")
+    Call<ResponseBody> sendNotification(@Body CloudMessageModel model);
 }
 

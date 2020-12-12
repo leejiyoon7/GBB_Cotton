@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -497,7 +498,7 @@ public class FirebaseFunction {
      * @param uuid 토큰을 받을 사람의 UUID정보 (String)
      * @param complete
      */
-    public void getUserWalletByUID(String uuid, Function<String, Void> complete) { //회원정보 받아오기
+    public void getUserInfoByUID(String uuid, Function<MemberInfo, Void> complete) { //회원정보 받아오기
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final ArrayList<Map<String, Object>> diaryM = new ArrayList<Map<String, Object>>();
         DocumentReference docRef = db.collection("users").document(uuid);
@@ -512,12 +513,13 @@ public class FirebaseFunction {
                                 (String) diaryM.get(0).get("phoneNumber"),
                                 (String) diaryM.get(0).get("wallet"),
                                 (Long) diaryM.get(0).get("ticket"),
-                                (String) diaryM.get(0).get("profileLink")); // 모든 정보를 다시 memberinfo에 저장
+                                (String) diaryM.get(0).get("profileLink"),
+                                (String) diaryM.get(0).get("token")); // 모든 정보를 다시 memberinfo에 저장
                         Log.d("userName", "" + diaryM.get(0).get("name"));
                         memberInfoList.add(0, memberInfo);  //리스트형식 첫번째 칸에 memberinfo 저장
                         Log.d("사용자 이름", memberInfoList.get(0).getName());
                         Log.d("사용자 지갑주소", memberInfoList.get(0).getWallet());
-                        complete.apply(memberInfoList.get(0).getWallet());
+                        complete.apply(memberInfo);
                     } else {
 
                     }
@@ -755,7 +757,8 @@ public class FirebaseFunction {
                                 (String) diaryM.get(0).get("phoneNumber"),
                                 (String) diaryM.get(0).get("wallet"),
                                 (Long) diaryM.get(0).get("ticket"),
-                                (String) diaryM.get(0).get("profileLink")); // 모든 정보를 다시 memberinfo에 저장
+                                (String) diaryM.get(0).get("profileLink"),
+                                (String) diaryM.get(0).get("token")); // 모든 정보를 다시 memberinfo에 저장
                         Log.d("userName", "" + diaryM.get(0).get("name"));
                         memberInfoList.add(0, memberInfo);  //리스트형식 첫번째 칸에 memberinfo 저장
                         Log.d("사용자 이름", memberInfoList.get(0).getName());
@@ -782,14 +785,14 @@ public class FirebaseFunction {
      * @param ticket 유저의 티켓정보 (0으로 초기화)
      * @param profileLink 유저의 프로필사진 URI
      */
-    public static void profileUpdate(String name, String phoneNumber, String walletAdress, int ticket, String profileLink) {
+    public void profileUpdate(String name, String phoneNumber, String walletAdress, int ticket, String profileLink, String token) {
         ticket = 0;
         if(name.length()>0 && phoneNumber.length() > 9) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             // Access a Cloud Firestore instance from your Activity
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            MemberInfo memberInfo = new MemberInfo(name, phoneNumber, walletAdress, ticket, profileLink);
+            MemberInfo memberInfo = new MemberInfo(name, phoneNumber, walletAdress, ticket, profileLink, token);
             db.collection("users").document(user.getUid()).set(memberInfo)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -833,6 +836,44 @@ public class FirebaseFunction {
 
             }
         });
+    }
+
+
+    public void getMyDeviceToken(Function<String, Void> complete) {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.d("uploadMyDeviceToken", "failed");
+                            return;
+                        }
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        complete.apply(token);
+                    }
+                });
+    }
+
+
+
+    public void updateMyDeviceToken(String token) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(getMyUID())
+                .update("token", token)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("UploadMyDeviceToken", "success");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("UploadMyDeviceToken", e.getMessage());
+                    }
+                });
     }
 
 
@@ -887,4 +928,8 @@ public class FirebaseFunction {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         return user.getUid();
     }
+
+
+
+
 }

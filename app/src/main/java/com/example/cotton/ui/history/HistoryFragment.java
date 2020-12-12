@@ -10,12 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -49,8 +46,6 @@ import static android.app.Activity.RESULT_OK;
 
 public class HistoryFragment extends Fragment {
 
-
-    SearchView history_search_view;//거래내역 검색 searchview
     SegmentedButtonGroup segmentedButtonGroup;//segmentButtonGroup 생성
     ListView transactional_information_list;//도서거래 ListView
     HistoryAdapter adapter;//도서거래 adapter

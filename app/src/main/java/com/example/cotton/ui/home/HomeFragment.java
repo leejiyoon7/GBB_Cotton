@@ -239,7 +239,7 @@ public class HomeFragment extends Fragment implements Runnable{
             }
         });
 
-        //클릭시 manager 계정에서 10000코인 송금받음
+        //클릭시 manager 계정에서 코인 송금받음
         home_my_point_plus_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -295,10 +295,10 @@ public class HomeFragment extends Fragment implements Runnable{
 
                             return null;
                         });
+                        goToHomeFragmentFunc();
                         Toast.makeText(getContext(), selectedText+"GBB가 충전되었습니다", Toast.LENGTH_SHORT).show();
                     }
                 });
-
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
 

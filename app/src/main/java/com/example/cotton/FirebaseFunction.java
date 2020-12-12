@@ -785,14 +785,14 @@ public class FirebaseFunction {
      * @param ticket 유저의 티켓정보 (0으로 초기화)
      * @param profileLink 유저의 프로필사진 URI
      */
-    public static void profileUpdate(String name, String phoneNumber, String walletAdress, int ticket, String profileLink) {
+    public void profileUpdate(String name, String phoneNumber, String walletAdress, int ticket, String profileLink, String token) {
         ticket = 0;
         if(name.length()>0 && phoneNumber.length() > 9) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             // Access a Cloud Firestore instance from your Activity
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            MemberInfo memberInfo = new MemberInfo(name, phoneNumber, walletAdress, ticket, profileLink, "");
+            MemberInfo memberInfo = new MemberInfo(name, phoneNumber, walletAdress, ticket, profileLink, token);
             db.collection("users").document(user.getUid()).set(memberInfo)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -839,7 +839,7 @@ public class FirebaseFunction {
     }
 
 
-    public void registerMyDeviceToken() {
+    public void getMyDeviceToken(Function<String, Void> complete) {
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -851,11 +851,11 @@ public class FirebaseFunction {
                         // Get new FCM registration token
                         String token = task.getResult();
 
-                        updateMyDeviceToken(token);
-
+                        complete.apply(token);
                     }
                 });
     }
+
 
 
     public void updateMyDeviceToken(String token) {

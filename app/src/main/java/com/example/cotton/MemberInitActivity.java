@@ -146,8 +146,12 @@ public class MemberInitActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
                     profileLink = downloadUri.toString();
-                    FirebaseFunction.profileUpdate(name, phoneNumber, walletAdress, 0, profileLink);
-                    finish();
+                    FirebaseFunction firebaseFunction = new FirebaseFunction();
+                    firebaseFunction.getMyDeviceToken((token)->{
+                        firebaseFunction.profileUpdate(name, phoneNumber, walletAdress, 0, profileLink, token);
+                        finish();
+                        return null;
+                    });
                 }
             }
         });

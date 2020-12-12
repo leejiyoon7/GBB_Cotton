@@ -139,12 +139,6 @@ public class TradingFragment extends Fragment {
 
         tradingRentButtonClickEvent();
 
-
-        sendNotificationToUser(
-                "d4wrMCX0QkaXZOPBKIOsFb:APA91bFZYXcELDpfybngGgedSNHKIV-6ow7vP6ihcIb09P9zoHVyLuyohHInGp-R1QwUIB3Z2VT3vr9T7Wn0HNIe898WJiE-AXDRyO4nIIll8_LlyYyN7WpKm0vT2qEf31BdW_HdRhqv",
-                "titleTest",
-                "msgTest");
-
         return view;
     }
 

@@ -22,7 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +32,7 @@ public class HistoryFragment extends Fragment {
 
     SegmentedButtonGroup segmentedButtonGroup;//segmentButtonGroup 생성
     ListView transactional_information_list;//도서거래 ListView
+    TextView sort_indicator_text_view;
     HistoryAdapter adapter;//도서거래 adapter
     public static final int ALL=0;
     public static final int INCOME=1;
@@ -51,7 +51,7 @@ public class HistoryFragment extends Fragment {
 
     HistoryState historyState;
 
-    static int clickCount=0;
+    static int buttonState = -1;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +64,7 @@ public class HistoryFragment extends Fragment {
         transactional_information_list=view.findViewById(R.id.transactional_information_listView);//listview 참조
 
         sort_action_button = view.findViewById(R.id.sort_action_button);
+        sort_indicator_text_view = view.findViewById(R.id.sort_indicator_text_view);
 
         historyState=new HistoryState();
 
@@ -76,14 +77,16 @@ public class HistoryFragment extends Fragment {
         sort_action_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(clickCount%2==0){
+                if(buttonState == 1){
                     dateCompare.setState(1);
+                    sort_indicator_text_view.setText("정렬: 과거순");
                 }
                 else{
                     dateCompare.setState(-1);
+                    sort_indicator_text_view.setText("정렬: 최신순");
                 }
                 Log.d("KDJ1","dateCompare.getState(): "+dateCompare.getState());
-                Log.d("KDJ1","clickCount: "+clickCount);
+                Log.d("KDJ1","clickCount: "+buttonState);
                 Log.d("KDJ1","historyState.getState(): "+historyState.getState());
                switch(historyState.getState()){
                    case 0:
@@ -99,7 +102,7 @@ public class HistoryFragment extends Fragment {
                        historyState.setState(EXPENDITURE);
                        break;
                }
-                clickCount++;
+                buttonState *= -1;
             }
         });
 
@@ -176,49 +179,17 @@ public class HistoryFragment extends Fragment {
                         if(logFormList.get(i).getFrom().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) &&
                                 logFormList.get(i).getTo().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                            String amountString = logFormList.get(i).getAmount().replace("GBB", "");
-                            int amountInt = Integer.parseInt(amountString);
-                            amountString = String.valueOf(amountInt - 500) + "GBB";
-
-                            adapter.addItem(R.drawable.ic_out,
-                                    logFormList.get(i).getCategory(),
-                                    logFormList.get(i).getMessage(),
-                                    logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
-                                    "- "+logFormList.get(i).getAmount(),
-                                    logFormList.get(i).getDate().replaceAll("/","."));
-
-                            adapter.addItem(R.drawable.ic_in,
-                                    logFormList.get(i).getCategory(),
-                                    logFormList.get(i).getMessage(),
-                                    logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
-                                    "+ "+amountString,
-                                    logFormList.get(i).getDate().replaceAll("/","."));
-
+                            setExpenditureAdapter(adapter, logFormList, i);
+                            setIncomeAdapter(adapter, logFormList, i);
                         }
 
                         //지출 UID가 현재 로그인한 UID와 같다면
                         else if(logFormList.get(i).getFrom().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-
-                            adapter.addItem(R.drawable.ic_out,
-                                    logFormList.get(i).getCategory(),
-                                    logFormList.get(i).getMessage(),
-                                    logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
-                                    "- "+logFormList.get(i).getAmount(),
-                                    logFormList.get(i).getDate().replaceAll("/","."));
+                            setExpenditureAdapter(adapter, logFormList, i);
                         }
                         //수입 UID가 현재 로그인한 UID와 같다면
                         else if(logFormList.get(i).getTo().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-
-                            String amountString = logFormList.get(i).getAmount().replace("GBB", "");
-                            int amountInt = Integer.parseInt(amountString);
-                            amountString = String.valueOf(amountInt - 500) + "GBB";
-
-                            adapter.addItem(R.drawable.ic_in,
-                                    logFormList.get(i).getCategory(),
-                                    logFormList.get(i).getMessage(),
-                                    logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
-                                    "+ "+amountString,
-                                    logFormList.get(i).getDate().replaceAll("/","."));
+                            setIncomeAdapter(adapter, logFormList, i);
                         }
                     }
                     adapter.notifyDataSetChanged();
@@ -232,12 +203,7 @@ public class HistoryFragment extends Fragment {
                     Collections.sort(logFormList, dateCompare);
 
                     for(int i=0;i<logFormList.size();i++){
-                        adapter.addItem(R.drawable.ic_in,
-                                logFormList.get(i).getCategory(),
-                                logFormList.get(i).getMessage(),
-                                logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
-                                "+ "+logFormList.get(i).getAmount(),
-                                logFormList.get(i).getDate().replaceAll("/","."));
+                        setIncomeAdapter(adapter, logFormList, i);
                     }
                     adapter.notifyDataSetChanged();
                     return null;
@@ -251,18 +217,14 @@ public class HistoryFragment extends Fragment {
                     Collections.sort(logFormList, dateCompare);
 
                     for(int i=0;i<logFormList.size();i++){
-                        adapter.addItem(R.drawable.ic_out,
-                                logFormList.get(i).getCategory(),
-                                logFormList.get(i).getMessage(),
-                                logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
-                                "- "+logFormList.get(i).getAmount(),
-                                logFormList.get(i).getDate().replaceAll("/","."));
+                        setExpenditureAdapter(adapter, logFormList, i);
                     }
                     adapter.notifyDataSetChanged();
                     return null;
                 });
                 break;
         }
+
 
         transactional_information_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -292,4 +254,29 @@ public class HistoryFragment extends Fragment {
             }
         });
     }
+
+    public void setIncomeAdapter(HistoryAdapter adapter, List<LogForm> log, int index) {
+        String amountString = log.get(index).getAmount().replace("GBB", "");
+        if (log.get(index).getCategory().equals("도서거래")) {
+            int amountInt = Integer.parseInt(amountString);
+            amountString = String.valueOf(amountInt - 500);
+        }
+
+        adapter.addItem(R.drawable.ic_in,
+                log.get(index).getCategory(),
+                log.get(index).getMessage(),
+                log.get(index).getDate().replaceAll("/",".").substring(0,10),
+                "+ "+amountString + "GBB",
+                log.get(index).getDate().replaceAll("/","."));
+    }
+
+    public void setExpenditureAdapter(HistoryAdapter adapter, List<LogForm> log, int index) {
+        adapter.addItem(R.drawable.ic_out,
+                log.get(index).getCategory(),
+                log.get(index).getMessage(),
+                log.get(index).getDate().replaceAll("/",".").substring(0,10),
+                "- "+log.get(index).getAmount(),
+                log.get(index).getDate().replaceAll("/","."));
+    }
+
 }

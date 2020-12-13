@@ -321,8 +321,8 @@ public class FirebaseFunction {
                                 logFormList.add(logSaveFormProto);
                             }
                             for (int i=0;i<logSaveInit2.size();i++) {
-                                Log.d("로그태스트", logFormList.get(i).getTo());
-                                Log.d("로그태스트", logFormList.get(i).getFrom());
+                                //Log.d("로그태스트", logFormList.get(i).getTo());
+                                //Log.d("로그태스트", logFormList.get(i).getFrom());
                             }
                             complete.apply(logFormList);
                         } else {

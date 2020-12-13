@@ -22,6 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -168,7 +169,7 @@ public class HistoryFragment extends Fragment {
             case ALL:
                 Log.d("Case","Case: "+state);
                 firebaseFunction.logAllOutput(logForms -> {
-                    logFormList=logForms;
+                    logFormList= new ArrayList<>(logForms.values());
                     Collections.sort(logFormList, dateCompare);
                     for(int i=0;i<logFormList.size();i++){
 
@@ -227,7 +228,7 @@ public class HistoryFragment extends Fragment {
             case INCOME:
                 Log.d("Case","Case: "+state);
                 firebaseFunction.logToOutput(logForms -> {
-                    logFormList=logForms;
+                    logFormList = new ArrayList<>(logForms.values());
                     Collections.sort(logFormList, dateCompare);
 
                     for(int i=0;i<logFormList.size();i++){
@@ -246,7 +247,7 @@ public class HistoryFragment extends Fragment {
             case EXPENDITURE:
                 Log.d("Case","Case: "+state);
                 firebaseFunction.logFromOutput(logForms -> {
-                    logFormList=logForms;
+                    logFormList= new ArrayList<>(logForms.values());
                     Collections.sort(logFormList, dateCompare);
 
                     for(int i=0;i<logFormList.size();i++){

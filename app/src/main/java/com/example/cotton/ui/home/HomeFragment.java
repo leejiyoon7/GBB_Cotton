@@ -393,12 +393,13 @@ public class HomeFragment extends Fragment implements Runnable{
         FirebaseFunction firebaseTest = new FirebaseFunction();
 
         firebaseTest.myRentedBookListGet(firebaseTest.getMyUID(), (myRentedBookList) -> {
+            myRentedBookListAdapter = new MyRentedBookListAdapter() ;
+            home_my_rented_book_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
+            //adapter 달기
+            home_my_rented_book_recycler_view.setAdapter(myRentedBookListAdapter);
             // null check
             if(myRentedBookList.size()>0){
-                myRentedBookListAdapter = new MyRentedBookListAdapter() ;
-                home_my_rented_book_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
-                //adapter 달기
-                home_my_rented_book_recycler_view.setAdapter(myRentedBookListAdapter);
+
 
                 int num = myRentedBookList.size();
                 if(num>3){
@@ -406,7 +407,7 @@ public class HomeFragment extends Fragment implements Runnable{
                     num=3;
                 }
                 else{
-                    home_my_rented_book_card_view_more_button.setVisibility(View.INVISIBLE);
+                    home_my_rented_book_card_view_more_button.setVisibility(View.GONE);
                 }
                 for(int i=0;i<num;i++){
                     myRentedBookListAdapter.addItem(
@@ -417,6 +418,7 @@ public class HomeFragment extends Fragment implements Runnable{
                             myRentedBookList.get(i).getBookOwnerUUID()
                     );
                 }
+                myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             }
             else{
                 myRentedBookListAdapter.addItem(
@@ -426,8 +428,9 @@ public class HomeFragment extends Fragment implements Runnable{
                         "",
                         ""
                 );
+                home_my_rented_book_card_view_more_button.setVisibility(View.GONE);
+                myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             }
-            myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             return null;
         });
     }
@@ -450,7 +453,11 @@ public class HomeFragment extends Fragment implements Runnable{
                                 //adapter 달기
                                 home_my_rented_book_recycler_view.setAdapter(myRentedBookListAdapter);
                                 for(int i=0;i<resultList.size();i++){
-                                    myRentedBookListAdapter.addItem(resultList.get(i).getBookName(),resultList.get(i).getBookWriter(),resultList.get(i).getStatus(), resultList.get(i).getBarcode(), resultList.get(i).getBookOwnerUUID());
+                                    myRentedBookListAdapter.addItem(resultList.get(i).getBookName(),
+                                            resultList.get(i).getBookWriter(),
+                                            resultList.get(i).getStatus(),
+                                            resultList.get(i).getBarcode(),
+                                            resultList.get(i).getBookOwnerUUID());
                                 }
                                 myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
                                 home_my_rented_book_card_view_more_button.setText("- 간단히");
@@ -473,12 +480,13 @@ public class HomeFragment extends Fragment implements Runnable{
     public void showMyRegisteredBookFunc(){
         FirebaseFunction firebaseTest = new FirebaseFunction();
         firebaseTest.myRegisteredBookListGet((resultList) -> { //resultList안에 너가 원하는 모든게 있단다.
-            if(resultList.size()>0){
-                myRegisteredBookListAdapter = new MyRegisteredBookListAdapter() ;
+            myRegisteredBookListAdapter = new MyRegisteredBookListAdapter() ;
 
-                home_my_registered_book_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
-                //adapter 달기
-                home_my_registered_book_recycler_view.setAdapter(myRegisteredBookListAdapter);
+            home_my_registered_book_recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
+            //adapter 달기
+            home_my_registered_book_recycler_view.setAdapter(myRegisteredBookListAdapter);
+
+            if(resultList.size()>0){
 
                 int num = resultList.size();
                 if(num>3){
@@ -486,18 +494,22 @@ public class HomeFragment extends Fragment implements Runnable{
                     num=3;
                 }
                 else{
-                    home_my_registered_book_card_view_more_button.setVisibility(View.INVISIBLE);
+                    home_my_registered_book_card_view_more_button.setVisibility(View.GONE);
                 }
                 for(int i=0;i<num;i++){
-                    myRegisteredBookListAdapter.addItem(resultList.get(i).getBookName(), resultList.get(i).getBookWriter());
+                    myRegisteredBookListAdapter.addItem(
+                            resultList.get(i).getBookName(),
+                            resultList.get(i).getBookWriter());
                 }
+                myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             }
             else{
                 myRegisteredBookListAdapter.addItem(
                         "책 정보가 존재하지 않습니다.",
                         "");
+                home_my_registered_book_card_view_more_button.setVisibility(View.GONE);
+                myRegisteredBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             }
-            myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             return null;
         });
     }

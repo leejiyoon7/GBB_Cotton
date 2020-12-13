@@ -68,6 +68,9 @@ public class HistoryFragment extends Fragment {
 
         dateCompare=new DateCompare();
 
+        //초기 화면 구성
+        showHistoryListFunc(ALL);
+        
         //플로팅 버튼 온클릭 함수
         sort_action_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +103,7 @@ public class HistoryFragment extends Fragment {
         });
 
 
-        //segmentButtonGroup 버튼 클릭 이벤트(position)별, 추후 구현 예정
+        //segmentButtonGroup 버튼 클릭 이벤트(position)별
         segmentButtonClickEvent();
 
         //거래내역 list 위아래 sorting
@@ -178,7 +181,6 @@ public class HistoryFragment extends Fragment {
                                     logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
                                     "- "+logFormList.get(i).getAmount(),
                                     logFormList.get(i).getDate().replaceAll("/","."));
-                            adapter.notifyDataSetChanged();
                         }
                         //수입 UID가 현재 로그인한 UID와 같다면
                         else if(logFormList.get(i).getTo().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
@@ -189,9 +191,9 @@ public class HistoryFragment extends Fragment {
                                     logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
                                     "+ "+logFormList.get(i).getAmount(),
                                     logFormList.get(i).getDate().replaceAll("/","."));
-                            adapter.notifyDataSetChanged();
                         }
                     }
+                    adapter.notifyDataSetChanged();
                     return null;
                 });
                 break;

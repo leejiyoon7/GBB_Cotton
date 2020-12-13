@@ -51,7 +51,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment implements Runnable{
+public class HomeFragment extends Fragment{
 
     // Button btnLogout;
     List<MemberInfo> memberInfos = new ArrayList<>();
@@ -295,7 +295,7 @@ public class HomeFragment extends Fragment implements Runnable{
 
                             return null;
                         });
-                        goToHomeFragmentFunc();
+                        refresh();
                         Toast.makeText(getContext(), selectedText+"GBB가 충전되었습니다", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -349,11 +349,6 @@ public class HomeFragment extends Fragment implements Runnable{
             } else {
                 super.onActivityResult(requestCode, resultCode, data);
             }
-    }
-
-    public void goToHomeFragmentFunc(){
-        Thread thread=new Thread(this);
-        thread.start();
     }
 
     //지갑잔고 받아오기
@@ -590,18 +585,6 @@ public class HomeFragment extends Fragment implements Runnable{
             }
         });
         bottomSheetDialog.show();
-    }
-
-
-    @Override
-    public void run() {
-        try {
-            Thread.sleep(2000);
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.detach(this).attach(this).commit();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     public void refresh () {

@@ -20,6 +20,7 @@ public class LogForm {
         this.date = date;
     }
 
+
     public String getFrom() {
         return from;
     }

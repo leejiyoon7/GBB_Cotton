@@ -123,11 +123,18 @@
                 android:paddingBottom="12dp">
 
             </ListView>
-
         </LinearLayout>
-
-
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/sort_indicator_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="110dp"
+        android:layout_marginEnd="12dp"
+        android:text="정렬: 과거순"
+        android:textSize="12sp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

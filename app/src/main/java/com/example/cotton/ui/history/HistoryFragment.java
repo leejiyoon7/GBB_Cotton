@@ -172,8 +172,31 @@ public class HistoryFragment extends Fragment {
                     Collections.sort(logFormList, dateCompare);
                     for(int i=0;i<logFormList.size();i++){
 
+                        if(logFormList.get(i).getFrom().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()) &&
+                                logFormList.get(i).getTo().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+
+                            String amountString = logFormList.get(i).getAmount().replace("GBB", "");
+                            int amountInt = Integer.parseInt(amountString);
+                            amountString = String.valueOf(amountInt - 500) + "GBB";
+
+                            adapter.addItem(R.drawable.ic_out,
+                                    logFormList.get(i).getCategory(),
+                                    logFormList.get(i).getMessage(),
+                                    logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
+                                    "- "+logFormList.get(i).getAmount(),
+                                    logFormList.get(i).getDate().replaceAll("/","."));
+
+                            adapter.addItem(R.drawable.ic_in,
+                                    logFormList.get(i).getCategory(),
+                                    logFormList.get(i).getMessage(),
+                                    logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
+                                    "+ "+amountString,
+                                    logFormList.get(i).getDate().replaceAll("/","."));
+
+                        }
+
                         //지출 UID가 현재 로그인한 UID와 같다면
-                        if(logFormList.get(i).getFrom().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                        else if(logFormList.get(i).getFrom().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
 
                             adapter.addItem(R.drawable.ic_out,
                                     logFormList.get(i).getCategory(),
@@ -185,11 +208,15 @@ public class HistoryFragment extends Fragment {
                         //수입 UID가 현재 로그인한 UID와 같다면
                         else if(logFormList.get(i).getTo().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
 
+                            String amountString = logFormList.get(i).getAmount().replace("GBB", "");
+                            int amountInt = Integer.parseInt(amountString);
+                            amountString = String.valueOf(amountInt - 500) + "GBB";
+
                             adapter.addItem(R.drawable.ic_in,
                                     logFormList.get(i).getCategory(),
                                     logFormList.get(i).getMessage(),
                                     logFormList.get(i).getDate().replaceAll("/",".").substring(0,10),
-                                    "+ "+logFormList.get(i).getAmount(),
+                                    "+ "+amountString,
                                     logFormList.get(i).getDate().replaceAll("/","."));
                         }
                     }

@@ -29,8 +29,10 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 
@@ -265,7 +267,7 @@ public class FirebaseFunction {
         int saveSize = 0;
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final List<LogForm> logFormList = new ArrayList<>();
+        final Set<LogForm> logFormSet = new HashSet<>();
         final ArrayList<Map<String, Object>> logSaveInit = new ArrayList<Map<String, Object>>();
         final ArrayList<Map<String, Object>> logSaveInit2 = new ArrayList<Map<String, Object>>();
 
@@ -290,7 +292,7 @@ public class FirebaseFunction {
                                         (String)logSaveInit.get(i).get("date")
                                 );
 
-                                logFormList.add(logSaveFormProto);
+                                logFormSet.add(logSaveFormProto);
                                 //Log.d("로그태스트", logFormList.get(0).getFrom());
                             }
                             //complete.apply(logFormList);
@@ -318,12 +320,14 @@ public class FirebaseFunction {
                                         (String)logSaveInit2.get(i).get("amount"),
                                         (String)logSaveInit2.get(i).get("date")
                                 );
-                                logFormList.add(logSaveFormProto);
+                                logFormSet.add(logSaveFormProto);
                             }
                             for (int i=0;i<logSaveInit2.size();i++) {
                                 //Log.d("로그태스트", logFormList.get(i).getTo());
                                 //Log.d("로그태스트", logFormList.get(i).getFrom());
                             }
+                            List<LogForm> logFormList = new ArrayList<>();
+                            logFormList = new ArrayList<>(logFormSet);
                             complete.apply(logFormList);
                         } else {
                         }

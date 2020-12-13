@@ -14,10 +14,10 @@ public class DateCompare implements Comparator<LogForm> {
 
         int compare=logForm1.getDate().compareTo(logForm2.getDate());
         if(compare>0){
-            return -1*state;
+            return state;
         }
         else if(compare<0){
-            return state;
+            return -1*state;
         }
         else{
             return 0;

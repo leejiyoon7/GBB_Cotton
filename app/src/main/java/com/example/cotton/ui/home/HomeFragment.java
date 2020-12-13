@@ -501,7 +501,7 @@ public class HomeFragment extends Fragment implements Runnable{
                             resultList.get(i).getBookName(),
                             resultList.get(i).getBookWriter());
                 }
-                myRentedBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
+                myRegisteredBookListAdapter.notifyDataSetChanged();//adapter의 변경을 알림
             }
             else{
                 myRegisteredBookListAdapter.addItem(

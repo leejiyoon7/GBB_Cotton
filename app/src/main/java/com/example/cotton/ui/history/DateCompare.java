@@ -17,7 +17,7 @@ public class DateCompare implements Comparator<LogForm> {
             return state;
         }
         else if(compare<0){
-            return -1*state;
+            return (-1)*state;
         }
         else{
             return 0;

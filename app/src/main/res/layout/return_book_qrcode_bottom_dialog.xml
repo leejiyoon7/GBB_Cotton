@@ -30,7 +30,7 @@
 
 
     <TextView
-        android:id="@+id/return_book_qr_submit_btn"
+        android:id="@+id/book_info_submit_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

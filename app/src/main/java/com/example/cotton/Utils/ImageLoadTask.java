@@ -21,10 +21,15 @@ public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
 
 
     private String url;
+    private int drawable;
     private ImageView imageView;
 
     public ImageLoadTask(String url, ImageView imageView) {
         this.url = url;
+        this.imageView = imageView;
+    }
+    public ImageLoadTask(int drawable, ImageView imageView) {
+        this.drawable = drawable;
         this.imageView = imageView;
     }
 

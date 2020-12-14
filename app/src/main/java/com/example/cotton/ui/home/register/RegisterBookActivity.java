@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -90,6 +91,7 @@ public class RegisterBookActivity extends Activity {
         register_book_card_book_title_result_text_view =findViewById(R.id.register_book_card_book_title_result_text_view);
         register_book_card_book_writer_result_text_view =findViewById(R.id.register_book_card_book_writer_result_text_view);
         register_book_app_compat_button=findViewById(R.id.register_book_app_compat_button);
+        bookInfo = new HashMap<String, String>();
 
         goToHome();//MainActivity 이동 이벤트 method
 
@@ -132,6 +134,7 @@ public class RegisterBookActivity extends Activity {
 
                 TextView cameraTextView = bottomSheetDialog.findViewById(R.id.camera_or_album_camer);
                 TextView albumTextView = bottomSheetDialog.findViewById(R.id.camera_or_album_album);
+                TextView activeTextView = bottomSheetDialog.findViewById(R.id.camera_or_album_active);
 
                 // 카메라 선택시
                 cameraTextView.setOnClickListener(new View.OnClickListener() {
@@ -151,10 +154,81 @@ public class RegisterBookActivity extends Activity {
                         bottomSheetDialog.dismiss();
                     }
                 });
+
+                //수동 선택시
+                activeTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        BottomSheetDialog bottomDialog = new BottomSheetDialog(RegisterBookActivity.this);
+                        bottomDialog.setContentView(R.layout.bottom_dialog_camera_or_album_active);
+
+                        EditText book_name_edit_text=bottomDialog.findViewById(R.id.book_name_edit_text);
+                        EditText book_writer_edit_text=bottomDialog.findViewById(R.id.book_writer_edit_text);
+                        EditText book_barcode_edit_text=bottomDialog.findViewById(R.id.book_barcode_edit_text);
+                        TextView book_info_submit_text_view=bottomDialog.findViewById(R.id.book_info_submit_text_view);
+
+                        book_info_submit_text_view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if(
+                                        book_name_edit_text.getText().length()!=0 &&
+                                        book_writer_edit_text.getText().length()!=0 &&
+                                        book_barcode_edit_text.getText().length()==13 &&
+                                                checkBarcodeNumber(book_barcode_edit_text.getText().toString())){
+
+                                    register_book_card_book_title_result_text_view.setText(book_name_edit_text.getText());
+                                    register_book_card_book_writer_result_text_view.setText(book_writer_edit_text.getText());
+
+                                    //book_barcode_edit_text에 대한 정보 처리
+                                    bookInfo.put("barcode", book_barcode_edit_text.getText().toString());
+                                    bookInfo.put("bookName", book_name_edit_text.getText().toString());
+                                    bookInfo.put("bookWriter", book_writer_edit_text.getText().toString());
+                                    bookInfo.put("pictureLink", "");
+
+                                    new ImageLoadTask(R.drawable.book_replace, register_book_image_Button).execute();
+                                    bottomDialog.dismiss();
+                                }
+                                else{
+                                    Toast.makeText(RegisterBookActivity.this,"정보를 제대로 입력해 주십시오.",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                        bottomDialog.show();
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+
                 bottomSheetDialog.show();
 
             }
         });
+    }
+
+    //ISBN 체크 method
+    public boolean checkBarcodeNumber(String book_barcode){
+        Log.d("barcodeArr","book_barcode: "+book_barcode);
+        int[] barcodeArr=new int[13];
+        int barcodeSum=0;
+
+        for(int i=0;i<barcodeArr.length;i++){
+            barcodeArr[i]= (book_barcode.charAt(i)-'0');
+            Log.d("barcodeArr","barcodeArr("+i+"): "+barcodeArr[i]);
+
+            if(i%2==0){
+                barcodeSum+=barcodeArr[i];
+            }
+            else{
+                barcodeSum+=(barcodeArr[i]*3);
+            }
+        }
+        Log.d("barcodeArr","barcodeSum: "+barcodeSum);
+
+        if(barcodeSum%10==0){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     //spinner 구현 method
@@ -318,7 +392,7 @@ public class RegisterBookActivity extends Activity {
                 register_book_card_book_writer_result_text_view.setText(resultBookWriter);
                 register_book_app_compat_button.setEnabled(true);
 
-                bookInfo = new HashMap<String, String>();
+
                 bookInfo.put("barcode", barcode);
                 bookInfo.put("bookName", resultBookTitle);
                 bookInfo.put("bookWriter", resultBookWriter);

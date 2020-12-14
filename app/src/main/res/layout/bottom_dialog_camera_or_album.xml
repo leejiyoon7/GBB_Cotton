@@ -41,4 +41,14 @@
         android:text="앨범에서 사진 가져오기"
         android:textAlignment="center"/>
 
+    <TextView
+        android:id="@+id/camera_or_album_active"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:text="수동으로 정보 입력하기"
+        android:textAlignment="center" />
+
 </LinearLayout>

@@ -502,7 +502,7 @@ public class TradingFragment extends Fragment {
 
 
                                             //푸시 알림
-                                            sendNotificationToUser(memberInfo.getToken(), "수수료 획득", "등록한 책이 대여되어 ??원의 수수료를 획득했습니다.");
+                                            sendNotificationToUser(memberInfo.getToken(), "수수료 획득", "등록한 책이 대여되어 4500원의 수수료를 획득했습니다.");
 
 
                                             //책 대여시 로그 저장(Renter log)

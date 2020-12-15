@@ -225,4 +225,12 @@ public class MemberInitActivity extends AppCompatActivity {
             jump();
         }
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        startVideo();
+
+    }
+
 }

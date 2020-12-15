@@ -2,9 +2,12 @@ package com.example.cotton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.loader.content.CursorLoader;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -40,6 +43,8 @@ import retrofit2.Response;
 
 public class MemberInitActivity extends AppCompatActivity {
 
+    private static final String TAG = "MemberInit Activity";
+
     String profileLink;
     private static final String TAG_TEXT = "text";
     Uri selectedImageUri;
@@ -51,6 +56,14 @@ public class MemberInitActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_init);
+
+        //파일 접근권한 부여
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "권한 설정 완료");
+        } else {
+            Log.d(TAG, "권한 설정 요청");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
 
         findViewById(R.id.checkButton).setOnClickListener(onClickListener);
         findViewById(R.id.profileImg).setOnClickListener(onClickListener);

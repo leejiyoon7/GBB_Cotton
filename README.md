@@ -20,7 +20,7 @@ Luniverse WhiteList에 사용자 IP가 등록되지 않았을 경우 서비스 �
 - Zxing(QR)
 
 ## 기능
-시연연상  
+시연영상  
 [https://youtu.be/31261VMlaB0](https://youtu.be/31261VMlaB0)  
 
 기능 상세기술 문서 링크

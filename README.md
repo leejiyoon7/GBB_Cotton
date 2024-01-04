@@ -7,13 +7,15 @@
 
 
 ## 활용 기술
-- JAVA
-- MVVM 패턴
-- Retrofit2
-- Firebase
-- GoogleSignIn
-- Naver API(도서 검색)
-- Zxing(QR)
+```
+JAVA
+MVVM 패턴
+Retrofit2
+Firebase
+GoogleSignIn
+Naver API(도서 검색)
+Zxing(QR)
+```
 
 ## 기능
 시연영상  
